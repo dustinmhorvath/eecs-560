@@ -9,3 +9,6 @@ Node.o: Node.h Node.cpp
 	
 LinkedList.o: LinkedList.h LinkedList.cpp
 	g++ -g -std=c++11 -c LinkedList.cpp
+
+clean:
+	rm test *.o
