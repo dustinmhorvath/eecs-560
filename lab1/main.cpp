@@ -10,7 +10,6 @@
 #include <sstream>
 #include <string>
 #include "LinkedList.h"
-#include "Box.h"
 
 
 int main(){
@@ -18,7 +17,7 @@ int main(){
 
 	std::ifstream file("data.txt");
 	std::string line;
-/*
+
 	while(std::getline(file, line)){
 		std::stringstream  lineStream(line);
 		int value;
@@ -27,13 +26,10 @@ int main(){
 			list.add(value);
 		}
 	}
-*/
-	list.add(1);
-	list.add(2);
-	list.add(3);
 
 	list.printList();
-//	list.reverseList();
-//	list.printList();
+	list.reverseList();
+	std::cout << std::endl;
+	list.printList();
 }
 

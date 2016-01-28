@@ -8,22 +8,22 @@
 #ifndef LINKEDLIST_H_
 #define LINKEDLIST_H_
 
-#include "Box.h"
+#include "Node.h"
 
 class LinkedList{
 private:
-	Box* m_top;
+	Node* m_top;
 	int m_size;
 public:
 	/*
-	 * @pre Box class required
+	 * @pre Node class required
 	 * @post Creates a LinkedList object with initial values
 	 * @return none
 	 */
 	LinkedList();
 	/*
 	 * @pre LinkedList exists
-	 * @post Deconstructs all boxes on the stack of boxes
+	 * @post Deconstructs all nodes on the stack of nodes
 	 * @return none
 	 */
 	~LinkedList();
@@ -44,22 +44,22 @@ public:
 
 	/*
 	 * @pre LinkedList object
-	 * @post Creates a box object. Sets m_previous to point to the next box down,
+	 * @post Creates a Node object. Sets m_previous to point to the next Node down,
 	 * then sets m_top to point to itself (the new top-of-stack)
 	 * @return none
 	 */
 	void add(int value);
 
 	/*
-	 * @pre LinkedList object WITH BOX (does not have try-catch)
-	 * @post Deletes the top box, sets m_top pointer, and gives the m_value from the top box.
-	 * @return Returns the m_value from the top box.
+	 * @pre LinkedList object
+	 * @post Deletes the top Node, sets m_top pointer, and gives the m_value from the top Node.
+	 * @return Returns the m_value from the top Node.
 	 */
 	int drop();
 
 	/*
-	 * @pre LinkedList object WITH BOX (does not have try-catch)
-	 * @post Prints the values of all the boxes in the list.
+	 * @pre LinkedList object
+	 * @post Prints the values of all the nodes in the list.
 	 * @return none.
 	 */
 	void printList();
@@ -72,7 +72,7 @@ public:
 	void reverseList();
 
 	int tempVal;
-	Box* m_tempPtr;
+	Node* m_tempPtr;
 };
 
 
