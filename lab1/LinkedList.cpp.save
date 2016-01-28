@@ -48,9 +48,7 @@ void LinkedList::add(int value){
 		}
 		m_tempPtr -> Box::setNext(new Box());
 		m_tempPtr -> Box::getNext() -> Box::setValue(value);
-		m_tempPtr -> Box::getNext() -> Box::setNext(nullptr);
 	}
-	m_size = m_size + 1;
 }
 
 int LinkedList::drop(){
@@ -74,12 +72,10 @@ void LinkedList::printList(){
 }
 
 void LinkedList::reverseList(){
-	Box* nextPtr = nullptr;
-	nextPtr = m_top -> Box::getNext();
-	while(nextPtr != nullptr){
-		m_tempPtr = m_top;
-		m_top = nextPtr;
-		nextPtr = m_top -> Box::getNext();
+	m_tempPtr = m_top -> Box::getnext();;
+	while(m_tempPtr != nullptr){
+		m_tempptr = m_top -> getNext();
 		m_top -> Box::setNext(m_tempPtr);
 	}
+
 }

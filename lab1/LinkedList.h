@@ -64,6 +64,13 @@ public:
 	 */
 	void printList();
 
+	/*
+	 * @pre LinkedList object
+	 * @post Reverses the order of the list in place.
+	 * @return none.
+	 */
+	void reverseList();
+
 	int tempVal;
 	Box* m_tempPtr;
 };
