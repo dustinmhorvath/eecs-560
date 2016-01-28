@@ -27,9 +27,11 @@ int main(){
 		}
 	}
 
+	std::cout << "Input:" << std::endl;
 	list.printList();
 	list.reverseList();
 	std::cout << std::endl;
+	std::cout << "Output:" << std::endl;
 	list.printList();
 }
 
