@@ -14,7 +14,7 @@ public:
 	Node* search(int value);
 
 private:
-	void add(int value, Node* subtree);
+	Node* add(int value, Node* subtree);
 	void deleteTree(Node* subTree);
 	Node* search(int value, Node* subtree);
 

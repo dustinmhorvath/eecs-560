@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
         }
 
 	tree.printTree();
-	tree.search(4);
+	tree.search(1);
 
 	std::cout << "Exiting...\n";
 }
