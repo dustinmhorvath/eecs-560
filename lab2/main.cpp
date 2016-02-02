@@ -62,7 +62,7 @@ void printTreeLevelOrder(Node* root)
 	{
 		const Node * const temp_node = q.front();
 		q.pop();
-		std::cout << temp_node -> m_value << std::endl; ;
+		std::cout << temp_node -> m_value << " " ;
 		if (temp_node -> m_left) {
 			q.push(temp_node -> m_left);
 		}
@@ -70,6 +70,7 @@ void printTreeLevelOrder(Node* root)
 			q.push(temp_node -> m_right);
 		}
 	}
+	std::cout << std::endl;
 }
 int main(int argc, char* argv[]){
 	Node* tree = nullptr;
@@ -92,7 +93,6 @@ int main(int argc, char* argv[]){
 	}
 
 	for(int i = 0; i < size; i++){
-		std::cout << arr[i] << " ";
 		tree = add(arr[i], tree);
 	}
 
