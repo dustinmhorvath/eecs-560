@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <queue>
 
 class Node {
 public:
@@ -38,14 +39,38 @@ Node* add(int value, Node* root){
 	return root;
 }
 
-void printTree(Node* subTree){
-	if(subTree != nullptr){
-		std::cout << subTree -> m_value << " ";
-		printTree(subTree -> m_left);
-		printTree(subTree -> m_right);
+void printTreeHelper(Node* subtree){
+	if(subtree != nullptr){
+		std::cout << subtree -> m_value << " ";
+		printTreeHelper(subtree -> m_left);
+		printTreeHelper(subtree -> m_right);
 	}
 }
 
+void printTree(Node* subtree){
+	printTreeHelper(subtree);
+	std::cout << std::endl;
+}
+
+void printTreeLevelOrder(Node* root)
+{
+	std::queue<Node*> q;
+	if (root) {
+		q.push(root);
+	}
+	while (!q.empty())
+	{
+		const Node * const temp_node = q.front();
+		q.pop();
+		std::cout << temp_node -> m_value << std::endl; ;
+		if (temp_node -> m_left) {
+			q.push(temp_node -> m_left);
+		}
+		if (temp_node -> m_right) {
+			q.push(temp_node -> m_right);
+		}
+	}
+}
 int main(int argc, char* argv[]){
 	Node* tree = nullptr;
 
@@ -72,6 +97,9 @@ int main(int argc, char* argv[]){
 	}
 
 	printTree(tree);
+	printTreeLevelOrder(tree);
 
 	std::cout << "Exiting...\n";
+
+	
 }
