@@ -29,7 +29,7 @@ class Node {
 
 class BinarySearchTree {
     private:
-        Node* m_root;
+         Node* m_root;
     public:
          BinarySearchTree(){
              m_root = nullptr;
@@ -92,16 +92,16 @@ class BinarySearchTree {
          }
 
          Node* rotateWithLeftChild(Node* node){
-             Node* temp = node->m_left;
+             Node* temp = node -> m_left;
              node -> m_left = temp -> m_right;
              temp -> m_right = node;
-             node -> m_height = max(height(node->m_left), height(node->m_right)) + 1;
-             temp -> m_height = max(height(temp->m_left), node->m_height) + 1;
+             node -> m_height = max(height(node -> m_left), height(node -> m_right)) + 1;
+             temp -> m_height = max(height(temp -> m_left), node -> m_height) + 1;
              return temp;
          }
 
          Node* rotateWithRightChild(Node* node){
-             Node* temp = node->m_right;
+             Node* temp = node -> m_right;
              node -> m_right = temp->m_left;
              temp -> m_left = node;
              node -> m_height = max(height(node -> m_left), height(node -> m_right)) + 1;
@@ -109,16 +109,18 @@ class BinarySearchTree {
              return temp;
          }
 
-         Node *doubleWithLeftChild(Node* k3){
-             k3->m_left = rotateWithRightChild(k3->m_left);
-             return rotateWithLeftChild(k3);
+         Node* doubleWithLeftChild(Node* node){
+             node -> m_left = rotateWithRightChild(node -> m_left);
+             return rotateWithLeftChild(node);
          }
 
-         Node *doubleWithRightChild(Node* node){
-             node->m_right = rotateWithLeftChild(node->m_right);
+         Node* doubleWithRightChild(Node* node){
+             node -> m_right = rotateWithLeftChild(node -> m_right);
              return rotateWithRightChild(node);
          }
 
+	// I added this because I needed to print all the values in the tree. It was just by
+	//  coincidence that it happened to be pre-order.
 	void preOrderHelper(Node* subtree){
 	        if(subtree != nullptr){
         	        std::cout << subtree -> m_value << " ";
@@ -132,26 +134,28 @@ class BinarySearchTree {
         	std::cout << std::endl;
 	}
 
-	void printLevelOrder()
-	{
-        	std::queue<Node*> q;
-	        if (m_root) {
-        	        q.push(m_root);
-	        }
-        	while (!q.empty())
-	        {
-                	const Node * const temp_node = q.front();
-        	        q.pop();
+	void printLevelOrder(){
+		std::queue<Node*> t_queue;
+		t_queue.push(m_root);
+		int level = 0;
+		std::cout << "Level " << level << ": ";
+		while(!t_queue.empty()){
+                	const Node* temp_node = t_queue.front();
+        	        t_queue.pop();
 	                std::cout << temp_node -> m_value << " " ;
+			level++;
+			std::cout << "Level " << level << ": ";
                 	if (temp_node -> m_left) {
-        	                q.push(temp_node -> m_left);
+        	                t_queue.push(temp_node -> m_left);
 	                }
                 	if (temp_node -> m_right) {
-        	                q.push(temp_node -> m_right);
+        	                t_queue.push(temp_node -> m_right);
 	                }
+
         	}
         	std::cout << std::endl;
 	}
+
 };
 
 int main()
@@ -179,7 +183,9 @@ int main()
                 tree.insert(arr[i]);
         }
 
+	std::cout << "Printing Pre-Order:" << std::endl;
         tree.printPreOrder();
+	std::cout << "Printing Level-Order:" << std::endl;
         tree.printLevelOrder();
 
         std::cout << "Exiting...\n";
