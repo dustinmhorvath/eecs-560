@@ -188,7 +188,7 @@ public:
     // Declare a queue
     Queue<Node*> q;
     // Start with root
-    q.push(m_root);
+    q.enqueue(m_root);
     // Count the rows
     int level = 0;
     while (1){
@@ -200,16 +200,16 @@ public:
       std::cout << "Level " << level << ": ";
       while (nodeCount > 0){
         // Store so we can get value
-        Node* temp = q.front();
+        Node* temp = q.peekFront();
         std::cout << temp -> m_value << " ";
         // Pop the front of the queue
-        q.pop();
+        q.dequeue();
         // Push on any children
         if (temp -> m_left){
-          q.push(temp -> m_left);
+          q.enqueue(temp -> m_left);
         }
         if (temp -> m_right){
-          q.push(temp -> m_right);
+          q.enqueue(temp -> m_right);
         }
         nodeCount--;
       }
