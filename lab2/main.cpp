@@ -87,6 +87,7 @@ class BinarySearchTree {
 			}
 		}
              }
+
              node -> m_height = max(height(node -> m_left), height(node -> m_right)) + 1;
              return node;
          }
@@ -135,25 +136,31 @@ class BinarySearchTree {
 	}
 
 	void printLevelOrder(){
-		std::queue<Node*> t_queue;
-		t_queue.push(m_root);
+		if (m_root == NULL) { return;}
+		std::queue<Node*> q;
+		q.push(m_root);
 		int level = 0;
-		std::cout << "Level " << level << ": ";
-		while(!t_queue.empty()){
-                	const Node* temp_node = t_queue.front();
-        	        t_queue.pop();
-	                std::cout << temp_node -> m_value << " " ;
-			level++;
+		while (1){
+			int nodeCount = q.size();
+			if (nodeCount == 0){
+				break;
+			}
 			std::cout << "Level " << level << ": ";
-                	if (temp_node -> m_left) {
-        	                t_queue.push(temp_node -> m_left);
-	                }
-                	if (temp_node -> m_right) {
-        	                t_queue.push(temp_node -> m_right);
-	                }
-
-        	}
-        	std::cout << std::endl;
+			while (nodeCount > 0){
+				Node* temp = q.front();
+				std::cout << temp -> m_value << " ";
+				q.pop();
+				if (temp -> m_left){
+					q.push(temp -> m_left);
+				}
+				if (temp -> m_right){
+					q.push(temp -> m_right);
+				}
+				nodeCount--;
+			}
+			std::cout << std::endl;
+			level++;
+		}
 	}
 
 };
