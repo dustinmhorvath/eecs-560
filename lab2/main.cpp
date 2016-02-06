@@ -76,13 +76,13 @@ public:
     else if (value < node -> m_value){
       node -> m_left = insert(value, node -> m_left);
       // Compare subtree heights. If more then 1 height difference, move
-      // subtrees so that that's not the case
+      // subtrees so that that's not the case.
       if (height(node -> m_left) - height(node -> m_right) == 2){
         if (value < node -> m_left -> m_value){
-          node = rotateWithLeftChild(node);
+          node = switchWithLeft(node);
         }
         else{
-          node = doubleWithLeftChild(node);
+          node = switchWithLeftChild(node);
         }
       }
     }
@@ -90,10 +90,10 @@ public:
       node -> m_right = insert(value, node -> m_right);
       if (height(node -> m_right) - height(node -> m_left) == 2){
         if (value > node -> m_right -> m_value){
-          node = rotateWithRightChild(node);
+          node = switchWithRight(node);
         }
         else{
-          node = doubleWithRightChild(node);
+          node = switchWithRightChild(node);
         }
       }
     }
@@ -106,9 +106,9 @@ public:
    * Pre: BinarySearchTree constructed, has children
    * Post: Moves subtrees to balance tree
    * Return: node pointer
-   * @note: called by `doubleWithRightChild`, `insert`
+   * @note: called by `switchWithRightChild`, `insert`
    */
-  Node* rotateWithLeftChild(Node* node){
+  Node* switchWithLeft(Node* node){
     Node* temp = node -> m_left;
     node -> m_left = temp -> m_right;
     temp -> m_right = node;
@@ -121,9 +121,9 @@ public:
    * Pre: BinarySearchTree constructed, has children
    * Post: Moves subtrees to balance tree
    * Return: node pointer
-   * @note: called by `doubleWithLeftChild`, `insert`
+   * @note: called by `switchWithLeftChild`, `insert`
    */
-  Node* rotateWithRightChild(Node* node){
+  Node* switchWithRight(Node* node){
     Node* temp = node -> m_right;
     node -> m_right = temp->m_left;
     temp -> m_left = node;
@@ -138,9 +138,9 @@ public:
    * Return: node pointer
    * @note: called by `insert`
    */
-  Node* doubleWithLeftChild(Node* node){
-    node -> m_left = rotateWithRightChild(node -> m_left);
-    return rotateWithLeftChild(node);
+  Node* switchWithLeftChild(Node* node){
+    node -> m_left = switchWithRight(node -> m_left);
+    return switchWithLeft(node);
   }
 
   /*
@@ -149,9 +149,9 @@ public:
    * Return: node pointer
    * @note: called by `insert`
    */
-  Node* doubleWithRightChild(Node* node){
-    node -> m_right = rotateWithLeftChild(node -> m_right);
-    return rotateWithRightChild(node);
+  Node* switchWithRightChild(Node* node){
+    node -> m_right = switchWithLeft(node -> m_right);
+    return switchWithRight(node);
   }
 
   // I added this because I needed to print all the values in the tree. It was just by
