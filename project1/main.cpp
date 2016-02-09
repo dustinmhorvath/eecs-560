@@ -24,6 +24,7 @@ class FractionEngine {
 public:
 
   Fraction convertToMixed(Fraction a){
+    a = convertToImproper(a);
     int whole = a.m_num/a.m_den;
     int new_numerator = a.m_num % a.m_den;
     Fraction x;
@@ -127,7 +128,28 @@ public:
     return x;
   }
 
+  Fraction rec(Fraction a){
+    a = convertToImproper(a);
+    int temp = a.m_num;
+    a.m_num = a.m_den;
+    a.m_den = temp;
+    return a;
+  }
 
+  Fraction red(Fraction a){
+    a = convertToImproper(a);
+    for (int i = a.m_den * a.m_num; i > 1; i--) {  
+      if ((a.m_den % i == 0) && (a.m_num % i == 0)) {  
+        a.m_den = a.m_den / i;
+        a.m_num = a.m_num / i;
+      }  
+
+    }
+    if(a.m_den == 1){
+      a = convertToMixed(a);
+    }
+    return a;
+  }
 };
 
 int main(){
@@ -146,19 +168,19 @@ int main(){
      }
      */
 
-  Fraction x = Fraction(12,2);
-  Fraction y = Fraction(2,1);
+  Fraction x = Fraction(4,4);
+  Fraction y = Fraction(1,2);
 
   FractionEngine engine = FractionEngine();
 
 // *works* //
-//  x = x.xadd(y);
-//  x.print();
-//  engine.print(engine.mul(x,y));
+//  engine.print(engine.add(x,y));
 //  engine.print(engine.div(x,y));
 //  engine.print(engine.xdiv(x,y));
 
 
+  x = engine.xadd(x,y);
+  engine.print(engine.xadd(x,y));
   std::cout << "Exiting...\n";
   return 0;
 }
