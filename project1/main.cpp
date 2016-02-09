@@ -49,7 +49,12 @@ public:
       std::cout << a.m_num << "," << a.m_den << "\n";
     }
     else{
-      std::cout << a.m_whole << " " << a.m_num << "," << a.m_den << "\n"; 
+      if(a.m_num != 0){
+        std::cout << a.m_whole << " " << a.m_num << "," << a.m_den << "\n"; 
+      }
+      else{
+        std::cout << a.m_whole << std::endl;
+      }
     }
   }
 
@@ -102,9 +107,27 @@ public:
   }
 
   Fraction mul(Fraction a, Fraction b){
+    a = convertToImproper(a);
+    b = convertToImproper(b);
     Fraction x = Fraction(a.m_num * b.m_num, a.m_den * b.m_den);
     return x;
   }
+
+  Fraction div(Fraction a, Fraction b){
+    a = convertToImproper(a);
+    b = convertToImproper(b);
+    Fraction x = Fraction(a.m_num * b.m_den, a.m_den * b.m_num);
+    return x;
+  }
+
+  Fraction xdiv(Fraction a, Fraction b){
+    a = convertToImproper(a);
+    b = convertToImproper(b);
+    Fraction x = convertToMixed(Fraction(a.m_num * b.m_den, a.m_den * b.m_num));
+    return x;
+  }
+
+
 };
 
 int main(){
@@ -123,16 +146,19 @@ int main(){
      }
      */
 
-  std::cout << "Exiting...\n";
-  Fraction x = Fraction(1,2);
-  Fraction y = Fraction(3,8);
+  Fraction x = Fraction(12,2);
+  Fraction y = Fraction(2,1);
 
   FractionEngine engine = FractionEngine();
 
 // *works* //
 //  x = x.xadd(y);
 //  x.print();
-  engine.print(engine.add(x,y));
+//  engine.print(engine.mul(x,y));
+//  engine.print(engine.div(x,y));
+//  engine.print(engine.xdiv(x,y));
 
+
+  std::cout << "Exiting...\n";
   return 0;
 }
