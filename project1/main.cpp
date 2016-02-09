@@ -88,12 +88,12 @@ public:
     int new_denom = lcm(a, b);
     a = expandDenominator(a, new_denom);
     b = expandDenominator(b, new_denom);
-    Fraction x = Fraction(a.m_num + b.m_num, new_denom);
+    Fraction x = red(Fraction(a.m_num + b.m_num, new_denom));
     return x;
   }
 
   Fraction xadd(Fraction a, Fraction b){
-    Fraction x = convertToMixed(add(a, b));
+    Fraction x = red(convertToMixed(add(a, b)));
     return x;
   }
 
@@ -103,28 +103,28 @@ public:
     int new_denom = lcm(a, b);
     a = expandDenominator(a, new_denom);
     b = expandDenominator(b, new_denom);
-    Fraction x = Fraction(a.m_num - b.m_num, new_denom);
+    Fraction x = red(Fraction(a.m_num - b.m_num, new_denom));
     return x;    
   }
 
   Fraction mul(Fraction a, Fraction b){
     a = convertToImproper(a);
     b = convertToImproper(b);
-    Fraction x = Fraction(a.m_num * b.m_num, a.m_den * b.m_den);
+    Fraction x = red(Fraction(a.m_num * b.m_num, a.m_den * b.m_den));
     return x;
   }
 
   Fraction div(Fraction a, Fraction b){
     a = convertToImproper(a);
     b = convertToImproper(b);
-    Fraction x = Fraction(a.m_num * b.m_den, a.m_den * b.m_num);
+    Fraction x = red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num));
     return x;
   }
 
   Fraction xdiv(Fraction a, Fraction b){
     a = convertToImproper(a);
     b = convertToImproper(b);
-    Fraction x = convertToMixed(Fraction(a.m_num * b.m_den, a.m_den * b.m_num));
+    Fraction x = convertToMixed(red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num)));
     return x;
   }
 
@@ -168,8 +168,8 @@ int main(){
      }
      */
 
-  Fraction x = Fraction(4,4);
-  Fraction y = Fraction(1,2);
+  Fraction x = Fraction(3,2);
+  Fraction y = Fraction(7,2);
 
   FractionEngine engine = FractionEngine();
 
@@ -179,7 +179,6 @@ int main(){
 //  engine.print(engine.xdiv(x,y));
 
 
-  x = engine.xadd(x,y);
   engine.print(engine.xadd(x,y));
   std::cout << "Exiting...\n";
   return 0;
