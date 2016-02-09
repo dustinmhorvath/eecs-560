@@ -15,76 +15,96 @@ public:
     m_den = b;
   }
 
-  void convertToMixed(){
-    int whole = m_num/m_den;
-    int new_numerator = m_num % m_den;
-    m_num = new_numerator;
-    m_whole = m_whole + whole;
+  Fraction(){
   }
 
-  void convertToImproper(){
-    if(m_whole != 0){
-      m_num = m_num + (m_whole * m_den);
-      m_whole = 0;
+};
+
+class FractionEngine {
+public:
+
+  Fraction convertToMixed(Fraction a){
+    int whole = a.m_num/a.m_den;
+    int new_numerator = a.m_num % a.m_den;
+    Fraction x;
+    x.m_num = new_numerator;
+    x.m_whole = a.m_whole + whole;
+    x.m_den = a.m_den;
+    return x;
+  }
+
+  Fraction convertToImproper(Fraction a){
+    if(a.m_whole != 0){
+      Fraction x;
+      x.m_num = a.m_num + (a.m_whole * a.m_den);
+      x.m_whole = 0;
+      x.m_den = a.m_den;
+      return x;
     }
+    else return a;
   }
 
-  void print(){
-    if(m_whole == 0){
-      std::cout << m_num << "," << m_den << "\n";
+  void print(Fraction a){
+    if(a.m_whole == 0){
+      std::cout << a.m_num << "," << a.m_den << "\n";
     }
     else{
-      std::cout << m_whole << " " << m_num << "," << m_den << "\n"; 
+      std::cout << a.m_whole << " " << a.m_num << "," << a.m_den << "\n"; 
     }
   }
 
-  int lcm(Fraction a)
+  int lcm(Fraction a, Fraction b)
   {
     int m,n;
     m=a.m_den;
-    n=this -> m_den;
+    n=b.m_den;
     while(m!=n){
       if(m < n){
         m = m + a.m_den;
       }
       else{
-        n = n + this -> m_den;
+        n = n + b.m_den;
       }
     }
     return m;
   }
 
-  Fraction expandDenominator(int den){
-    m_num = m_num * den / m_den;
-    m_den = den;
-  }
-
-  Fraction add(Fraction a){
-    a.convertToImproper();
-    this -> convertToImproper();
-    int new_denom = this -> lcm(a);
-    a.expandDenominator(new_denom);
-    this -> expandDenominator(new_denom);
-    Fraction x = Fraction(a.m_num + this -> m_num, new_denom);
+  Fraction expandDenominator(Fraction a, int den){
+    Fraction x;
+    x.m_num = a.m_num * den / a.m_den;
+    x.m_den = den;
     return x;
   }
 
-  Fraction xadd(Fraction a){
-    Fraction x = this -> add(a);
-    x.convertToMixed();
-    return x;;
+  Fraction add(Fraction a, Fraction b){
+    a = convertToImproper(a);
+    b = convertToImproper(b);
+    int new_denom = lcm(a, b);
+    a = expandDenominator(a, new_denom);
+    b = expandDenominator(b, new_denom);
+    Fraction x = Fraction(a.m_num + b.m_num, new_denom);
+    return x;
   }
 
-  Fraction sub(Fraction a){
-    a.convertToImproper();
-    this -> convertToImproper();
-    int new_denom = this -> lcm(a);
-    a.expandDenominator(new_denom);
-    this -> expandDenominator(new_denom);
-    Fraction x = Fraction(this -> m_num - a.m_num, new_denom);
+  Fraction xadd(Fraction a, Fraction b){
+    Fraction x = convertToMixed(add(a, b));
+    return x;
+  }
+
+  Fraction sub(Fraction a, Fraction b){
+    a = convertToImproper(a);
+    b = convertToImproper(b);
+    int new_denom = lcm(a, b);
+    a = expandDenominator(a, new_denom);
+    b = expandDenominator(b, new_denom);
+    Fraction x = Fraction(a.m_num - b.m_num, new_denom);
     return x;    
   }
 
+  Fraction mul(Fraction a, Fraction b){
+    Fraction x = Fraction(a.m_num * b.m_num, a.m_den * b.m_den);
+    return x;
+  }
 };
 
 int main(){
@@ -107,11 +127,12 @@ int main(){
   Fraction x = Fraction(1,2);
   Fraction y = Fraction(3,8);
 
+  FractionEngine engine = FractionEngine();
 
 // *works* //
-  x = x.xadd(y);
-  x.print();
-
+//  x = x.xadd(y);
+//  x.print();
+  engine.print(engine.add(x,y));
 
   return 0;
 }
