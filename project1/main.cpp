@@ -1,41 +1,89 @@
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 
 class Fraction {
-private:
+public:
   int m_num;
   int m_den;
+  int m_whole;
 
-public:
   Fraction(int a, int b){
+    m_whole = 0;
     m_num = a;
     m_den = b;
   }
 
-  int gcd(Fraction a, Fraction b) {
-    int  gcd;
-    for(int i = 1;i <= a.m_den && i <= b.m_den; i++){
-      if(a.m_den % i == 0 && b.m_den % i == 0 ){
-        gcd = i;
+  void convertToMixed(){
+    int whole = m_num/m_den;
+    int new_numerator = m_num % m_den;
+    m_num = new_numerator;
+    m_whole = m_whole + whole;
+  }
+
+  void convertToImproper(){
+    if(m_whole != 0){
+      m_num = m_num + (m_whole * m_den);
+      m_whole = 0;
+    }
+  }
+
+  void print(){
+    if(m_whole == 0){
+      std::cout << m_num << "," << m_den << "\n";
+    }
+    else{
+      std::cout << m_whole << " " << m_num << "," << m_den << "\n"; 
+    }
+  }
+
+  int lcm(Fraction a)
+  {
+    int m,n;
+    m=a.m_den;
+    n=this -> m_den;
+    while(m!=n){
+      if(m < n){
+        m = m + a.m_den;
+      }
+      else{
+        n = n + this -> m_den;
       }
     }
-    return gcd;
+    return m;
   }
 
-  Fraction expandDenominator(Fraction a, int den){
-    return Fraction(a.m_num * den / a.m_den, den);
+  Fraction expandDenominator(int den){
+    m_num = m_num * den / m_den;
+    m_den = den;
   }
 
-  Fraction add(Fraction a, Fraction b){
-    int new_denom = gcd(a, b);
-    Fraction x = expandDenominator(a, new_denom);
-    Fraction y = expandDenominator(b, new_denom);
-    return Fraction(x.m_num + y.m_num, new_denom);
+  Fraction add(Fraction a){
+    a.convertToImproper();
+    this -> convertToImproper();
+    int new_denom = this -> lcm(a);
+    a.expandDenominator(new_denom);
+    this -> expandDenominator(new_denom);
+    Fraction x = Fraction(a.m_num + this -> m_num, new_denom);
+    return x;
   }
 
+  Fraction xadd(Fraction a){
+    Fraction x = this -> add(a);
+    x.convertToMixed();
+    return x;;
+  }
+
+  Fraction sub(Fraction a){
+    a.convertToImproper();
+    this -> convertToImproper();
+    int new_denom = this -> lcm(a);
+    a.expandDenominator(new_denom);
+    this -> expandDenominator(new_denom);
+    Fraction x = Fraction(this -> m_num - a.m_num, new_denom);
+    return x;    
+  }
 
 };
 
@@ -55,12 +103,15 @@ int main(){
      }
      */
 
-
   std::cout << "Exiting...\n";
   Fraction x = Fraction(1,2);
-  Fraction y = Fraction(3,4);
+  Fraction y = Fraction(3,8);
 
-  Fraction::add(x,y);
+
+// *works* //
+  x = x.xadd(y);
+  x.print();
+
 
   return 0;
 }
