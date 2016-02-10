@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <vector>
+#include <queue>
 
 class Fraction {
 public:
@@ -16,7 +16,10 @@ public:
     m_den = b;
   }
 
-  Fraction(){
+  Fraction(int a, int b, int c){
+    m_whole = a;
+    m_num = b;
+    m_den = c;
   }
 
 };
@@ -28,19 +31,13 @@ public:
     a = unm(a);
     int whole = a.m_num/a.m_den;
     int new_numerator = a.m_num % a.m_den;
-    Fraction x;
-    x.m_num = new_numerator;
-    x.m_whole = a.m_whole + whole;
-    x.m_den = a.m_den;
+    Fraction x = Fraction(a.m_whole + whole, new_numerator, a.m_den);
     return x;
   }
 
   Fraction unm(Fraction a){
     if(a.m_whole != 0){
-      Fraction x;
-      x.m_num = a.m_num + (a.m_whole * a.m_den);
-      x.m_whole = 0;
-      x.m_den = a.m_den;
+      Fraction x = Fraction(0,  a.m_num + (a.m_whole * a.m_den), a.m_den);
       return x;
     }
     else return a;
@@ -60,8 +57,7 @@ public:
     }
   }
 
-  int lcm(Fraction a, Fraction b)
-  {
+  int lcm(Fraction a, Fraction b){
     int m,n;
     m=a.m_den;
     n=b.m_den;
@@ -77,9 +73,7 @@ public:
   }
 
   Fraction expandDenominator(Fraction a, int den){
-    Fraction x;
-    x.m_num = a.m_num * den / a.m_den;
-    x.m_den = den;
+    Fraction x = Fraction(a.m_num * den / a.m_den, den);
     return x;
   }
 
@@ -178,13 +172,11 @@ inline bool isInteger(const std::string & s){
   return (*p == 0) ;
 }
 
-std::vector<Fraction> parseTwoFractions(std::string* input){
-  std::vector<Fraction> list(2);
+std::queue<Fraction> parseTwoFractions(std::string* input){
+  std::queue<Fraction> list;
   if(isInteger(input[1]) && isInteger(input[2]) && isInteger(input[3]) && isInteger(input[4])){
-    list[0].m_num = atoi(input[1].c_str());
-    list[0].m_den = atoi(input[2].c_str());
-    list[1].m_num = atoi(input[3].c_str());
-    list[1].m_den = atoi(input[4].c_str());
+    list.push(Fraction(atoi(input[1].c_str()), atoi(input[2].c_str())));
+    list.push(Fraction(atoi(input[3].c_str()), atoi(input[4].c_str())));
   }
   return list;
 }
@@ -204,8 +196,11 @@ int main(){
       i++;
     }
     if(arr[0].compare("add") == 0){
-      std::vector<Fraction> pair = parseTwoFractions(arr);
-      engine.print(engine.add(pair[0], pair[1]));
+      std::queue<Fraction> pair = parseTwoFractions(arr);
+      Fraction a = pair.front();
+      pair.pop();
+      Fraction b = pair.front();
+      engine.print(engine.add(a,b));
     }
 
   }
