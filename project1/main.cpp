@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 class Fraction {
 public:
@@ -23,8 +24,8 @@ public:
 class FractionEngine {
 public:
 
-  Fraction convertToMixed(Fraction a){
-    a = convertToImproper(a);
+  Fraction mix(Fraction a){
+    a = unm(a);
     int whole = a.m_num/a.m_den;
     int new_numerator = a.m_num % a.m_den;
     Fraction x;
@@ -34,7 +35,7 @@ public:
     return x;
   }
 
-  Fraction convertToImproper(Fraction a){
+  Fraction unm(Fraction a){
     if(a.m_whole != 0){
       Fraction x;
       x.m_num = a.m_num + (a.m_whole * a.m_den);
@@ -83,8 +84,8 @@ public:
   }
 
   Fraction add(Fraction a, Fraction b){
-    a = convertToImproper(a);
-    b = convertToImproper(b);
+    a = unm(a);
+    b = unm(b);
     int new_denom = lcm(a, b);
     a = expandDenominator(a, new_denom);
     b = expandDenominator(b, new_denom);
@@ -93,13 +94,13 @@ public:
   }
 
   Fraction xadd(Fraction a, Fraction b){
-    Fraction x = red(convertToMixed(add(a, b)));
+    Fraction x = red(mix(add(a, b)));
     return x;
   }
 
   Fraction sub(Fraction a, Fraction b){
-    a = convertToImproper(a);
-    b = convertToImproper(b);
+    a = unm(a);
+    b = unm(b);
     int new_denom = lcm(a, b);
     a = expandDenominator(a, new_denom);
     b = expandDenominator(b, new_denom);
@@ -108,28 +109,28 @@ public:
   }
 
   Fraction mul(Fraction a, Fraction b){
-    a = convertToImproper(a);
-    b = convertToImproper(b);
+    a = unm(a);
+    b = unm(b);
     Fraction x = red(Fraction(a.m_num * b.m_num, a.m_den * b.m_den));
     return x;
   }
 
   Fraction div(Fraction a, Fraction b){
-    a = convertToImproper(a);
-    b = convertToImproper(b);
+    a = unm(a);
+    b = unm(b);
     Fraction x = red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num));
     return x;
   }
 
   Fraction xdiv(Fraction a, Fraction b){
-    a = convertToImproper(a);
-    b = convertToImproper(b);
-    Fraction x = convertToMixed(red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num)));
+    a = unm(a);
+    b = unm(b);
+    Fraction x = mix(red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num)));
     return x;
   }
 
   Fraction rec(Fraction a){
-    a = convertToImproper(a);
+    a = unm(a);
     int temp = a.m_num;
     a.m_num = a.m_den;
     a.m_den = temp;
@@ -137,7 +138,7 @@ public:
   }
 
   Fraction red(Fraction a){
-    a = convertToImproper(a);
+    a = unm(a);
     for (int i = a.m_den * a.m_num; i > 1; i--) {  
       if ((a.m_den % i == 0) && (a.m_num % i == 0)) {  
         a.m_den = a.m_den / i;
@@ -146,40 +147,75 @@ public:
 
     }
     if(a.m_den == 1){
-      a = convertToMixed(a);
+      a = mix(a);
     }
     return a;
   }
+
+  Fraction amix(int x, Fraction a, int y, Fraction b){
+    a = unm(a);
+    b = unm(b);
+    a.m_num = a.m_num + x * a.m_den;
+    b.m_num = b.m_num + y * b.m_den;
+    return mix(add(a,b));
+  }
+
+  Fraction less(Fraction a, Fraction b){
+    a = unm(a);
+    b = unm(b);
+    if((double)a.m_num/a.m_den < (double)b.m_num/b.m_den){
+      return a;
+    }
+    else return b;
+  }
+
 };
 
+inline bool isInteger(const std::string & s){
+  if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
+  char * p ;
+  strtol(s.c_str(), &p, 10) ;
+  return (*p == 0) ;
+}
+
+std::vector<Fraction> parseTwoFractions(std::string* input){
+  std::vector<Fraction> list(2);
+  if(isInteger(input[1]) && isInteger(input[2]) && isInteger(input[3]) && isInteger(input[4])){
+    list[0].m_num = atoi(input[1].c_str());
+    list[0].m_den = atoi(input[2].c_str());
+    list[1].m_num = atoi(input[3].c_str());
+    list[1].m_den = atoi(input[4].c_str());
+  }
+  return list;
+}
+
 int main(){
-  /*
-     std::ifstream file("data2.txt");
-     std::string line;
 
-     while(std::getline(file, line)){
-     std::stringstream  lineStream(line);
-     int value;
-     int index = 0;
-     while(lineStream >> value){
-     arr[index] = value;
-     index++;
-     }
-     }
-     */
-
-  Fraction x = Fraction(3,2);
-  Fraction y = Fraction(7,2);
-
+  std::ifstream file("input.txt");
+  std::string line;
   FractionEngine engine = FractionEngine();
 
-// *works* //
-//  engine.print(engine.add(x,y));
-//  engine.print(engine.div(x,y));
-//  engine.print(engine.xdiv(x,y));
+  while(std::getline(file, line)){
+    std::string arr[5];
+    int i = 0;
+    std::istringstream iss(line);
+    while(iss.good()){
+      iss >> arr[i];
+      i++;
+    }
+    if(arr[0].compare("add") == 0){
+      std::vector<Fraction> pair = parseTwoFractions(arr);
+      engine.print(engine.add(pair[0], pair[1]));
+    }
+
+  }
 
 
-  engine.print(engine.xadd(x,y));
+  Fraction x = Fraction(1,2);
+  Fraction y = Fraction(3,4);
+
+
+  engine.print(engine.amix(1,x,2,y));
   std::cout << "Exiting...\n";
   return 0;
 }
