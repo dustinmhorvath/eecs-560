@@ -11,9 +11,14 @@ public:
   int m_whole;
 
   Fraction(int a, int b){
-    m_whole = 0;
+    if(b != 0){
+      m_whole = 0;
     m_num = a;
     m_den = b;
+    }
+    else{
+      // throw exception here
+    }
   }
 
   Fraction(int a, int b, int c){
@@ -205,12 +210,6 @@ int main(){
 
   }
 
-
-  Fraction x = Fraction(1,2);
-  Fraction y = Fraction(3,4);
-
-
-  engine.print(engine.amix(1,x,2,y));
   std::cout << "Exiting...\n";
   return 0;
 }
