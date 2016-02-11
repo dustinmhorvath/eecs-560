@@ -56,6 +56,7 @@ int main(){
   }
 
   size = 400000;
+  iterations = 5;
   l_bound = -80000;
   u_bound = 80000;
   
