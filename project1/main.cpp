@@ -11,10 +11,15 @@ public:
   int m_whole;
 
   Fraction(int a, int b){
+    if(b < 0){
+      b = b * -1;
+      a = a * -1;
+    }
+
     if(b != 0){
       m_whole = 0;
-    m_num = a;
-    m_den = b;
+      m_num = a;
+      m_den = b;
     }
     else{
       // throw exception here
@@ -50,14 +55,12 @@ public:
 
   void print(Fraction a){
     if(a.m_whole == 0){
-      std::cout << a.m_num << "," << a.m_den << "\n";
+      std::cout << a.m_num << "/" << a.m_den;
     }
     else{
+      std::cout << a.m_whole;
       if(a.m_num != 0){
-        std::cout << a.m_whole << " " << a.m_num << "," << a.m_den << "\n"; 
-      }
-      else{
-        std::cout << a.m_whole << std::endl;
+        std::cout << " " << a.m_num << "/" << a.m_den; 
       }
     }
   }
@@ -93,7 +96,7 @@ public:
   }
 
   Fraction xadd(Fraction a, Fraction b){
-    Fraction x = red(mix(add(a, b)));
+    Fraction x = mix(red(add(a, b)));
     return x;
   }
 
@@ -177,11 +180,22 @@ inline bool isInteger(const std::string & s){
   return (*p == 0) ;
 }
 
-std::queue<Fraction> parseTwoFractions(std::string* input){
+std::queue<Fraction> parseFractionPairs(std::string* input){
   std::queue<Fraction> list;
-  if(isInteger(input[1]) && isInteger(input[2]) && isInteger(input[3]) && isInteger(input[4])){
-    list.push(Fraction(atoi(input[1].c_str()), atoi(input[2].c_str())));
-    list.push(Fraction(atoi(input[3].c_str()), atoi(input[4].c_str())));
+  int i = 1;
+  while(isInteger(input[i]) && isInteger(input[i + 1])){
+    list.push(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str())));
+    i += 2;
+  }
+  return list;
+}
+
+std::queue<Fraction> parseMixedFractions(std::string* input){
+  std::queue<Fraction> list;
+  int i = 1;
+  while(isInteger(input[i]) && isInteger(input[i + 1]) && isInteger(input[i + 2])){
+    list.push(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str()), atoi(input[i + 2].c_str())));
+    i = i + 3;
   }
   return list;
 }
@@ -193,23 +207,138 @@ int main(){
   FractionEngine engine = FractionEngine();
 
   while(std::getline(file, line)){
-    std::string arr[5];
+    std::string arr[10];
     int i = 0;
     std::istringstream iss(line);
     while(iss.good()){
       iss >> arr[i];
       i++;
     }
-    if(arr[0].compare("add") == 0){
-      std::queue<Fraction> pair = parseTwoFractions(arr);
+    if(arr[0].compare("ADD") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
       Fraction a = pair.front();
       pair.pop();
       Fraction b = pair.front();
+      engine.print(a);
+      std::cout << " + ";
+      engine.print(b);
+      std::cout << " = ";
       engine.print(engine.add(a,b));
+      std::cout << std::endl;
+
     }
+    if(arr[0].compare("SUB") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      pair.pop();
+      Fraction b = pair.front();
+      engine.print(a);
+      std::cout << " - ";
+      engine.print(b);
+      std::cout << " = ";
+      engine.print(engine.sub(a,b));
+      std::cout << std::endl;
+
+    }
+    if(arr[0].compare("XADD") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      pair.pop();
+      Fraction b = pair.front();
+      engine.print(a);
+      std::cout << " + ";
+      engine.print(b);
+      std::cout << " = ";
+      engine.print(engine.xadd(a,b));
+      std::cout << std::endl;
+    }
+    if(arr[0].compare("MUL") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      pair.pop();
+      Fraction b = pair.front();
+      engine.print(a);
+      std::cout << " * ";
+      engine.print(b);
+      std::cout << " = ";
+      engine.print(engine.mul(a,b));
+      std::cout << std::endl;
+
+    }
+    if(arr[0].compare("DIV") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      pair.pop();
+      Fraction b = pair.front();
+      engine.print(a);
+      std::cout << " / ";
+      engine.print(b);
+      std::cout << " = ";
+      engine.print(engine.div(a,b));
+      std::cout << std::endl;
+    }
+    if(arr[0].compare("XDIV") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      pair.pop();
+      Fraction b = pair.front();
+      engine.print(a);
+      std::cout << " / ";
+      engine.print(b);
+      std::cout << " = ";
+      engine.print(engine.xdiv(a,b));
+      std::cout << std::endl;
+
+    }
+    if(arr[0].compare("REC") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      engine.print(a);
+      std::cout << " inverts to ";
+      engine.print(engine.rec(a));
+      std::cout << std::endl;
+
+    }
+    if(arr[0].compare("RED") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      engine.print(a);
+      std::cout << " reduces to ";
+      engine.print(engine.red(a));
+      std::cout << std::endl;
+    }
+    if(arr[0].compare("MIX") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      engine.print(a);
+      std::cout << " as mixed is ";
+      engine.print(engine.mix(a));
+      std::cout << std::endl;
+    }
+    if(arr[0].compare("UNM") == 0){
+      std::queue<Fraction> pair = parseMixedFractions(arr);
+      Fraction a = pair.front();
+      engine.print(a);
+      std::cout << " as improper is ";
+      engine.print(engine.unm(a));
+      std::cout << std::endl;
+    } 
+    
 
   }
+
 
   std::cout << "Exiting...\n";
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
