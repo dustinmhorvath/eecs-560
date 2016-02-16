@@ -1,3 +1,11 @@
+/*
+ * Dustin Horvath
+ * 2729265
+ * EECS 560
+ * Fraction operation program
+ *
+ *
+ */
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -200,11 +208,165 @@ std::queue<Fraction> parseMixedFractions(std::string* input){
   return list;
 }
 
+void runCommand(std::string arr[]){
+  FractionEngine engine = FractionEngine();
+  if(arr[0].compare("ADD") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    pair.pop();
+    Fraction b = pair.front();
+    engine.print(a);
+    std::cout << " + ";
+    engine.print(b);
+    std::cout << " = ";
+    engine.print(engine.add(a,b));
+    std::cout << std::endl;
+  }
+  if(arr[0].compare("SUB") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    pair.pop();
+    Fraction b = pair.front();
+    engine.print(a);
+    std::cout << " - ";
+    engine.print(b);
+    std::cout << " = ";
+    engine.print(engine.sub(a,b));
+    std::cout << std::endl;
+  }
+  if(arr[0].compare("XADD") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    pair.pop();
+    Fraction b = pair.front();
+    engine.print(a);
+    std::cout << " + ";
+    engine.print(b);
+    std::cout << " = ";
+    engine.print(engine.xadd(a,b));
+    std::cout << std::endl;
+  }
+  if(arr[0].compare("MUL") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    pair.pop();
+    Fraction b = pair.front();
+    engine.print(a);
+    std::cout << " * ";
+    engine.print(b);
+    std::cout << " = ";
+    engine.print(engine.mul(a,b));
+    std::cout << std::endl;
+
+  }
+  if(arr[0].compare("DIV") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    pair.pop();
+    Fraction b = pair.front();
+    engine.print(a);
+    std::cout << " / ";
+    engine.print(b);
+    std::cout << " = ";
+    engine.print(engine.div(a,b));
+    std::cout << std::endl;
+  }
+  if(arr[0].compare("XDIV") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    pair.pop();
+    Fraction b = pair.front();
+    engine.print(a);
+    std::cout << " / ";
+    engine.print(b);
+    std::cout << " = ";
+    engine.print(engine.xdiv(a,b));
+    std::cout << std::endl;
+
+  }
+  if(arr[0].compare("REC") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    engine.print(a);
+    std::cout << " inverts to ";
+    engine.print(engine.rec(a));
+    std::cout << std::endl;
+
+  }
+  if(arr[0].compare("RED") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    engine.print(a);
+    std::cout << " reduces to ";
+    engine.print(engine.red(a));
+    std::cout << std::endl;
+  }
+  if(arr[0].compare("MIX") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    engine.print(a);
+    std::cout << " as mixed is ";
+    engine.print(engine.mix(a));
+    std::cout << std::endl;
+  }
+  if(arr[0].compare("UNM") == 0){
+    std::queue<Fraction> pair = parseMixedFractions(arr);
+    Fraction a = pair.front();
+    engine.print(a);
+    std::cout << " as improper is ";
+    engine.print(engine.unm(a));
+    std::cout << std::endl;
+  } 
+  if(arr[0].compare("AMIX") == 0){
+    bool fail = false;
+    for(int i = 1; i < 7; i++){
+      if(!isInteger(arr[i])){
+        fail = true;
+      }
+    }
+    if(!fail){
+      std::string list1[2] = {arr[2], arr[3]};
+      std::string* firstlist = list1;
+      std::string list2[2] = {arr[5], arr[6]};
+      std::string* secondlist = list2;
+
+      int whole1 = atoi(arr[1].c_str());
+      int whole2 = atoi(arr[4].c_str());
+
+      Fraction frac1 = Fraction(atoi(arr[2].c_str()), atoi(arr[3].c_str()));
+      Fraction frac2 = Fraction(atoi(arr[5].c_str()), atoi(arr[6].c_str()));
+
+      std::cout << whole1 << " ";
+      engine.print(frac1);
+      std::cout << " + " << whole2 << " ";
+      engine.print(frac2);
+      std::cout << " = ";
+
+      engine.print(engine.amix(whole1, frac1, whole2, frac2));
+      std::cout << std::endl;
+    }
+  }
+  if(arr[0].compare("LESS") == 0){
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.front();
+    pair.pop();
+    Fraction b = pair.front();
+    std::cout << "Of fractions ";
+    engine.print(a);
+    std::cout << " and ";
+    engine.print(b);
+    std::cout << ", ";
+    engine.print(engine.less(a,b));
+    std::cout << " is less.";
+    std::cout << std::endl;
+
+  }
+}
+
 int main(){
 
   std::ifstream file("input.txt");
   std::string line;
-  FractionEngine engine = FractionEngine();
 
   while(std::getline(file, line)){
     std::string arr[10];
@@ -214,161 +376,8 @@ int main(){
       iss >> arr[i];
       i++;
     }
-    if(arr[0].compare("ADD") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      pair.pop();
-      Fraction b = pair.front();
-      engine.print(a);
-      std::cout << " + ";
-      engine.print(b);
-      std::cout << " = ";
-      engine.print(engine.add(a,b));
-      std::cout << std::endl;
-
-    }
-    if(arr[0].compare("SUB") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      pair.pop();
-      Fraction b = pair.front();
-      engine.print(a);
-      std::cout << " - ";
-      engine.print(b);
-      std::cout << " = ";
-      engine.print(engine.sub(a,b));
-      std::cout << std::endl;
-
-    }
-    if(arr[0].compare("XADD") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      pair.pop();
-      Fraction b = pair.front();
-      engine.print(a);
-      std::cout << " + ";
-      engine.print(b);
-      std::cout << " = ";
-      engine.print(engine.xadd(a,b));
-      std::cout << std::endl;
-    }
-    if(arr[0].compare("MUL") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      pair.pop();
-      Fraction b = pair.front();
-      engine.print(a);
-      std::cout << " * ";
-      engine.print(b);
-      std::cout << " = ";
-      engine.print(engine.mul(a,b));
-      std::cout << std::endl;
-
-    }
-    if(arr[0].compare("DIV") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      pair.pop();
-      Fraction b = pair.front();
-      engine.print(a);
-      std::cout << " / ";
-      engine.print(b);
-      std::cout << " = ";
-      engine.print(engine.div(a,b));
-      std::cout << std::endl;
-    }
-    if(arr[0].compare("XDIV") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      pair.pop();
-      Fraction b = pair.front();
-      engine.print(a);
-      std::cout << " / ";
-      engine.print(b);
-      std::cout << " = ";
-      engine.print(engine.xdiv(a,b));
-      std::cout << std::endl;
-
-    }
-    if(arr[0].compare("REC") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      engine.print(a);
-      std::cout << " inverts to ";
-      engine.print(engine.rec(a));
-      std::cout << std::endl;
-
-    }
-    if(arr[0].compare("RED") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      engine.print(a);
-      std::cout << " reduces to ";
-      engine.print(engine.red(a));
-      std::cout << std::endl;
-    }
-    if(arr[0].compare("MIX") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      engine.print(a);
-      std::cout << " as mixed is ";
-      engine.print(engine.mix(a));
-      std::cout << std::endl;
-    }
-    if(arr[0].compare("UNM") == 0){
-      std::queue<Fraction> pair = parseMixedFractions(arr);
-      Fraction a = pair.front();
-      engine.print(a);
-      std::cout << " as improper is ";
-      engine.print(engine.unm(a));
-      std::cout << std::endl;
-    } 
-    if(arr[0].compare("AMIX") == 0){
-      bool fail = false;
-      for(int i = 1; i < 7; i++){
-        if(!isInteger(arr[i])){
-          fail = true;
-        }
-      }
-      if(!fail){
-        std::string list1[2] = {arr[2], arr[3]};
-        std::string* firstlist = list1;
-        std::string list2[2] = {arr[5], arr[6]};
-        std::string* secondlist = list2;
-
-        int whole1 = atoi(arr[1].c_str());
-        int whole2 = atoi(arr[4].c_str());
-
-        Fraction frac1 = Fraction(atoi(arr[2].c_str()), atoi(arr[3].c_str()));
-        Fraction frac2 = Fraction(atoi(arr[5].c_str()), atoi(arr[6].c_str()));
-
-        std::cout << whole1 << " ";
-        engine.print(frac1);
-        std::cout << " + " << whole2 << " ";
-        engine.print(frac2);
-        std::cout << " = ";
-
-        engine.print(engine.amix(whole1, frac1, whole2, frac2));
-        std::cout << std::endl;
-      }
-    }
-    if(arr[0].compare("LESS") == 0){
-      std::queue<Fraction> pair = parseFractionPairs(arr);
-      Fraction a = pair.front();
-      pair.pop();
-      Fraction b = pair.front();
-      std::cout << "Of fractions ";
-      engine.print(a);
-      std::cout << " and ";
-      engine.print(b);
-      std::cout << ", ";
-      engine.print(engine.less(a,b));
-      std::cout << " is less.";
-      std::cout << std::endl;
-
-    }
+    runCommand(arr);
   }
-
 
   std::cout << "Exiting...\n";
   return 0;
