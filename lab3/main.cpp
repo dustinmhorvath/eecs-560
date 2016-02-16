@@ -35,7 +35,7 @@ int main(){
   srand (20);
 
 
-  int size = 200;
+  int size = 200000;
   int l_bound = -40000;
   int u_bound = 40000;
   double* arr = new double[size];
