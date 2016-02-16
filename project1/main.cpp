@@ -323,7 +323,35 @@ int main(){
       engine.print(engine.unm(a));
       std::cout << std::endl;
     } 
-    
+    if(arr[0].compare("AMIX") == 0){
+      bool fail = false;
+      for(int i = 1; i < 7; i++){
+        if(!isInteger(arr[i])){
+          fail = true;
+        }
+      }
+      if(!fail){
+        std::string list1[2] = {arr[2], arr[3]};
+        std::string* firstlist = list1;
+        std::string list2[2] = {arr[5], arr[6]};
+        std::string* secondlist = list2;
+
+        int whole1 = atoi(arr[1].c_str());
+        int whole2 = atoi(arr[4].c_str());
+
+        Fraction frac1 = Fraction(atoi(arr[2].c_str()), atoi(arr[3].c_str()));
+        Fraction frac2 = Fraction(atoi(arr[5].c_str()), atoi(arr[6].c_str()));
+
+        std::cout << whole1 << " ";
+        engine.print(frac1);
+        std::cout << " + " << whole2 << " ";
+        engine.print(frac2);
+        std::cout << " = ";
+
+        engine.print(engine.amix(whole1, frac1, whole2, frac2));
+        std::cout << std::endl;
+      }
+    }
 
   }
 
