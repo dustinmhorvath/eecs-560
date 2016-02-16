@@ -352,7 +352,21 @@ int main(){
         std::cout << std::endl;
       }
     }
+    if(arr[0].compare("LESS") == 0){
+      std::queue<Fraction> pair = parseFractionPairs(arr);
+      Fraction a = pair.front();
+      pair.pop();
+      Fraction b = pair.front();
+      std::cout << "Of fractions ";
+      engine.print(a);
+      std::cout << " and ";
+      engine.print(b);
+      std::cout << ", ";
+      engine.print(engine.less(a,b));
+      std::cout << " is less.";
+      std::cout << std::endl;
 
+    }
   }
 
 
