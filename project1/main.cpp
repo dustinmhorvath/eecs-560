@@ -128,14 +128,21 @@ public:
   Fraction div(Fraction a, Fraction b){
     a = unm(a);
     b = unm(b);
-    Fraction x = red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num));
-    return x;
+    if(b.m_den == 0){
+      std::cout << "ERR: DIVBY0\n";
+      return a;
+    }
+    else{
+
+      Fraction x = red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num));
+      return x;
+    }
   }
 
   Fraction xdiv(Fraction a, Fraction b){
     a = unm(a);
     b = unm(b);
-    Fraction x = mix(red(Fraction(a.m_num * b.m_den, a.m_den * b.m_num)));
+    Fraction x = mix(div(a, b));
     return x;
   }
 
