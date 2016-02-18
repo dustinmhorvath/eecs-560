@@ -388,7 +388,7 @@ int main(){
   std::cout << "Printing AVL level order:\n";
   tree.printLevelOrder();
   
-  tree.remove("Place1");
+  tree.remove("Otherplace");
   std::cout << "Printing AVL level order:\n";
   tree.printLevelOrder();
 
