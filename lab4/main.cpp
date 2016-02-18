@@ -4,45 +4,7 @@
 #include <sstream>
 #include <string>
 
-class Node{
-public:  
-  int key;
-  char height;
-  Node* left;
-  Node* right;
 
-  Node(int k){
-    key = k;
-    left = nullptr;
-    right = nullptr;
-    height = 1;
-  }
-};
-
-
-char height(Node* n){
-  if(n != nullptr){
-    return n -> height;
-  }
-  else{
-    return 0;
-  }
-}
-
-int balancefactor(Node* n){
-  return height(n -> right) - height(n -> left);
-}
-
-void fixheight(Node* n){
-  char leftheight = height(n -> left);
-  char rightheight = height(n -> right);
-  if(leftheight > rightheight){
-    n -> height = leftheight + 1;
-  }
-  else{
-    n -> height = rightheight + 1;
-  }
-}
 
 
 
@@ -88,6 +50,20 @@ public:
       m_arr[i+2] = m_arr[m_length - 1];
       m_length -= 3;
     }
+  }
+
+  void remove(int x, int y){
+    int i = 0;
+    std::string xs = std::to_string(x);
+    std::string ys = std::to_string(y);
+    while(m_arr[i].compare(xs) != 0 && m_arr[i+1].compare(ys) != 0 && i < m_length - 1){
+      i++;
+    }
+
+    m_arr[i-1] = m_arr[m_length - 3];
+    m_arr[i] = m_arr[m_length - 2];
+    m_arr[i+1] = m_arr[m_length - 1];
+    m_length -= 3;
 
 
   }
@@ -114,11 +90,10 @@ int main(){
   }
 
   la.print();
-  la.remove("Otherplace");
+//  la.remove("Otherplace");
+
+  la.remove(34, 76);
   la.print();
-
-
-
 
   std::cout << "Exiting...\n";
   return 0;
