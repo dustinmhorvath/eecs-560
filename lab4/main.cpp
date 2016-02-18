@@ -8,21 +8,27 @@
 class Node {
 public:
   int m_height;
-  int m_value;
+  std::string m_name;
+  int m_x;
+  int m_y;
   Node* m_left;
   Node* m_right;
 
   Node(){
     m_left = nullptr;
     m_right = nullptr;
-    m_value = 0;
+    m_name = "";
+    m_x = 0;
+    m_y = 0;
     m_height = 0;
   }
 
-  Node(int n){
+  Node(std::string name, int x_in, int y_in){
     m_left = nullptr;
     m_right = nullptr;
-    m_value = n;
+    m_name = name;
+    m_x = x_in;
+    m_y = y_in;
     m_height = 0;
   }
 };
@@ -39,8 +45,8 @@ public:
     return m_root == nullptr;
   }
 
-  void insert(int m_value){
-    m_root = insert(m_value, m_root);
+  void insert(std::string m_name, int x, int y){
+    m_root = insert(m_name, x, y, m_root);
   }
 
   int height(Node* node){
@@ -66,19 +72,19 @@ public:
    * Post: Adds a new node containing "value" to the tree.
    * Return: Node pointer
    */
-  Node* insert(int value, Node* node){
+  Node* insert(std::string name, int x, int y, Node* node){
     // If tree is empty, return
     if (!node){
-      node = new Node(value);
+      node = new Node(name, x, y);
     }
-    // Compare 'value' to m_value inside node, then pick which subtree to put
+    // Compare 'value' to m_name inside node, then pick which subtree to put
     // it in.
-    else if (value < node -> m_value){
-      node -> m_left = insert(value, node -> m_left);
+    else if (name < node -> m_name){
+      node -> m_left = insert(name, x, y, node -> m_left);
       // Compare subtree heights. If more then 1 height difference, move
       // subtrees so that that's not the case.
       if (height(node -> m_left) - height(node -> m_right) == 2){
-        if (value < node -> m_left -> m_value){
+        if (name < node -> m_left -> m_name){
           node = switchWithLeft(node);
         }
         else{
@@ -86,10 +92,10 @@ public:
         }
       }
     }
-    else if (value > node -> m_value){
-      node -> m_right = insert(value, node -> m_right);
+    else if (name > node -> m_name){
+      node -> m_right = insert(name, x, y, node -> m_right);
       if (height(node -> m_right) - height(node -> m_left) == 2){
-        if (value > node -> m_right -> m_value){
+        if (name > node -> m_right -> m_name){
           node = switchWithRight(node);
         }
         else{
@@ -100,6 +106,93 @@ public:
 
     node -> m_height = max(height(node -> m_left), height(node -> m_right)) + 1;
     return node;
+  }
+
+  Node* remove(std::string name){
+    return remove(m_root, name);
+  }
+
+  Node* remove(Node* root, std::string name){
+
+    if(root == nullptr){
+      return root;
+    }
+    if(name < root -> m_name ){
+      root -> m_left = remove(root -> m_left, name);
+    }
+    else if(name > root -> m_name ){
+      root -> m_right = remove(root -> m_right, name);
+    }
+
+    else{
+      if( (root -> m_left == nullptr) || (root -> m_right == nullptr) ){
+        Node* temp;
+        if(root -> m_left != nullptr){
+          temp = root -> m_left;
+        }
+        else{
+          temp = root -> m_right;
+        }
+
+        if(temp == nullptr){
+          temp = root;
+          root = nullptr;
+        }
+        else
+          *root = *temp;
+      }
+      else{
+        Node* temp = minValueNode(root -> m_right);
+
+        root -> m_name = temp -> m_name;
+
+        root -> m_right = remove(root -> m_right, temp -> m_name);
+      }
+    }
+
+    if(root == NULL){
+      return root;
+    }
+
+    root -> m_height = max(height(root -> m_left), height(root -> m_right)) + 1;
+    int balance = getBalance(root);
+
+    if(balance > 1 && getBalance(root -> m_left) >= 0)
+      return switchWithRight(root);
+
+    if(balance > 1 && getBalance(root->m_left) < 0)
+    {
+      root -> m_left =  switchWithLeft(root -> m_left);
+      return switchWithRight(root);
+    }
+
+    if(balance < -1 && getBalance(root->m_right) <= 0)
+      return switchWithLeft(root);
+
+    if(balance < -1 && getBalance(root->m_right) > 0)
+    {
+      root->m_right = switchWithRight(root->m_right);
+      return switchWithLeft(root);
+    }
+
+    return root;
+  }
+
+  Node* minValueNode(Node* node){
+    struct Node* current = node;
+
+    /* loop down to find the leftmost leaf */
+    while (current->m_left != NULL)
+      current = current->m_left;
+
+    return current;
+  }
+
+  int getBalance(Node* n){
+    if (n == nullptr){
+      return 0;
+    }
+    return height(n->m_left) - height(n->m_right);
   }
 
   /*
@@ -154,28 +247,7 @@ public:
     return switchWithRight(node);
   }
 
-  // I added this because I needed to print all the values in the tree. It was just by
-  //  coincidence that it happened to be pre-order.
-  void preOrderHelper(Node* subtree){
-    if(subtree != nullptr){
-      std::cout << subtree -> m_value << " ";
-      preOrderHelper(subtree -> m_left);
-      preOrderHelper(subtree -> m_right);
-    }
-  }
 
-  /*
-   * Pre: BST constructed
-   * Post: Calls preOrderHelper with m_root to print out values
-   * Return: none
-   * @note: This function is to abstract the node argument from the caller.
-   * Otherwise, they'd have to call it passing the root node every time they
-   * print, because preOrderHelper is recursive.
-   */
-  void printPreOrder(){
-    preOrderHelper(m_root);
-    std::cout << std::endl;
-  }
 
   /*
    * Pre: BST constructed
@@ -201,7 +273,7 @@ public:
       while (nodeCount > 0){
         // Store so we can get value
         Node* temp = q.peekFront();
-        std::cout << temp -> m_value << " ";
+        std::cout << temp -> m_name << " " << temp -> m_x << " " << temp -> m_y << " ";
         // Pop the front of the queue
         q.dequeue();
         // Push on any children
@@ -288,6 +360,8 @@ public:
 
 int main(){
 
+  BinarySearchTree tree = BinarySearchTree();
+
   LocationArray la = LocationArray();
 
   std::ifstream file("data.txt");
@@ -301,14 +375,22 @@ int main(){
       iss >> temp_arr[i];
       i++;
     }
+    tree.insert(temp_arr[0], atoi(temp_arr[1].c_str()), atoi(temp_arr[2].c_str()));
     la.insert(temp_arr);
   }
 
+
+  std::cout << "Printing array: \n";
   la.print();
   //  la.remove("Otherplace");
+  std::cout << std::endl;
 
-  la.remove(34, 76);
-  la.print();
+  std::cout << "Printing AVL level order:\n";
+  tree.printLevelOrder();
+  
+  tree.remove("Place1");
+  std::cout << "Printing AVL level order:\n";
+  tree.printLevelOrder();
 
   std::cout << "Exiting...\n";
   return 0;
