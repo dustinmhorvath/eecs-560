@@ -247,6 +247,31 @@ public:
     return switchWithRight(node);
   }
 
+  // I added this because I needed to print all the values in the tree. It was just by
+  //  coincidence that it happened to be pre-order.
+  void findByCoordHelper(Node* subtree, int x, int y){
+    if(subtree != nullptr){
+      if(subtree -> m_x == x && subtree -> m_y == y){
+        std::cout << subtree -> m_name << " " << subtree -> m_x << " " << subtree -> m_y << " ";
+      }
+      findByCoordHelper(subtree -> m_left, x, y);
+      findByCoordHelper(subtree -> m_right, x, y);
+      
+    }
+  }
+
+  /*
+   * Pre: BST constructed
+   * Post: Calls preOrderHelper with m_root to print out values
+   * Return: none
+   * @note: This function is to abstract the node argument from the caller.
+   * Otherwise, they'd have to call it passing the root node every time they
+   * print, because preOrderHelper is recursive.
+   */
+  void findByCoord(int x, int y){
+    findByCoordHelper(m_root, x, y);
+    std::cout << std::endl;
+  }
 
 
   /*
@@ -387,10 +412,13 @@ int main(){
 
   std::cout << "Printing AVL level order:\n";
   tree.printLevelOrder();
-  
-  tree.remove("Otherplace");
-  std::cout << "Printing AVL level order:\n";
-  tree.printLevelOrder();
+
+  //tree.remove("Otherplace");
+  //std::cout << "Printing AVL level order:\n";
+  //tree.printLevelOrder();
+
+  std::cout << "Looking for 45 78\n";
+  tree.findByCoord(23, 43);
 
   std::cout << "Exiting...\n";
   return 0;
