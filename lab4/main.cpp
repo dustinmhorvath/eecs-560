@@ -1,3 +1,10 @@
+/*
+ * Dustin Horvath
+ * 2729265
+ * EECS 560 Lab 4
+ * 2/20/16
+ *
+ */
 
 #include <iostream>
 #include <fstream>
@@ -298,16 +305,28 @@ public:
       while (nodeCount > 0){
         // Store so we can get value
         Node* temp = q.peekFront();
-        std::cout << temp -> m_name << " " << temp -> m_x << " " << temp -> m_y << " ";
+        std::cout << temp -> m_name << " ";
+        if(temp -> m_x != -111 && temp -> m_y != -111){
+          std::cout << temp -> m_x << " " << temp -> m_y << " ";
+        }
         // Pop the front of the queue
         q.dequeue();
         // Push on any children
         if (temp -> m_left){
           q.enqueue(temp -> m_left);
         }
+        else if((temp -> m_name).compare("*") != 0){
+          temp -> m_left = new Node("*", -111, -111);
+          q.enqueue(temp -> m_left);
+        }
         if (temp -> m_right){
           q.enqueue(temp -> m_right);
         }
+        else if((temp -> m_name).compare("*") != 0){
+          temp -> m_right = new Node("*", -111, -111);
+          q.enqueue(temp -> m_right);
+        }
+
         nodeCount--;
       }
       std::cout << std::endl;
@@ -405,20 +424,38 @@ int main(){
   }
 
 
-  std::cout << "Printing array: \n";
+  int ex_x = 23;
+  int ex_y = 43;
+  std::string toremove = "Derptown";
+
+  std::cout << "Printing array: \n\n";
   la.print();
-  //  la.remove("Otherplace");
+  
+  std::cout << "\nRemoving " << ex_x << " " << ex_y << "\n";
+  la.remove(ex_x, ex_y);
+
+  std::cout << "Removing " << toremove << "...\n";
+  la.remove(toremove);
   std::cout << std::endl;
 
-  std::cout << "Printing AVL level order:\n";
+  std::cout << "Printing array: \n\n";
+  la.print();
+  
+
+
+  std::cout << "\n\nPrinting AVL level order:\n\n";
   tree.printLevelOrder();
 
-  //tree.remove("Otherplace");
-  //std::cout << "Printing AVL level order:\n";
-  //tree.printLevelOrder();
+  std::cout << "\nRemoving " << toremove << "...\n";
 
-  std::cout << "Looking for 45 78\n";
-  tree.findByCoord(23, 43);
+  tree.remove(toremove);
+  std::cout << "Printing AVL level order:\n\n";
+  tree.printLevelOrder();
+
+  std::cout << "Note: this printing extra coordinates has something to do\nwith the asterisk null-pointer printing implementation\nI'm using, not the deletion function. It's fine if I comment out the asterisk business.\n";
+
+  std::cout << "\nRemoving " << ex_x << " " << ex_y << "\n";
+  tree.findByCoord(ex_x, ex_y);
 
   std::cout << "Exiting...\n";
   return 0;
