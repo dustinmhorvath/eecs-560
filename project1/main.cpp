@@ -40,6 +40,10 @@ public:
     m_den = c;
   }
 
+  Fraction(){
+    //Use with caution
+  }
+
 };
 
 class FractionEngine {
@@ -186,6 +190,15 @@ public:
     else return b;
   }
 
+  bool checkLess(Fraction a, Fraction b){
+    a = unm(a);
+    b = unm(b);
+    if((double)a.m_num/a.m_den <= (double)b.m_num/b.m_den){
+      return true;
+    }
+    else return false;
+  }
+
 };
 
 inline bool isInteger(const std::string & s){
@@ -198,11 +211,17 @@ inline bool isInteger(const std::string & s){
 std::queue<Fraction> parseFractionPairs(std::string* input){
   std::queue<Fraction> list;
   int i = 1;
-  while(isInteger(input[i]) && isInteger(input[i + 1])){
-    list.push(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str())));
-    i += 2;
+  if(input[0].compare("SUM") == 0 || 
+    input[0].compare("SORT") == 0 ||
+    input[0].compare("MEAN") == 0
+    ){
+   i++;
   }
-  return list;
+    while(isInteger(input[i]) && isInteger(input[i + 1])){
+      list.push(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str())));
+      i += 2;
+    }
+    return list;
 }
 
 std::queue<Fraction> parseMixedFractions(std::string* input){
@@ -217,6 +236,91 @@ std::queue<Fraction> parseMixedFractions(std::string* input){
 
 void runCommand(std::string arr[]){
   FractionEngine engine = FractionEngine();
+  if(arr[0].compare("SUM") == 0){
+    int value = atoi(arr[1].c_str());
+    Fraction sum = Fraction(value, 1);
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    std::cout << value;
+    while(pair.size() > 0){
+      Fraction temp = pair.front();
+      std::cout << " + ";
+      engine.print(temp);
+      pair.pop();
+      sum = engine.add(sum, temp);
+    }
+    std::cout << " = ";
+    engine.print(sum);
+    std::cout << std::endl;
+  }
+
+  if(arr[0].compare("MEAN") == 0){
+    // Parse this crap into fractions, then pop it into an array because a
+    // queue is a pain in my KJHBFCKJHB
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    int pairlength = pair.size();
+    Fraction list[1 + pairlength];
+    list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
+    for(int i = 1; i <= pairlength; i++){
+      list[i] = pair.front();
+      pair.pop();
+    }
+
+    // Print the original order
+    for(int i = 0; i <= pairlength; i++){
+      engine.print(list[i]);
+      std::cout << " ";
+    }
+    std::cout << "has mean ";
+
+    Fraction sum = Fraction(0, 0, 1);
+    for (int i = 0 ; i <= pairlength; i++){
+      sum = engine.add(sum, list[i]);
+    }
+    Fraction avg = engine.div(sum, Fraction(pairlength + 1, 0, 1));
+    engine.print(avg);
+    std::cout << std::endl;
+  }
+
+  if(arr[0].compare("SORT") == 0){
+    // Parse this crap into fractions, then pop it into an array because a
+    // queue is a pain in my KJHBFCKJHB
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    int pairlength = pair.size();
+    Fraction list[1 + pairlength];
+    list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
+    for(int i = 1; i <= pairlength; i++){
+      list[i] = pair.front();
+      pair.pop();
+    }
+
+    // Print the original order
+    for(int i = 0; i <= pairlength; i++){
+      engine.print(list[i]);
+      std::cout << " ";
+    }
+    std::cout << "sorts to ";
+
+    // Bubblesort this broseph
+    for (int i = 0 ; i < pairlength; i++){
+      Fraction temp;
+      temp = list[i];
+      for (int j = 0 ; j < pairlength; j++){
+        if(!engine.checkLess(list[j],list[j+1])){
+          Fraction swap = list[j+1];
+          list[j+1] = list[j];
+          list[j] = swap;
+        }
+      }
+    }
+    
+    // Print it sorted
+    for(int i = 0; i <= pairlength; i++){
+      engine.print(list[i]);
+      std::cout << " ";
+    }
+    std::cout << std::endl;
+  }
+
   if(arr[0].compare("ADD") == 0){
     std::queue<Fraction> pair = parseFractionPairs(arr);
     Fraction a = pair.front();
@@ -376,7 +480,7 @@ int main(){
   std::string line;
 
   while(std::getline(file, line)){
-    std::string arr[10];
+    std::string arr[30];
     int i = 0;
     std::istringstream iss(line);
     while(iss.good()){
