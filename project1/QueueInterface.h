@@ -27,7 +27,6 @@ public:
 	virtual void dequeue() throw(PreconditionViolationException) = 0;
 	virtual T peekFront() const throw(PreconditionViolationException) = 0;
 	virtual int size() const = 0;
-	virtual void print() const = 0;
 	virtual bool operator < (const QueueInterface<T>& rhs) const = 0;
 	virtual bool operator > (const QueueInterface<T>& rhs) const = 0;
 	virtual bool operator >= (const QueueInterface<T>& rhs) const = 0;

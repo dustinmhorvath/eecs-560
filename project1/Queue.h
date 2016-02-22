@@ -67,13 +67,6 @@ public:
 	int size() const;
 
 	/*
-	/@pre requries queue object
-	/@post prints out each value in each object in the queue
-	/@return none
-	*/
-	void print() const;
-
-	/*
 	/@pre requires queue object
 	/@post none
 	/@returns bool if instance object length element is less than argument object length

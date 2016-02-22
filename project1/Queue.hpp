@@ -79,23 +79,7 @@ int Queue<T>::size() const{
   return m_length;
 }
 
-template <typename T>
-void Queue<T>::print() const{
-  BoxOfAnything<T>* tempPtr = nullptr;
-  if(!isEmpty()){
-    std::cout << m_front -> BoxOfAnything<T>::getValue();
-    tempPtr = m_front -> getPrevious();
-    while(tempPtr != nullptr){
-      std::cout << ",";
-      std::cout << (tempPtr -> BoxOfAnything<T>::getValue());
-      tempPtr = tempPtr -> getPrevious();
-    }
-  }
-  else{
-    std::cout << "Queue Empty" << std::endl;
 
-  }
-}
 
 template <typename T>
 bool Queue<T>::operator< (const QueueInterface<T>& rhs) const{

@@ -10,7 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <queue>
+#include "Queue.h"
 
 class Fraction {
 public:
@@ -223,29 +223,29 @@ inline bool isInteger(const std::string & s){
   return (*p == 0) ;
 }
 
-std::queue<Fraction> parseFractionPairs(std::string* input){
-  std::queue<Fraction> list;
+Queue<Fraction> parseFractionPairs(std::string* input){
+  Queue<Fraction> list;
   int i = 1;
   if(input[0].compare("SUM") == 0 || 
-    input[0].compare("SORT") == 0 ||
-    input[0].compare("MEDIAN") == 0 ||
-    input[0].compare("MEAN") == 0 ||
-    input[0].compare("MODE") == 0
+      input[0].compare("SORT") == 0 ||
+      input[0].compare("MEDIAN") == 0 ||
+      input[0].compare("MEAN") == 0 ||
+      input[0].compare("MODE") == 0
     ){
-   i++;
+    i++;
   }
-    while(isInteger(input[i]) && isInteger(input[i + 1])){
-      list.push(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str())));
-      i += 2;
-    }
-    return list;
+  while(isInteger(input[i]) && isInteger(input[i + 1])){
+    list.enqueue(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str())));
+    i += 2;
+  }
+  return list;
 }
 
-std::queue<Fraction> parseMixedFractions(std::string* input){
-  std::queue<Fraction> list;
+Queue<Fraction> parseMixedFractions(std::string* input){
+  Queue<Fraction> list;
   int i = 1;
   while(isInteger(input[i]) && isInteger(input[i + 1]) && isInteger(input[i + 2])){
-    list.push(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str()), atoi(input[i + 2].c_str())));
+    list.enqueue(Fraction(atoi(input[i].c_str()), atoi(input[i + 1].c_str()), atoi(input[i + 2].c_str())));
     i = i + 3;
   }
   return list;
@@ -256,13 +256,13 @@ void runCommand(std::string arr[]){
   if(arr[0].compare("SUM") == 0){
     int value = atoi(arr[1].c_str());
     Fraction sum = Fraction(value, 1);
-    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Queue<Fraction> pair = parseFractionPairs(arr);
     std::cout << value;
     while(pair.size() > 0){
-      Fraction temp = pair.front();
+      Fraction temp = pair.peekFront();
       std::cout << " + ";
       engine.print(temp);
-      pair.pop();
+      pair.dequeue();
       sum = engine.add(sum, temp);
     }
     std::cout << " = ";
@@ -271,15 +271,15 @@ void runCommand(std::string arr[]){
   }
 
   if(arr[0].compare("MEAN") == 0){
-    // Parse this crap into fractions, then pop it into an array because a
+    // Parse this crap into fractions, then dequeue it into an array because a
     // queue is a pain in my KJHBFCKJHB
-    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Queue<Fraction> pair = parseFractionPairs(arr);
     int pairlength = pair.size();
     Fraction list[1 + pairlength];
     list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
     for(int i = 1; i <= pairlength; i++){
-      list[i] = pair.front();
-      pair.pop();
+      list[i] = pair.peekFront();
+      pair.dequeue();
     }
 
     // Print the original order
@@ -297,24 +297,27 @@ void runCommand(std::string arr[]){
     engine.print(avg);
     std::cout << std::endl;
   }
+
   
+  Queue<Fraction> modes;
+
   if(arr[0].compare("MODE") == 0){
-    // Parse this crap into fractions, then pop it into an array because a
+    // Parse this crap into fractions, then dequeue it into an array because a
     // queue is a pain in my KJHBFCKJHB
-    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Queue<Fraction> pair = parseFractionPairs(arr);
     int pairlength = pair.size();
     Fraction list[1 + pairlength];
     list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
     for(int i = 1; i <= pairlength; i++){
-      list[i] = pair.front();
-      pair.pop();
+      list[i] = pair.peekFront();
+      pair.dequeue();
     }
 
-for(int i = 0; i <= pairlength; i++){
+    for(int i = 0; i <= pairlength; i++){
       engine.print(list[i]);
       std::cout << " ";
     }
-    std::cout << "has mode ";
+    std::cout << "has modes ";
 
     // Use the bubblesort algorithm again
     for (int i = 0 ; i < pairlength; i++){
@@ -331,35 +334,49 @@ for(int i = 0; i <= pairlength; i++){
 
     int counter = 1;
     int max = 0;
-    Fraction mode = list[0];
+    modes.enqueue(list[0]);
     for (int pass = 0; pass < pairlength - 1; pass++){
       if (engine.equals(list[pass],list[pass+1])){
         counter++;
         if ( counter > max ){
           max = counter;
-          mode = list[pass];
+          while(modes.m_length > 0){
+            modes.dequeue();
+          }
+          modes.enqueue(list[pass]);
+        }
+        else if(counter == max){
+          modes.enqueue(list[pass]);
         }
       } 
       else{
         counter = 1; // reset counter.
       }
     }
-    engine.print(mode);
+    //    engine.print(mode);
+
+  while(modes.m_length > 0){
+    engine.print(modes.peekFront());
+    std::cout << " ";
+    modes.dequeue();
+  }
+
+
     std::cout << "\n";
   }
 
 
 
   if(arr[0].compare("MEDIAN") == 0){
-    // Parse this crap into fractions, then pop it into an array because a
+    // Parse this crap into fractions, then dequeue it into an array because a
     // queue is a pain in my KJHBFCKJHB
-    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Queue<Fraction> pair = parseFractionPairs(arr);
     int pairlength = pair.size();
     Fraction list[1 + pairlength];
     list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
     for(int i = 1; i <= pairlength; i++){
-      list[i] = pair.front();
-      pair.pop();
+      list[i] = pair.peekFront();
+      pair.dequeue();
     }
 
     // Print the original order
@@ -368,7 +385,7 @@ for(int i = 0; i <= pairlength; i++){
       std::cout << " ";
     }
     std::cout << "has median ";
-    
+
     // Use the bubblesort algorithm again
     for (int i = 0 ; i < pairlength; i++){
       Fraction temp;
@@ -394,15 +411,15 @@ for(int i = 0; i <= pairlength; i++){
 
 
   if(arr[0].compare("SORT") == 0){
-    // Parse this crap into fractions, then pop it into an array because a
+    // Parse this crap into fractions, then dequeue it into an array because a
     // queue is a pain in my KJHBFCKJHB
-    std::queue<Fraction> pair = parseFractionPairs(arr);
+    Queue<Fraction> pair = parseFractionPairs(arr);
     int pairlength = pair.size();
     Fraction list[1 + pairlength];
     list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
     for(int i = 1; i <= pairlength; i++){
-      list[i] = pair.front();
-      pair.pop();
+      list[i] = pair.peekFront();
+      pair.dequeue();
     }
 
     // Print the original order
@@ -424,7 +441,7 @@ for(int i = 0; i <= pairlength; i++){
         }
       }
     }
-    
+
     // Print it sorted
     for(int i = 0; i <= pairlength; i++){
       engine.print(list[i]);
@@ -434,10 +451,10 @@ for(int i = 0; i <= pairlength; i++){
   }
 
   if(arr[0].compare("ADD") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
-    pair.pop();
-    Fraction b = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
+    pair.dequeue();
+    Fraction b = pair.peekFront();
     engine.print(a);
     std::cout << " + ";
     engine.print(b);
@@ -446,10 +463,10 @@ for(int i = 0; i <= pairlength; i++){
     std::cout << std::endl;
   }
   if(arr[0].compare("SUB") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
-    pair.pop();
-    Fraction b = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
+    pair.dequeue();
+    Fraction b = pair.peekFront();
     engine.print(a);
     std::cout << " - ";
     engine.print(b);
@@ -458,10 +475,10 @@ for(int i = 0; i <= pairlength; i++){
     std::cout << std::endl;
   }
   if(arr[0].compare("XADD") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
-    pair.pop();
-    Fraction b = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
+    pair.dequeue();
+    Fraction b = pair.peekFront();
     engine.print(a);
     std::cout << " + ";
     engine.print(b);
@@ -470,10 +487,10 @@ for(int i = 0; i <= pairlength; i++){
     std::cout << std::endl;
   }
   if(arr[0].compare("MUL") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
-    pair.pop();
-    Fraction b = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
+    pair.dequeue();
+    Fraction b = pair.peekFront();
     engine.print(a);
     std::cout << " * ";
     engine.print(b);
@@ -483,10 +500,10 @@ for(int i = 0; i <= pairlength; i++){
 
   }
   if(arr[0].compare("DIV") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
-    pair.pop();
-    Fraction b = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
+    pair.dequeue();
+    Fraction b = pair.peekFront();
     engine.print(a);
     std::cout << " / ";
     engine.print(b);
@@ -495,10 +512,10 @@ for(int i = 0; i <= pairlength; i++){
     std::cout << std::endl;
   }
   if(arr[0].compare("XDIV") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
-    pair.pop();
-    Fraction b = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
+    pair.dequeue();
+    Fraction b = pair.peekFront();
     engine.print(a);
     std::cout << " / ";
     engine.print(b);
@@ -508,8 +525,8 @@ for(int i = 0; i <= pairlength; i++){
 
   }
   if(arr[0].compare("REC") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
     engine.print(a);
     std::cout << " inverts to ";
     engine.print(engine.rec(a));
@@ -517,24 +534,24 @@ for(int i = 0; i <= pairlength; i++){
 
   }
   if(arr[0].compare("RED") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
     engine.print(a);
     std::cout << " reduces to ";
     engine.print(engine.red(a));
     std::cout << std::endl;
   }
   if(arr[0].compare("MIX") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
     engine.print(a);
     std::cout << " as mixed is ";
     engine.print(engine.mix(a));
     std::cout << std::endl;
   }
   if(arr[0].compare("UNM") == 0){
-    std::queue<Fraction> pair = parseMixedFractions(arr);
-    Fraction a = pair.front();
+    Queue<Fraction> pair = parseMixedFractions(arr);
+    Fraction a = pair.peekFront();
     engine.print(a);
     std::cout << " as improper is ";
     engine.print(engine.unm(a));
@@ -570,10 +587,10 @@ for(int i = 0; i <= pairlength; i++){
     }
   }
   if(arr[0].compare("LESS") == 0){
-    std::queue<Fraction> pair = parseFractionPairs(arr);
-    Fraction a = pair.front();
-    pair.pop();
-    Fraction b = pair.front();
+    Queue<Fraction> pair = parseFractionPairs(arr);
+    Fraction a = pair.peekFront();
+    pair.dequeue();
+    Fraction b = pair.peekFront();
     std::cout << "Of fractions ";
     engine.print(a);
     std::cout << " and ";
@@ -592,7 +609,7 @@ int main(){
   std::string line;
 
   while(std::getline(file, line)){
-    std::string arr[30];
+    std::string arr[50];
     int i = 0;
     std::istringstream iss(line);
     while(iss.good()){
