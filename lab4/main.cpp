@@ -305,27 +305,27 @@ public:
       while (nodeCount > 0){
         // Store so we can get value
         Node* temp = q.peekFront();
-        std::cout << temp -> m_name << " ";
-        if(temp -> m_x != -111 && temp -> m_y != -111){
+        std::cout << temp -> m_name << " " << temp -> m_x << " " << temp -> m_y << " ";
+/*        if(temp -> m_x != -111 && temp -> m_y != -111){
           std::cout << temp -> m_x << " " << temp -> m_y << " ";
-        }
+        }*/
         // Pop the front of the queue
         q.dequeue();
         // Push on any children
         if (temp -> m_left){
           q.enqueue(temp -> m_left);
         }
-        else if((temp -> m_name).compare("*") != 0){
+/*        else if((temp -> m_name).compare("*") != 0){
           temp -> m_left = new Node("*", -111, -111);
           q.enqueue(temp -> m_left);
-        }
+        }*/
         if (temp -> m_right){
           q.enqueue(temp -> m_right);
         }
-        else if((temp -> m_name).compare("*") != 0){
+/*        else if((temp -> m_name).compare("*") != 0){
           temp -> m_right = new Node("*", -111, -111);
           q.enqueue(temp -> m_right);
-        }
+        }*/
 
         nodeCount--;
       }
