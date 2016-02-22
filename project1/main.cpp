@@ -24,6 +24,12 @@ public:
       a = a * -1;
     }
 
+    if(b == 1){
+      m_whole = a;
+      m_num = 0;
+      m_den = 1;
+    }
+
     if(b != 0){
       m_whole = 0;
       m_num = a;
@@ -199,6 +205,15 @@ public:
     else return false;
   }
 
+  bool equals(Fraction a, Fraction b){
+    a = unm(a);
+    b = unm(b);
+    int new_denom = lcm(a, b);
+    a = expandDenominator(a, new_denom);
+    b = expandDenominator(b, new_denom);
+    return (a.m_num == b.m_num);
+  }
+
 };
 
 inline bool isInteger(const std::string & s){
@@ -213,8 +228,9 @@ std::queue<Fraction> parseFractionPairs(std::string* input){
   int i = 1;
   if(input[0].compare("SUM") == 0 || 
     input[0].compare("SORT") == 0 ||
+    input[0].compare("MEDIAN") == 0 ||
     input[0].compare("MEAN") == 0 ||
-    input[0].compare("MEDIAN") == 0
+    input[0].compare("MODE") == 0
     ){
    i++;
   }
@@ -281,6 +297,58 @@ void runCommand(std::string arr[]){
     engine.print(avg);
     std::cout << std::endl;
   }
+  
+  if(arr[0].compare("MODE") == 0){
+    // Parse this crap into fractions, then pop it into an array because a
+    // queue is a pain in my KJHBFCKJHB
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    int pairlength = pair.size();
+    Fraction list[1 + pairlength];
+    list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
+    for(int i = 1; i <= pairlength; i++){
+      list[i] = pair.front();
+      pair.pop();
+    }
+
+for(int i = 0; i <= pairlength; i++){
+      engine.print(list[i]);
+      std::cout << " ";
+    }
+    std::cout << "has mode ";
+
+    // Use the bubblesort algorithm again
+    for (int i = 0 ; i < pairlength; i++){
+      Fraction temp;
+      temp = list[i];
+      for (int j = 0 ; j < pairlength; j++){
+        if(!engine.checkLess(list[j],list[j+1])){
+          Fraction swap = list[j+1];
+          list[j+1] = list[j];
+          list[j] = swap;
+        }
+      }
+    }
+
+    int counter = 1;
+    int max = 0;
+    Fraction mode = list[0];
+    for (int pass = 0; pass < pairlength - 1; pass++){
+      if (engine.equals(list[pass],list[pass+1])){
+        counter++;
+        if ( counter > max ){
+          max = counter;
+          mode = list[pass];
+        }
+      } 
+      else{
+        counter = 1; // reset counter.
+      }
+    }
+    engine.print(mode);
+    std::cout << "\n";
+  }
+
+
 
   if(arr[0].compare("MEDIAN") == 0){
     // Parse this crap into fractions, then pop it into an array because a
