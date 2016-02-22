@@ -213,7 +213,8 @@ std::queue<Fraction> parseFractionPairs(std::string* input){
   int i = 1;
   if(input[0].compare("SUM") == 0 || 
     input[0].compare("SORT") == 0 ||
-    input[0].compare("MEAN") == 0
+    input[0].compare("MEAN") == 0 ||
+    input[0].compare("MEDIAN") == 0
     ){
    i++;
   }
@@ -280,6 +281,49 @@ void runCommand(std::string arr[]){
     engine.print(avg);
     std::cout << std::endl;
   }
+
+  if(arr[0].compare("MEDIAN") == 0){
+    // Parse this crap into fractions, then pop it into an array because a
+    // queue is a pain in my KJHBFCKJHB
+    std::queue<Fraction> pair = parseFractionPairs(arr);
+    int pairlength = pair.size();
+    Fraction list[1 + pairlength];
+    list[0]= Fraction(atoi(arr[1].c_str()), 0, 1);
+    for(int i = 1; i <= pairlength; i++){
+      list[i] = pair.front();
+      pair.pop();
+    }
+
+    // Print the original order
+    for(int i = 0; i <= pairlength; i++){
+      engine.print(list[i]);
+      std::cout << " ";
+    }
+    std::cout << "has median ";
+    
+    // Use the bubblesort algorithm again
+    for (int i = 0 ; i < pairlength; i++){
+      Fraction temp;
+      temp = list[i];
+      for (int j = 0 ; j < pairlength; j++){
+        if(!engine.checkLess(list[j],list[j+1])){
+          Fraction swap = list[j+1];
+          list[j+1] = list[j];
+          list[j] = swap;
+        }
+      }
+    }
+
+    // Average values if even number of arguments, else get middle
+    if((pairlength+1)%2 == 0){
+      engine.print(engine.div(engine.add(list[(pairlength+1)/2], list[(pairlength+1)/2 + 1]), Fraction(2, 0, 1)));
+    }
+    else{
+      engine.print(list[(pairlength+1)/2]);
+    }
+    std::cout << "\n";
+  }
+
 
   if(arr[0].compare("SORT") == 0){
     // Parse this crap into fractions, then pop it into an array because a
