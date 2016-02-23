@@ -604,8 +604,15 @@ void runCommand(std::string arr[]){
 }
 
 int main(){
+  std::string filename = "";
 
-  std::ifstream file("input.txt");
+  std::cout << "Input file of some sort? (default: input.txt): ";
+  std::cin >>std::noskipws>> filename;
+  if(filename.compare("") == 0){
+    filename = "input.txt";
+  }
+
+  std::ifstream file(filename);
   std::string line;
 
   while(std::getline(file, line)){
