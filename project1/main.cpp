@@ -84,10 +84,11 @@ public:
   }
 
   int lcm(Fraction a, Fraction b){
-    int m,n;
-    m=a.m_den;
-    n=b.m_den;
-    while(m!=n){
+    int m = a.m_den;
+    int n = b.m_den;
+    if(n == 1) return m;
+    if(m == 1) return n;
+    while(m != n){
       if(m < n){
         m = m + a.m_den;
       }
@@ -401,7 +402,9 @@ void runCommand(std::string arr[]){
 
     // Average values if even number of arguments, else get middle
     if((pairlength+1)%2 == 0){
-      engine.print(engine.div(engine.add(list[(pairlength+1)/2], list[(pairlength+1)/2 + 1]), Fraction(2, 0, 1)));
+      Fraction arg1 = engine.add(list[(pairlength+1)/2], list[(pairlength+1)/2 + 1]);
+      Fraction arg2 = Fraction(2, 1);
+      engine.print(engine.div(arg1, arg2));
     }
     else{
       engine.print(list[(pairlength+1)/2]);
