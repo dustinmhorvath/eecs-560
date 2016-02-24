@@ -4,7 +4,6 @@
  * EECS 560
  * Fraction operation program
  *
- *
  */
 #include <iostream>
 #include <fstream>
@@ -19,33 +18,39 @@ public:
   int m_whole;
 
   Fraction(int a, int b){
+    // Moves negatives to numerator
     if(b < 0){
       b = b * -1;
       a = a * -1;
     }
 
+    // Make pretty if whole number
     if(b == 1){
       m_whole = a;
       m_num = 0;
       m_den = 1;
     }
 
+    // Check if denominator is zero
     if(b != 0){
       m_whole = 0;
       m_num = a;
       m_den = b;
     }
     else{
-      // throw exception here
+      std::cout << "Your denominator is bad, and you should feel bad.\n";
+      exit;
     }
   }
 
+  // Overload for mixed numbers
   Fraction(int a, int b, int c){
     m_whole = a;
     m_num = b;
     m_den = c;
   }
 
+  // This is used for some array instantiation
   Fraction(){
     //Use with caution
   }
@@ -99,6 +104,7 @@ public:
     return m;
   }
 
+  // Make a Fraction's denominator equal to the integer parameter
   Fraction expandDenominator(Fraction a, int den){
     Fraction x = Fraction(a.m_num * den / a.m_den, den);
     return x;
@@ -115,6 +121,8 @@ public:
   }
 
   Fraction xadd(Fraction a, Fraction b){
+    a = unm(a);
+    b = unm(b);
     Fraction x = mix(red(add(a, b)));
     return x;
   }
@@ -197,6 +205,8 @@ public:
     else return b;
   }
 
+  // Returns a boolean true if the first is less than the second. More useful
+  // than just getting a fraction back as in 'less'
   bool checkLess(Fraction a, Fraction b){
     a = unm(a);
     b = unm(b);
@@ -206,6 +216,7 @@ public:
     else return false;
   }
 
+  // Helper function to check if two fractions are equal
   bool equals(Fraction a, Fraction b){
     a = unm(a);
     b = unm(b);
@@ -217,6 +228,9 @@ public:
 
 };
 
+
+// Mostly unnecessary, but checks if values are an integer so you can check
+// before casting to an int
 inline bool isInteger(const std::string & s){
   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
   char * p ;
@@ -224,6 +238,8 @@ inline bool isInteger(const std::string & s){
   return (*p == 0) ;
 }
 
+// Parses an array of (int)strings into numerators and denominators, and
+// returns a queue of Fractions. Check for integer value as first item.
 Queue<Fraction> parseFractionPairs(std::string* input){
   Queue<Fraction> list;
   int i = 1;
@@ -242,6 +258,8 @@ Queue<Fraction> parseFractionPairs(std::string* input){
   return list;
 }
 
+// Does the same thing as above, but takes the strings as trios and makes
+// mixed numbers.
 Queue<Fraction> parseMixedFractions(std::string* input){
   Queue<Fraction> list;
   int i = 1;
@@ -252,13 +270,18 @@ Queue<Fraction> parseMixedFractions(std::string* input){
   return list;
 }
 
+// Massive helper function that just contains all the operations in the input
+// file. Checks first string in array passed (from input line parsing) to
+// determine the command required.
 void runCommand(std::string arr[]){
   FractionEngine engine = FractionEngine();
   if(arr[0].compare("SUM") == 0){
-    int value = atoi(arr[1].c_str());
+   int value = atoi(arr[1].c_str());
+    // Pretend the integer is a fraction over 1.
     Fraction sum = Fraction(value, 1);
     Queue<Fraction> pair = parseFractionPairs(arr);
     std::cout << value;
+    // Dequeue and add em all up.
     while(pair.size() > 0){
       Fraction temp = pair.peekFront();
       std::cout << " + ";
@@ -272,8 +295,6 @@ void runCommand(std::string arr[]){
   }
 
   if(arr[0].compare("MEAN") == 0){
-    // Parse this crap into fractions, then dequeue it into an array because a
-    // queue is a pain in my KJHBFCKJHB
     Queue<Fraction> pair = parseFractionPairs(arr);
     int pairlength = pair.size();
     Fraction list[1 + pairlength];
@@ -303,8 +324,6 @@ void runCommand(std::string arr[]){
   Queue<Fraction> modes;
 
   if(arr[0].compare("MODE") == 0){
-    // Parse this crap into fractions, then dequeue it into an array because a
-    // queue is a pain in my KJHBFCKJHB
     Queue<Fraction> pair = parseFractionPairs(arr);
     int pairlength = pair.size();
     Fraction list[1 + pairlength];
@@ -340,12 +359,16 @@ void runCommand(std::string arr[]){
       if (engine.equals(list[pass],list[pass+1])){
         counter++;
         if ( counter > max ){
+          // If the counter exceeds the max, dump all the modes on the queue
+          // and push on the new max.
           max = counter;
           while(modes.m_length > 0){
             modes.dequeue();
           }
           modes.enqueue(list[pass]);
         }
+        // If the counter equals the max, then it's a *new* mode that has as
+        // many as the current max, so push it on.
         else if(counter == max){
           modes.enqueue(list[pass]);
         }
@@ -356,13 +379,12 @@ void runCommand(std::string arr[]){
     }
     //    engine.print(mode);
 
+  // Print out all them sexy modes
   while(modes.m_length > 0){
     engine.print(modes.peekFront());
     std::cout << " ";
     modes.dequeue();
   }
-
-
     std::cout << "\n";
   }
 
@@ -626,6 +648,10 @@ int main(){
       iss >> arr[i];
       i++;
     }
+    // Here, runcommand takes the array of strings that represent the input
+    // line from the file. This array is easier to pass around than a single
+    // string of words for the whole line. The commands within runcommand will
+    // take care of parsing the integers in the command into fractions.
     runCommand(arr);
   }
 
