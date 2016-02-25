@@ -425,6 +425,38 @@ public:
     }
 
   }
+  
+  void findByCoord(int x, int y){
+    int i = 2;
+    std::string xs = std::to_string(x);
+    std::string ys = std::to_string(y);
+    while((m_arr[i-1].compare(xs) != 0 || m_arr[i].compare(ys) != 0) && i < m_length){
+      //i++;
+      i += 3;
+    }
+    if(i == m_length){
+      std::cout << "Found no city at " << x << " " << y << "\n";
+    }
+    else{
+      std::cout << "Found " << m_arr[i-2] << " " << m_arr[i-1] << " " << m_arr[i] << "\n";
+    }
+
+  }
+  
+  void findWithinRadius(int x_in, int y_in, int radius){
+    int i = 1;
+    while(i < m_length){
+      double del_x = atoi(m_arr[i].c_str()) - (double)x_in;
+      double del_y = atoi(m_arr[i+1].c_str()) - (double)y_in;
+      double hyp = sqrt(pow(del_x,2) + pow(del_y,2));
+ 
+      if(hyp < radius){
+        std::cout << "Node " << m_arr[i-1] << " at (" << m_arr[i] << "," << m_arr[i+1] << ") within " << radius << " of (" << x_in << "," << y_in << "). Has hyp" << hyp << "\n";
+      }
+      i += 3;
+    }
+  }
+
 
 };
 
@@ -451,7 +483,10 @@ int main(){
   std::ifstream queryfile("input.txt");
   std::string line;
 
-  Queue<LocRadius> q;
+  Queue<LocRadius> arrayQueue;
+  Queue<LocRadius> treeQueue;
+
+
   while(std::getline(queryfile, line)){
     int temp_arr[3];
     int i = 0;
@@ -460,7 +495,8 @@ int main(){
       iss >> temp_arr[i];
       i++;
     }
-    q.enqueue(LocRadius(temp_arr[0], temp_arr[1], temp_arr[2]));
+    arrayQueue.enqueue(LocRadius(temp_arr[0], temp_arr[1], temp_arr[2]));
+    treeQueue.enqueue(LocRadius(temp_arr[0], temp_arr[1], temp_arr[2]));
   }
 
 
@@ -486,17 +522,28 @@ int main(){
 
   std::cout << "Printing array: \n\n";
   la.print();
-  
+
+  std::cout << "\nFinding all locations in array within radii...\n";
+  while(!arrayQueue.isEmpty()){
+    LocRadius tempLoc = arrayQueue.peekFront();
+    std::cout << "Searching near (" << tempLoc.m_x << "," << tempLoc.m_y << ")...\n";
+    la.findByCoord(tempLoc.m_x, tempLoc.m_y);
+    la.findWithinRadius(tempLoc.m_x, tempLoc.m_y, tempLoc.m_radius);
+    arrayQueue.dequeue();
+    std::cout << "\n";
+  }
   
 
   std::cout << "\n\nPrinting AVL level order:\n\n";
   tree.printLevelOrder();
 
-  std::cout << "\n";
-  while(!q.isEmpty()){
-    LocRadius tempLoc = q.peekFront();
+  std::cout << "\nFinding all locations in tree within radii...\n";
+  while(!treeQueue.isEmpty()){
+    LocRadius tempLoc = treeQueue.peekFront();
+    std::cout << "Searching near (" << tempLoc.m_x << "," << tempLoc.m_y << ")...\n";
+    tree.findByCoord(tempLoc.m_x, tempLoc.m_y);
     tree.findWithinRadius(tempLoc.m_x, tempLoc.m_y, tempLoc.m_radius);
-    q.dequeue();
+    treeQueue.dequeue();
   }
 
   std::cout << "Exiting...\n";
