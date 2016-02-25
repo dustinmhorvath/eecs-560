@@ -45,6 +45,9 @@ class BinarySearchTree {
 private:
   Node* m_root;
 public:
+  int comparisons = 0;
+  int buildcomparisons = 0;
+
   BinarySearchTree(){
     m_root = nullptr;
   }
@@ -58,6 +61,7 @@ public:
   }
 
   int height(Node* node){
+    buildcomparisons++;
     if(!node){
       return -1;
     }
@@ -67,6 +71,7 @@ public:
   }
 
   int max(int lhs, int rhs){
+    buildcomparisons++;
     if(lhs > rhs){
       return lhs;
     }
@@ -83,15 +88,19 @@ public:
   Node* insert(std::string name, int x, int y, Node* node){
     // If tree is empty, return
     if (!node){
+      buildcomparisons++;
       node = new Node(name, x, y);
     }
     // Compare 'value' to m_name inside node, then pick which subtree to put
     // it in.
     else if (name < node -> m_name){
+      buildcomparisons += 2;
       node -> m_left = insert(name, x, y, node -> m_left);
       // Compare subtree heights. If more then 1 height difference, move
       // subtrees so that that's not the case.
+      buildcomparisons++;
       if (height(node -> m_left) - height(node -> m_right) == 2){
+        buildcomparisons++;
         if (name < node -> m_left -> m_name){
           node = switchWithLeft(node);
         }
@@ -101,8 +110,11 @@ public:
       }
     }
     else if (name > node -> m_name){
+      buildcomparisons += 3;
       node -> m_right = insert(name, x, y, node -> m_right);
+      buildcomparisons++;
       if (height(node -> m_right) - height(node -> m_left) == 2){
+        buildcomparisons++;
         if (name > node -> m_right -> m_name){
           node = switchWithRight(node);
         }
@@ -122,19 +134,27 @@ public:
 
   Node* remove(Node* root, std::string name){
 
+    buildcomparisons++;
     if(root == nullptr){
       return root;
     }
+
     if(name < root -> m_name ){
+    buildcomparisons++;
       root -> m_left = remove(root -> m_left, name);
     }
     else if(name > root -> m_name ){
+      buildcomparisons += 2;
       root -> m_right = remove(root -> m_right, name);
     }
 
     else{
+      buildcomparisons += 2;
+
+      buildcomparisons++;
       if( (root -> m_left == nullptr) || (root -> m_right == nullptr) ){
         Node* temp;
+        buildcomparisons++;
         if(root -> m_left != nullptr){
           temp = root -> m_left;
         }
@@ -142,6 +162,7 @@ public:
           temp = root -> m_right;
         }
 
+        buildcomparisons++;
         if(temp == nullptr){
           temp = root;
           root = nullptr;
@@ -158,6 +179,7 @@ public:
       }
     }
 
+    buildcomparisons++;
     if(root == NULL){
       return root;
     }
@@ -165,20 +187,24 @@ public:
     root -> m_height = max(height(root -> m_left), height(root -> m_right)) + 1;
     int balance = getBalance(root);
 
-    if(balance > 1 && getBalance(root -> m_left) >= 0)
+    buildcomparisons++;
+    if(balance > 1 && getBalance(root -> m_left) >= 0){
       return switchWithRight(root);
+    }
 
-    if(balance > 1 && getBalance(root->m_left) < 0)
-    {
+    buildcomparisons++;
+    if(balance > 1 && getBalance(root->m_left) < 0){
       root -> m_left =  switchWithLeft(root -> m_left);
       return switchWithRight(root);
     }
 
-    if(balance < -1 && getBalance(root->m_right) <= 0)
+    buildcomparisons++;
+    if(balance < -1 && getBalance(root->m_right) <= 0){
       return switchWithLeft(root);
+    }
 
-    if(balance < -1 && getBalance(root->m_right) > 0)
-    {
+    buildcomparisons++;
+    if(balance < -1 && getBalance(root->m_right) > 0){
       root->m_right = switchWithRight(root->m_right);
       return switchWithLeft(root);
     }
@@ -190,13 +216,17 @@ public:
     struct Node* current = node;
 
     /* loop down to find the leftmost leaf */
-    while (current->m_left != NULL)
+    buildcomparisons++;
+    while (current->m_left != NULL){
+      buildcomparisons++;
       current = current->m_left;
+    }
 
     return current;
   }
 
   int getBalance(Node* n){
+    buildcomparisons++;
     if (n == nullptr){
       return 0;
     }
@@ -258,7 +288,9 @@ public:
   // I added this because I needed to print all the values in the tree. It was just by
   //  coincidence that it happened to be pre-order.
   void findByCoordHelper(Node* subtree, int x, int y){
+    comparisons++;
     if(subtree != nullptr){
+      comparisons++;
       if(subtree -> m_x == x && subtree -> m_y == y){
         std::cout << subtree -> m_name << " " << subtree -> m_x << " " << subtree -> m_y << " ";
       }
@@ -289,6 +321,7 @@ public:
    */
   void printLevelOrder(){
     // Exit if tree is empty
+    comparisons++;
     if (m_root == NULL) { return;}
     // Declare a queue
     Queue<Node*> q;
@@ -296,14 +329,19 @@ public:
     q.enqueue(m_root);
     // Count the rows
     int level = 0;
+    comparisons++;
     while (1){
+      comparisons++;
       int nodeCount = q.size();
       // Exit when queue empty
+      comparisons++;
       if (nodeCount == 0){
         break;
       }
       std::cout << "Level " << level << ": ";
+      comparisons++;
       while (nodeCount > 0){
+        comparisons++;
         // Store so we can get value
         Node* temp = q.peekFront();
         std::cout << temp -> m_name << " " << temp -> m_x << " " << temp -> m_y << " ";
@@ -313,6 +351,7 @@ public:
         // Pop the front of the queue
         q.dequeue();
         // Push on any children
+        comparisons++;
         if (temp -> m_left){
           q.enqueue(temp -> m_left);
         }
@@ -320,6 +359,7 @@ public:
           temp -> m_left = new Node("*", -111, -111);
           q.enqueue(temp -> m_left);
         }*/
+        comparisons++;
         if (temp -> m_right){
           q.enqueue(temp -> m_right);
         }
@@ -336,12 +376,14 @@ public:
   }
 
   void findWithinRadiusHelper(Node* subtree, int x_in, int y_in, int radius){
+    comparisons++;
     if(subtree != nullptr){
       double del_x = subtree -> m_x - (double)x_in;
       double del_y = subtree -> m_y - (double)y_in;
       double hyp = sqrt(pow(del_x,2) + pow(del_y,2));
+      comparisons++;
       if( hyp < radius ){
-        std::cout << "Node " << subtree -> m_name << " at (" << subtree->m_x << "," << subtree->m_y << ") within " << radius << " of (" << x_in << "," << y_in << "). Has hyp" << hyp << "\n";
+        std::cout << "Node " << subtree -> m_name << " at (" << subtree->m_x << "," << subtree->m_y << ") within " << radius << " of (" << x_in << "," << y_in << ") is " << hyp << " away.\n";
       }
       findWithinRadiusHelper(subtree -> m_left, x_in, y_in, radius);
       findWithinRadiusHelper(subtree -> m_right, x_in, y_in, radius);
@@ -370,6 +412,7 @@ class LocationArray{
   int m_length;
 
 public:
+  int comparisons = 0;
 
   LocationArray(){
     m_length = 0;
@@ -392,9 +435,12 @@ public:
 
   void remove(std::string name){
     int i = 0;
+    comparisons++;
     while(m_arr[i].compare(name) != 0 && i < m_length){
+      comparisons++;
       i++;
     }
+    comparisons++;
     if(i == m_length){
       std::cout << "City not in list.\n";
     }
@@ -410,9 +456,12 @@ public:
     int i = 1;
     std::string xs = std::to_string(x);
     std::string ys = std::to_string(y);
+    comparisons += 3;
     while((m_arr[i-1].compare(xs) != 0 || m_arr[i].compare(ys) != 0) && i < m_length){
+      comparisons += 3;
       i++;
     }
+    comparisons++;
     if(i == m_length){
       std::cout << "Found no city at " << x << " " << y << "\n";
     }
@@ -430,10 +479,13 @@ public:
     int i = 2;
     std::string xs = std::to_string(x);
     std::string ys = std::to_string(y);
+    comparisons += 3;
     while((m_arr[i-1].compare(xs) != 0 || m_arr[i].compare(ys) != 0) && i < m_length){
+    comparisons += 3;
       //i++;
       i += 3;
     }
+    comparisons++;
     if(i == m_length){
       std::cout << "Found no city at " << x << " " << y << "\n";
     }
@@ -445,13 +497,15 @@ public:
   
   void findWithinRadius(int x_in, int y_in, int radius){
     int i = 1;
+    comparisons++;
     while(i < m_length){
+      comparisons++;
       double del_x = atoi(m_arr[i].c_str()) - (double)x_in;
       double del_y = atoi(m_arr[i+1].c_str()) - (double)y_in;
       double hyp = sqrt(pow(del_x,2) + pow(del_y,2));
- 
+      comparisons++;
       if(hyp < radius){
-        std::cout << "Node " << m_arr[i-1] << " at (" << m_arr[i] << "," << m_arr[i+1] << ") within " << radius << " of (" << x_in << "," << y_in << "). Has hyp" << hyp << "\n";
+        std::cout << "Node " << m_arr[i-1] << " at (" << m_arr[i] << "," << m_arr[i+1] << ") within " << radius << " of (" << x_in << "," << y_in << ") is " << hyp << " away.\n";
       }
       i += 3;
     }
@@ -485,7 +539,6 @@ int main(){
 
   Queue<LocRadius> arrayQueue;
   Queue<LocRadius> treeQueue;
-
 
   while(std::getline(queryfile, line)){
     int temp_arr[3];
@@ -532,6 +585,7 @@ int main(){
     arrayQueue.dequeue();
     std::cout << "\n";
   }
+  std::cout << "Array implementation used " << la.comparisons << " comparisons.\n";
   
 
   std::cout << "\n\nPrinting AVL level order:\n\n";
@@ -540,11 +594,12 @@ int main(){
   std::cout << "\nFinding all locations in tree within radii...\n";
   while(!treeQueue.isEmpty()){
     LocRadius tempLoc = treeQueue.peekFront();
-    std::cout << "Searching near (" << tempLoc.m_x << "," << tempLoc.m_y << ")...\n";
+    std::cout << "Searching near (" << tempLoc.m_x << "," << tempLoc.m_y << ")...";
     tree.findByCoord(tempLoc.m_x, tempLoc.m_y);
     tree.findWithinRadius(tempLoc.m_x, tempLoc.m_y, tempLoc.m_radius);
     treeQueue.dequeue();
   }
+  std::cout << "Tree implementation used " << tree.comparisons << " comparisons.\n";
 
   std::cout << "Exiting...\n";
   return 0;
