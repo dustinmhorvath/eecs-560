@@ -102,10 +102,10 @@ public:
       if (height(node -> m_left) - height(node -> m_right) == 2){
         buildcomparisons++;
         if (name < node -> m_left -> m_name){
-          node = switchWithLeft(node);
+          node = rotateWithLeftChild(node);
         }
         else{
-          node = switchWithLeftChild(node);
+          node = doubleWithLeftChild(node);
         }
       }
     }
@@ -116,10 +116,10 @@ public:
       if (height(node -> m_right) - height(node -> m_left) == 2){
         buildcomparisons++;
         if (name > node -> m_right -> m_name){
-          node = switchWithRight(node);
+          node = rotateWithRightChild(node);
         }
         else{
-          node = switchWithRightChild(node);
+          node = doubleWithRightChild(node);
         }
       }
     }
@@ -140,7 +140,7 @@ public:
     }
 
     if(name < root -> m_name ){
-    buildcomparisons++;
+      buildcomparisons++;
       root -> m_left = remove(root -> m_left, name);
     }
     else if(name > root -> m_name ){
@@ -151,7 +151,7 @@ public:
     else{
       buildcomparisons += 2;
 
-      buildcomparisons++;
+      buildcomparisons += 2;
       if( (root -> m_left == nullptr) || (root -> m_right == nullptr) ){
         Node* temp;
         buildcomparisons++;
@@ -180,44 +180,50 @@ public:
     }
 
     buildcomparisons++;
-    if(root == NULL){
+    if(root == nullptr){
       return root;
     }
 
     root -> m_height = max(height(root -> m_left), height(root -> m_right)) + 1;
     int balance = getBalance(root);
 
-    buildcomparisons++;
+    buildcomparisons += 2;
     if(balance > 1 && getBalance(root -> m_left) >= 0){
-      return switchWithRight(root);
+      return rotateWithRightChild(root);
     }
 
-    buildcomparisons++;
+    buildcomparisons += 2;
     if(balance > 1 && getBalance(root->m_left) < 0){
-      root -> m_left =  switchWithLeft(root -> m_left);
-      return switchWithRight(root);
+      root -> m_left =  rotateWithLeftChild(root -> m_left);
+      return rotateWithRightChild(root);
     }
 
-    buildcomparisons++;
+    buildcomparisons += 2;
     if(balance < -1 && getBalance(root->m_right) <= 0){
-      return switchWithLeft(root);
+      return rotateWithLeftChild(root);
     }
 
-    buildcomparisons++;
+    buildcomparisons += 2;
     if(balance < -1 && getBalance(root->m_right) > 0){
-      root->m_right = switchWithRight(root->m_right);
-      return switchWithLeft(root);
+      root->m_right = rotateWithRightChild(root->m_right);
+      return rotateWithLeftChild(root);
     }
 
     return root;
   }
+
+
+
+
+
+
 
   Node* minValueNode(Node* node){
     struct Node* current = node;
 
     /* loop down to find the leftmost leaf */
     buildcomparisons++;
-    while (current->m_left != NULL){
+    while (current->m_left != nullptr){
       buildcomparisons++;
       current = current->m_left;
     }
@@ -237,9 +243,9 @@ public:
    * Pre: BinarySearchTree constructed, has children
    * Post: Moves subtrees to balance tree
    * Return: node pointer
-   * @note: called by `switchWithRightChild`, `insert`
+   * @note: called by `doubleWithRightChild`, `insert`
    */
-  Node* switchWithLeft(Node* node){
+  Node* rotateWithLeftChild(Node* node){
     Node* temp = node -> m_left;
     node -> m_left = temp -> m_right;
     temp -> m_right = node;
@@ -252,9 +258,9 @@ public:
    * Pre: BinarySearchTree constructed, has children
    * Post: Moves subtrees to balance tree
    * Return: node pointer
-   * @note: called by `switchWithLeftChild`, `insert`
+   * @note: called by `doubleWithLeftChild`, `insert`
    */
-  Node* switchWithRight(Node* node){
+  Node* rotateWithRightChild(Node* node){
     Node* temp = node -> m_right;
     node -> m_right = temp->m_left;
     temp -> m_left = node;
@@ -269,9 +275,9 @@ public:
    * Return: node pointer
    * @note: called by `insert`
    */
-  Node* switchWithLeftChild(Node* node){
-    node -> m_left = switchWithRight(node -> m_left);
-    return switchWithLeft(node);
+  Node* doubleWithLeftChild(Node* node){
+    node -> m_left = rotateWithRightChild(node -> m_left);
+    return rotateWithLeftChild(node);
   }
 
   /*
@@ -280,23 +286,25 @@ public:
    * Return: node pointer
    * @note: called by `insert`
    */
-  Node* switchWithRightChild(Node* node){
-    node -> m_right = switchWithLeft(node -> m_right);
-    return switchWithRight(node);
+  Node* doubleWithRightChild(Node* node){
+    node -> m_right = rotateWithLeftChild(node -> m_right);
+    return rotateWithRightChild(node);
   }
 
   // I added this because I needed to print all the values in the tree. It was just by
   //  coincidence that it happened to be pre-order.
+  
   void findByCoordHelper(Node* subtree, int x, int y){
     comparisons++;
     if(subtree != nullptr){
-      comparisons++;
+      comparisons += 2;
       if(subtree -> m_x == x && subtree -> m_y == y){
-        std::cout << subtree -> m_name << " " << subtree -> m_x << " " << subtree -> m_y << " ";
+        std::cout << subtree -> m_name << " " << subtree -> m_x << " " << subtree -> m_y << " \n";
       }
+
       findByCoordHelper(subtree -> m_left, x, y);
       findByCoordHelper(subtree -> m_right, x, y);
-      
+
     }
   }
 
@@ -310,7 +318,6 @@ public:
    */
   void findByCoord(int x, int y){
     findByCoordHelper(m_root, x, y);
-    std::cout << std::endl;
   }
 
 
@@ -321,52 +328,44 @@ public:
    */
   void printLevelOrder(){
     // Exit if tree is empty
-    comparisons++;
-    if (m_root == NULL) { return;}
+    if (m_root == nullptr) { return;}
     // Declare a queue
     Queue<Node*> q;
     // Start with root
     q.enqueue(m_root);
     // Count the rows
     int level = 0;
-    comparisons++;
     while (1){
-      comparisons++;
       int nodeCount = q.size();
       // Exit when queue empty
-      comparisons++;
       if (nodeCount == 0){
         break;
       }
       std::cout << "Level " << level << ": ";
-      comparisons++;
       while (nodeCount > 0){
-        comparisons++;
         // Store so we can get value
         Node* temp = q.peekFront();
         std::cout << temp -> m_name << " " << temp -> m_x << " " << temp -> m_y << " ";
-/*        if(temp -> m_x != -111 && temp -> m_y != -111){
-          std::cout << temp -> m_x << " " << temp -> m_y << " ";
-        }*/
+        /*        if(temp -> m_x != -111 && temp -> m_y != -111){
+                  std::cout << temp -> m_x << " " << temp -> m_y << " ";
+                  }*/
         // Pop the front of the queue
         q.dequeue();
         // Push on any children
-        comparisons++;
         if (temp -> m_left){
           q.enqueue(temp -> m_left);
         }
-/*        else if((temp -> m_name).compare("*") != 0){
-          temp -> m_left = new Node("*", -111, -111);
-          q.enqueue(temp -> m_left);
-        }*/
-        comparisons++;
+        /*        else if((temp -> m_name).compare("*") != 0){
+                  temp -> m_left = new Node("*", -111, -111);
+                  q.enqueue(temp -> m_left);
+                  }*/
         if (temp -> m_right){
           q.enqueue(temp -> m_right);
         }
-/*        else if((temp -> m_name).compare("*") != 0){
-          temp -> m_right = new Node("*", -111, -111);
-          q.enqueue(temp -> m_right);
-        }*/
+        /*        else if((temp -> m_name).compare("*") != 0){
+                  temp -> m_right = new Node("*", -111, -111);
+                  q.enqueue(temp -> m_right);
+                  }*/
 
         nodeCount--;
       }
@@ -383,11 +382,11 @@ public:
       double hyp = sqrt(pow(del_x,2) + pow(del_y,2));
       comparisons++;
       if( hyp < radius ){
-        std::cout << "Node " << subtree -> m_name << " at (" << subtree->m_x << "," << subtree->m_y << ") within " << radius << " of (" << x_in << "," << y_in << ") is " << hyp << " away.\n";
+        std::cout << "Node " << subtree -> m_name << " at (" << subtree->m_x << "," << subtree->m_y << ") is within " << radius << " of (" << x_in << "," << y_in << ") and is " << hyp << " away.\n";
       }
       findWithinRadiusHelper(subtree -> m_left, x_in, y_in, radius);
       findWithinRadiusHelper(subtree -> m_right, x_in, y_in, radius);
-      
+
     }
   }
 
@@ -413,6 +412,7 @@ class LocationArray{
 
 public:
   int comparisons = 0;
+  int buildcomparisons = 0;
 
   LocationArray(){
     m_length = 0;
@@ -435,12 +435,12 @@ public:
 
   void remove(std::string name){
     int i = 0;
-    comparisons++;
+    buildcomparisons++;
     while(m_arr[i].compare(name) != 0 && i < m_length){
       comparisons++;
       i++;
     }
-    comparisons++;
+    buildcomparisons++;
     if(i == m_length){
       std::cout << "City not in list.\n";
     }
@@ -456,12 +456,12 @@ public:
     int i = 1;
     std::string xs = std::to_string(x);
     std::string ys = std::to_string(y);
-    comparisons += 3;
+    buildcomparisons += 3;
     while((m_arr[i-1].compare(xs) != 0 || m_arr[i].compare(ys) != 0) && i < m_length){
-      comparisons += 3;
+      buildcomparisons += 3;
       i++;
     }
-    comparisons++;
+    buildcomparisons++;
     if(i == m_length){
       std::cout << "Found no city at " << x << " " << y << "\n";
     }
@@ -474,14 +474,14 @@ public:
     }
 
   }
-  
+
   void findByCoord(int x, int y){
     int i = 2;
     std::string xs = std::to_string(x);
     std::string ys = std::to_string(y);
     comparisons += 3;
     while((m_arr[i-1].compare(xs) != 0 || m_arr[i].compare(ys) != 0) && i < m_length){
-    comparisons += 3;
+      comparisons += 3;
       //i++;
       i += 3;
     }
@@ -494,7 +494,7 @@ public:
     }
 
   }
-  
+
   void findWithinRadius(int x_in, int y_in, int radius){
     int i = 1;
     comparisons++;
@@ -505,7 +505,7 @@ public:
       double hyp = sqrt(pow(del_x,2) + pow(del_y,2));
       comparisons++;
       if(hyp < radius){
-        std::cout << "Node " << m_arr[i-1] << " at (" << m_arr[i] << "," << m_arr[i+1] << ") within " << radius << " of (" << x_in << "," << y_in << ") is " << hyp << " away.\n";
+        std::cout << "Node " << m_arr[i-1] << " at (" << m_arr[i] << "," << m_arr[i+1] << ") is within " << radius << " of (" << x_in << "," << y_in << ") and is " << hyp << " away.\n";
       }
       i += 3;
     }
@@ -534,7 +534,7 @@ int main(){
 
   LocationArray la = LocationArray();
 
-  std::ifstream queryfile("input.txt");
+  std::ifstream queryfile("lab5_testR.txt");
   std::string line;
 
   Queue<LocRadius> arrayQueue;
@@ -553,7 +553,7 @@ int main(){
   }
 
 
-  std::ifstream locationlist("data.txt");
+  std::ifstream locationlist("data5R.txt");
 
   while(std::getline(locationlist, line)){
     std::string temp_arr[3];
@@ -585,8 +585,7 @@ int main(){
     arrayQueue.dequeue();
     std::cout << "\n";
   }
-  std::cout << "Array implementation used " << la.comparisons << " comparisons.\n";
-  
+
 
   std::cout << "\n\nPrinting AVL level order:\n\n";
   tree.printLevelOrder();
@@ -594,12 +593,48 @@ int main(){
   std::cout << "\nFinding all locations in tree within radii...\n";
   while(!treeQueue.isEmpty()){
     LocRadius tempLoc = treeQueue.peekFront();
-    std::cout << "Searching near (" << tempLoc.m_x << "," << tempLoc.m_y << ")...";
+    std::cout << "Searching near (" << tempLoc.m_x << "," << tempLoc.m_y << ")...\n";
     tree.findByCoord(tempLoc.m_x, tempLoc.m_y);
     tree.findWithinRadius(tempLoc.m_x, tempLoc.m_y, tempLoc.m_radius);
     treeQueue.dequeue();
   }
-  std::cout << "Tree implementation used " << tree.comparisons << " comparisons.\n";
+
+  std::cout << "Array implementation used " << la.comparisons << " search comparisons and " << la.buildcomparisons << " build comparisons.\n";
+  std::cout << "Tree implementation used " << tree.comparisons << " search comparisons and " << tree.buildcomparisons << " build comparisons.\n";
+
+  tree.comparisons = 0;
+  tree.buildcomparisons = 0;
+  la.comparisons = 0;
+  la.buildcomparisons = 0;
+
+  int length = 5;
+  std::string removelist[length] = {
+    "FortHays", "Hooterville",
+    "Russellville" , "HighCityHeights",
+    "BridgerRange" };
+  
+  std::cout << "\nTREE OPERATIONS\n";
+
+  for(int i = 0; i < length; i++){
+    std::cout << "Removing " << removelist[i] << " from the list..\n";
+    tree.remove(removelist[i]);
+    std::cout << "Tree implementation used " << tree.comparisons + tree.buildcomparisons << " comparisons.\n";
+  }
+
+  std::cout << "\nARRAY OPERATIONS\n";
+
+  for(int i = 0; i < length; i++){
+    std::cout << "Removing " << removelist[i] << " from the list..\n";
+    la.remove(removelist[i]);
+    std::cout << "Array implementation used " << la.comparisons + la.buildcomparisons << " comparisons.\n";
+  }
+
+  std::cout << "\n";
+
+
+  //tree.remove("FortHays");
+  //tree.remove("Hooterville");
+  //tree.remove("Russellville");
 
   std::cout << "Exiting...\n";
   return 0;
