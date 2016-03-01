@@ -1,0 +1,515 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+ no time accumulated
+
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+  0.00      0.00     0.00      530     0.00     0.00  BinarySearchTree::height(Node*)
+  0.00      0.00     0.00      164     0.00     0.00  BinarySearchTree::max(int, int)
+  0.00      0.00     0.00      118     0.00     0.00  bool std::operator< <char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00      0.00     0.00       63     0.00     0.00  bool std::operator><char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00      0.00     0.00       48     0.00     0.00  BoxOfAnything<Node*>::setPrevious(BoxOfAnything<Node*>*)
+  0.00      0.00     0.00       38     0.00     0.00  BoxOfAnything<LocRadius>::setPrevious(BoxOfAnything<LocRadius>*)
+  0.00      0.00     0.00       25     0.00     0.00  BoxOfAnything<Node*>::getPrevious()
+  0.00      0.00     0.00       25     0.00     0.00  BoxOfAnything<Node*>::getValue()
+  0.00      0.00     0.00       25     0.00     0.00  BoxOfAnything<Node*>::BoxOfAnything(Node*)
+  0.00      0.00     0.00       25     0.00     0.00  LocationArray::insert(std::string*)
+  0.00      0.00     0.00       25     0.00     0.00  BinarySearchTree::insert(std::string, int, int)
+  0.00      0.00     0.00       25     0.00     0.00  BinarySearchTree::insert(std::string, int, int, Node*)
+  0.00      0.00     0.00       25     0.00     0.00  Node::Node(std::string, int, int)
+  0.00      0.00     0.00       25     0.00     0.00  Queue<Node*>::dequeue()
+  0.00      0.00     0.00       25     0.00     0.00  Queue<Node*>::enqueue(Node*)
+  0.00      0.00     0.00       25     0.00     0.00  Queue<Node*>::peekFront() const
+  0.00      0.00     0.00       24     0.00     0.00  Queue<LocRadius>::isEmpty() const
+  0.00      0.00     0.00       22     0.00     0.00  BinarySearchTree::getBalance(Node*)
+  0.00      0.00     0.00       20     0.00     0.00  BoxOfAnything<LocRadius>::getPrevious()
+  0.00      0.00     0.00       20     0.00     0.00  BoxOfAnything<LocRadius>::getValue()
+  0.00      0.00     0.00       20     0.00     0.00  BoxOfAnything<LocRadius>::BoxOfAnything(LocRadius)
+  0.00      0.00     0.00       20     0.00     0.00  Queue<LocRadius>::dequeue()
+  0.00      0.00     0.00       20     0.00     0.00  Queue<LocRadius>::enqueue(LocRadius)
+  0.00      0.00     0.00       20     0.00     0.00  LocRadius::LocRadius()
+  0.00      0.00     0.00       20     0.00     0.00  LocRadius::LocRadius(int, int, int)
+  0.00      0.00     0.00       20     0.00     0.00  std::string __gnu_cxx::__to_xstring<std::string, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...)
+  0.00      0.00     0.00       20     0.00     0.00  bool __gnu_cxx::__is_null_pointer<char>(char*)
+  0.00      0.00     0.00       20     0.00     0.00  Queue<LocRadius>::peekFront() const
+  0.00      0.00     0.00       20     0.00     0.00  char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&)
+  0.00      0.00     0.00       20     0.00     0.00  char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag)
+  0.00      0.00     0.00       20     0.00     0.00  char* std::string::_S_construct_aux<char*>(char*, char*, std::allocator<char> const&, std::__false_type)
+  0.00      0.00     0.00       20     0.00     0.00  std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<char*>(char*, char*, std::allocator<char> const&)
+  0.00      0.00     0.00       20     0.00     0.00  std::iterator_traits<char*>::difference_type std::__distance<char*>(char*, char*, std::random_access_iterator_tag)
+  0.00      0.00     0.00       20     0.00     0.00  std::iterator_traits<char*>::iterator_category std::__iterator_category<char*>(char* const&)
+  0.00      0.00     0.00       20     0.00     0.00  std::iterator_traits<char*>::difference_type std::distance<char*>(char*, char*)
+  0.00      0.00     0.00       20     0.00     0.00  std::to_string(int)
+  0.00      0.00     0.00       10     0.00     0.00  LocationArray::findByCoord(int, int)
+  0.00      0.00     0.00       10     0.00     0.00  LocationArray::findWithinRadius(int, int, int)
+  0.00      0.00     0.00       10     0.00     0.00  BinarySearchTree::findByCoord(int, int)
+  0.00      0.00     0.00       10     0.00     0.00  BinarySearchTree::findWithinRadius(int, int, int)
+  0.00      0.00     0.00       10     0.00     0.00  BinarySearchTree::findByCoordHelper(Node*, int, int)
+  0.00      0.00     0.00       10     0.00     0.00  BinarySearchTree::findWithinRadiusHelper(Node*, int, int, int)
+  0.00      0.00     0.00        8     0.00     0.00  BinarySearchTree::rotateWithLeftChild(Node*)
+  0.00      0.00     0.00        8     0.00     0.00  BinarySearchTree::rotateWithRightChild(Node*)
+  0.00      0.00     0.00        7     0.00     0.00  Queue<Node*>::size() const
+  0.00      0.00     0.00        5     0.00     0.00  LocationArray::remove(std::string)
+  0.00      0.00     0.00        5     0.00     0.00  BinarySearchTree::remove(Node*, std::string)
+  0.00      0.00     0.00        5     0.00     0.00  BinarySearchTree::remove(std::string)
+  0.00      0.00     0.00        2     0.00     0.00  QueueInterface<LocRadius>::QueueInterface()
+  0.00      0.00     0.00        2     0.00     0.00  QueueInterface<LocRadius>::~QueueInterface()
+  0.00      0.00     0.00        2     0.00     0.00  BinarySearchTree::doubleWithLeftChild(Node*)
+  0.00      0.00     0.00        2     0.00     0.00  Queue<LocRadius>::Queue()
+  0.00      0.00     0.00        2     0.00     0.00  Queue<LocRadius>::~Queue()
+  0.00      0.00     0.00        1     0.00     0.00  _GLOBAL__sub_I_main
+  0.00      0.00     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      0.00     0.00        1     0.00     0.00  LocationArray::print()
+  0.00      0.00     0.00        1     0.00     0.00  LocationArray::LocationArray()
+  0.00      0.00     0.00        1     0.00     0.00  LocationArray::~LocationArray()
+  0.00      0.00     0.00        1     0.00     0.00  QueueInterface<Node*>::QueueInterface()
+  0.00      0.00     0.00        1     0.00     0.00  QueueInterface<Node*>::~QueueInterface()
+  0.00      0.00     0.00        1     0.00     0.00  BinarySearchTree::minValueNode(Node*)
+  0.00      0.00     0.00        1     0.00     0.00  BinarySearchTree::printLevelOrder()
+  0.00      0.00     0.00        1     0.00     0.00  BinarySearchTree::doubleWithRightChild(Node*)
+  0.00      0.00     0.00        1     0.00     0.00  BinarySearchTree::BinarySearchTree()
+  0.00      0.00     0.00        1     0.00     0.00  Queue<Node*>::Queue()
+  0.00      0.00     0.00        1     0.00     0.00  Queue<Node*>::~Queue()
+  0.00      0.00     0.00        1     0.00     0.00  Queue<Node*>::isEmpty() const
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2014 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) no time propagated
+
+index % time    self  children    called     name
+                0.00    0.00      24/530         BinarySearchTree::rotateWithLeftChild(Node*) [50]
+                0.00    0.00      24/530         BinarySearchTree::rotateWithRightChild(Node*) [51]
+                0.00    0.00      40/530         BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00      44/530         BinarySearchTree::getBalance(Node*) [25]
+                0.00    0.00     398/530         BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[8]      0.0    0.00    0.00     530         BinarySearchTree::height(Node*) [8]
+-----------------------------------------------
+                0.00    0.00      16/164         BinarySearchTree::rotateWithLeftChild(Node*) [50]
+                0.00    0.00      16/164         BinarySearchTree::rotateWithRightChild(Node*) [51]
+                0.00    0.00      20/164         BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00     112/164         BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[9]      0.0    0.00    0.00     164         BinarySearchTree::max(int, int) [9]
+-----------------------------------------------
+                0.00    0.00      25/118         BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00      93/118         BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[10]     0.0    0.00    0.00     118         bool std::operator< <char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [10]
+-----------------------------------------------
+                0.00    0.00      16/63          BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00      47/63          BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[11]     0.0    0.00    0.00      63         bool std::operator><char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [11]
+-----------------------------------------------
+                0.00    0.00      48/48          Queue<Node*>::enqueue(Node*) [22]
+[12]     0.0    0.00    0.00      48         BoxOfAnything<Node*>::setPrevious(BoxOfAnything<Node*>*) [12]
+-----------------------------------------------
+                0.00    0.00      38/38          Queue<LocRadius>::enqueue(LocRadius) [30]
+[13]     0.0    0.00    0.00      38         BoxOfAnything<LocRadius>::setPrevious(BoxOfAnything<LocRadius>*) [13]
+-----------------------------------------------
+                0.00    0.00      25/25          Queue<Node*>::dequeue() [21]
+[14]     0.0    0.00    0.00      25         BoxOfAnything<Node*>::getPrevious() [14]
+-----------------------------------------------
+                0.00    0.00      25/25          Queue<Node*>::peekFront() const [23]
+[15]     0.0    0.00    0.00      25         BoxOfAnything<Node*>::getValue() [15]
+-----------------------------------------------
+                0.00    0.00      25/25          Queue<Node*>::enqueue(Node*) [22]
+[16]     0.0    0.00    0.00      25         BoxOfAnything<Node*>::BoxOfAnything(Node*) [16]
+-----------------------------------------------
+                0.00    0.00      25/25          main [6]
+[17]     0.0    0.00    0.00      25         LocationArray::insert(std::string*) [17]
+-----------------------------------------------
+                0.00    0.00      25/25          main [6]
+[18]     0.0    0.00    0.00      25         BinarySearchTree::insert(std::string, int, int) [18]
+                0.00    0.00      25/25          BinarySearchTree::insert(std::string, int, int, Node*) [19]
+-----------------------------------------------
+                                  87             BinarySearchTree::insert(std::string, int, int, Node*) [19]
+                0.00    0.00      25/25          BinarySearchTree::insert(std::string, int, int) [18]
+[19]     0.0    0.00    0.00      25+87      BinarySearchTree::insert(std::string, int, int, Node*) [19]
+                0.00    0.00     398/530         BinarySearchTree::height(Node*) [8]
+                0.00    0.00     112/164         BinarySearchTree::max(int, int) [9]
+                0.00    0.00      93/118         bool std::operator< <char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [10]
+                0.00    0.00      47/63          bool std::operator><char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [11]
+                0.00    0.00      25/25          Node::Node(std::string, int, int) [20]
+                0.00    0.00       4/8           BinarySearchTree::rotateWithLeftChild(Node*) [50]
+                0.00    0.00       4/8           BinarySearchTree::rotateWithRightChild(Node*) [51]
+                0.00    0.00       2/2           BinarySearchTree::doubleWithLeftChild(Node*) [58]
+                0.00    0.00       1/1           BinarySearchTree::doubleWithRightChild(Node*) [70]
+                                  87             BinarySearchTree::insert(std::string, int, int, Node*) [19]
+-----------------------------------------------
+                0.00    0.00      25/25          BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[20]     0.0    0.00    0.00      25         Node::Node(std::string, int, int) [20]
+-----------------------------------------------
+                0.00    0.00      25/25          BinarySearchTree::printLevelOrder() [69]
+[21]     0.0    0.00    0.00      25         Queue<Node*>::dequeue() [21]
+                0.00    0.00      25/25          BoxOfAnything<Node*>::getPrevious() [14]
+-----------------------------------------------
+                0.00    0.00      25/25          BinarySearchTree::printLevelOrder() [69]
+[22]     0.0    0.00    0.00      25         Queue<Node*>::enqueue(Node*) [22]
+                0.00    0.00      48/48          BoxOfAnything<Node*>::setPrevious(BoxOfAnything<Node*>*) [12]
+                0.00    0.00      25/25          BoxOfAnything<Node*>::BoxOfAnything(Node*) [16]
+-----------------------------------------------
+                0.00    0.00      25/25          BinarySearchTree::printLevelOrder() [69]
+[23]     0.0    0.00    0.00      25         Queue<Node*>::peekFront() const [23]
+                0.00    0.00      25/25          BoxOfAnything<Node*>::getValue() [15]
+-----------------------------------------------
+                0.00    0.00       2/24          Queue<LocRadius>::~Queue() [60]
+                0.00    0.00      22/24          main [6]
+[24]     0.0    0.00    0.00      24         Queue<LocRadius>::isEmpty() const [24]
+-----------------------------------------------
+                0.00    0.00      22/22          BinarySearchTree::remove(Node*, std::string) [54]
+[25]     0.0    0.00    0.00      22         BinarySearchTree::getBalance(Node*) [25]
+                0.00    0.00      44/530         BinarySearchTree::height(Node*) [8]
+-----------------------------------------------
+                0.00    0.00      20/20          Queue<LocRadius>::dequeue() [29]
+[26]     0.0    0.00    0.00      20         BoxOfAnything<LocRadius>::getPrevious() [26]
+-----------------------------------------------
+                0.00    0.00      20/20          Queue<LocRadius>::peekFront() const [35]
+[27]     0.0    0.00    0.00      20         BoxOfAnything<LocRadius>::getValue() [27]
+-----------------------------------------------
+                0.00    0.00      20/20          Queue<LocRadius>::enqueue(LocRadius) [30]
+[28]     0.0    0.00    0.00      20         BoxOfAnything<LocRadius>::BoxOfAnything(LocRadius) [28]
+                0.00    0.00      20/20          LocRadius::LocRadius() [31]
+-----------------------------------------------
+                0.00    0.00      20/20          main [6]
+[29]     0.0    0.00    0.00      20         Queue<LocRadius>::dequeue() [29]
+                0.00    0.00      20/20          BoxOfAnything<LocRadius>::getPrevious() [26]
+-----------------------------------------------
+                0.00    0.00      20/20          main [6]
+[30]     0.0    0.00    0.00      20         Queue<LocRadius>::enqueue(LocRadius) [30]
+                0.00    0.00      38/38          BoxOfAnything<LocRadius>::setPrevious(BoxOfAnything<LocRadius>*) [13]
+                0.00    0.00      20/20          BoxOfAnything<LocRadius>::BoxOfAnything(LocRadius) [28]
+-----------------------------------------------
+                0.00    0.00      20/20          BoxOfAnything<LocRadius>::BoxOfAnything(LocRadius) [28]
+[31]     0.0    0.00    0.00      20         LocRadius::LocRadius() [31]
+-----------------------------------------------
+                0.00    0.00      20/20          main [6]
+[32]     0.0    0.00    0.00      20         LocRadius::LocRadius(int, int, int) [32]
+-----------------------------------------------
+                0.00    0.00      20/20          std::to_string(int) [43]
+[33]     0.0    0.00    0.00      20         std::string __gnu_cxx::__to_xstring<std::string, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [33]
+                0.00    0.00      20/20          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<char*>(char*, char*, std::allocator<char> const&) [39]
+-----------------------------------------------
+                0.00    0.00      20/20          char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag) [37]
+[34]     0.0    0.00    0.00      20         bool __gnu_cxx::__is_null_pointer<char>(char*) [34]
+-----------------------------------------------
+                0.00    0.00      20/20          main [6]
+[35]     0.0    0.00    0.00      20         Queue<LocRadius>::peekFront() const [35]
+                0.00    0.00      20/20          BoxOfAnything<LocRadius>::getValue() [27]
+-----------------------------------------------
+                0.00    0.00      20/20          std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<char*>(char*, char*, std::allocator<char> const&) [39]
+[36]     0.0    0.00    0.00      20         char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&) [36]
+                0.00    0.00      20/20          char* std::string::_S_construct_aux<char*>(char*, char*, std::allocator<char> const&, std::__false_type) [38]
+-----------------------------------------------
+                0.00    0.00      20/20          char* std::string::_S_construct_aux<char*>(char*, char*, std::allocator<char> const&, std::__false_type) [38]
+[37]     0.0    0.00    0.00      20         char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag) [37]
+                0.00    0.00      20/20          bool __gnu_cxx::__is_null_pointer<char>(char*) [34]
+                0.00    0.00      20/20          std::iterator_traits<char*>::difference_type std::distance<char*>(char*, char*) [42]
+-----------------------------------------------
+                0.00    0.00      20/20          char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&) [36]
+[38]     0.0    0.00    0.00      20         char* std::string::_S_construct_aux<char*>(char*, char*, std::allocator<char> const&, std::__false_type) [38]
+                0.00    0.00      20/20          char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag) [37]
+-----------------------------------------------
+                0.00    0.00      20/20          std::string __gnu_cxx::__to_xstring<std::string, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [33]
+[39]     0.0    0.00    0.00      20         std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<char*>(char*, char*, std::allocator<char> const&) [39]
+                0.00    0.00      20/20          char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&) [36]
+-----------------------------------------------
+                0.00    0.00      20/20          std::iterator_traits<char*>::difference_type std::distance<char*>(char*, char*) [42]
+[40]     0.0    0.00    0.00      20         std::iterator_traits<char*>::difference_type std::__distance<char*>(char*, char*, std::random_access_iterator_tag) [40]
+-----------------------------------------------
+                0.00    0.00      20/20          std::iterator_traits<char*>::difference_type std::distance<char*>(char*, char*) [42]
+[41]     0.0    0.00    0.00      20         std::iterator_traits<char*>::iterator_category std::__iterator_category<char*>(char* const&) [41]
+-----------------------------------------------
+                0.00    0.00      20/20          char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag) [37]
+[42]     0.0    0.00    0.00      20         std::iterator_traits<char*>::difference_type std::distance<char*>(char*, char*) [42]
+                0.00    0.00      20/20          std::iterator_traits<char*>::iterator_category std::__iterator_category<char*>(char* const&) [41]
+                0.00    0.00      20/20          std::iterator_traits<char*>::difference_type std::__distance<char*>(char*, char*, std::random_access_iterator_tag) [40]
+-----------------------------------------------
+                0.00    0.00      20/20          LocationArray::findByCoord(int, int) [44]
+[43]     0.0    0.00    0.00      20         std::to_string(int) [43]
+                0.00    0.00      20/20          std::string __gnu_cxx::__to_xstring<std::string, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [33]
+-----------------------------------------------
+                0.00    0.00      10/10          main [6]
+[44]     0.0    0.00    0.00      10         LocationArray::findByCoord(int, int) [44]
+                0.00    0.00      20/20          std::to_string(int) [43]
+-----------------------------------------------
+                0.00    0.00      10/10          main [6]
+[45]     0.0    0.00    0.00      10         LocationArray::findWithinRadius(int, int, int) [45]
+-----------------------------------------------
+                0.00    0.00      10/10          main [6]
+[46]     0.0    0.00    0.00      10         BinarySearchTree::findByCoord(int, int) [46]
+                0.00    0.00      10/10          BinarySearchTree::findByCoordHelper(Node*, int, int) [48]
+-----------------------------------------------
+                0.00    0.00      10/10          main [6]
+[47]     0.0    0.00    0.00      10         BinarySearchTree::findWithinRadius(int, int, int) [47]
+                0.00    0.00      10/10          BinarySearchTree::findWithinRadiusHelper(Node*, int, int, int) [49]
+-----------------------------------------------
+                                 743             BinarySearchTree::findByCoordHelper(Node*, int, int) [48]
+                0.00    0.00      10/10          BinarySearchTree::findByCoord(int, int) [46]
+[48]     0.0    0.00    0.00      10+743     BinarySearchTree::findByCoordHelper(Node*, int, int) [48]
+                                 743             BinarySearchTree::findByCoordHelper(Node*, int, int) [48]
+-----------------------------------------------
+                                 500             BinarySearchTree::findWithinRadiusHelper(Node*, int, int, int) [49]
+                0.00    0.00      10/10          BinarySearchTree::findWithinRadius(int, int, int) [47]
+[49]     0.0    0.00    0.00      10+500     BinarySearchTree::findWithinRadiusHelper(Node*, int, int, int) [49]
+                                 500             BinarySearchTree::findWithinRadiusHelper(Node*, int, int, int) [49]
+-----------------------------------------------
+                0.00    0.00       1/8           BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00       1/8           BinarySearchTree::doubleWithRightChild(Node*) [70]
+                0.00    0.00       2/8           BinarySearchTree::doubleWithLeftChild(Node*) [58]
+                0.00    0.00       4/8           BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[50]     0.0    0.00    0.00       8         BinarySearchTree::rotateWithLeftChild(Node*) [50]
+                0.00    0.00      24/530         BinarySearchTree::height(Node*) [8]
+                0.00    0.00      16/164         BinarySearchTree::max(int, int) [9]
+-----------------------------------------------
+                0.00    0.00       1/8           BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00       1/8           BinarySearchTree::doubleWithRightChild(Node*) [70]
+                0.00    0.00       2/8           BinarySearchTree::doubleWithLeftChild(Node*) [58]
+                0.00    0.00       4/8           BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[51]     0.0    0.00    0.00       8         BinarySearchTree::rotateWithRightChild(Node*) [51]
+                0.00    0.00      24/530         BinarySearchTree::height(Node*) [8]
+                0.00    0.00      16/164         BinarySearchTree::max(int, int) [9]
+-----------------------------------------------
+                0.00    0.00       7/7           BinarySearchTree::printLevelOrder() [69]
+[52]     0.0    0.00    0.00       7         Queue<Node*>::size() const [52]
+-----------------------------------------------
+                0.00    0.00       5/5           main [6]
+[53]     0.0    0.00    0.00       5         LocationArray::remove(std::string) [53]
+-----------------------------------------------
+                                  20             BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00       5/5           BinarySearchTree::remove(std::string) [55]
+[54]     0.0    0.00    0.00       5+20      BinarySearchTree::remove(Node*, std::string) [54]
+                0.00    0.00      40/530         BinarySearchTree::height(Node*) [8]
+                0.00    0.00      25/118         bool std::operator< <char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [10]
+                0.00    0.00      22/22          BinarySearchTree::getBalance(Node*) [25]
+                0.00    0.00      20/164         BinarySearchTree::max(int, int) [9]
+                0.00    0.00      16/63          bool std::operator><char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [11]
+                0.00    0.00       1/1           BinarySearchTree::minValueNode(Node*) [68]
+                0.00    0.00       1/8           BinarySearchTree::rotateWithRightChild(Node*) [51]
+                0.00    0.00       1/8           BinarySearchTree::rotateWithLeftChild(Node*) [50]
+                                  20             BinarySearchTree::remove(Node*, std::string) [54]
+-----------------------------------------------
+                0.00    0.00       5/5           main [6]
+[55]     0.0    0.00    0.00       5         BinarySearchTree::remove(std::string) [55]
+                0.00    0.00       5/5           BinarySearchTree::remove(Node*, std::string) [54]
+-----------------------------------------------
+                0.00    0.00       2/2           Queue<LocRadius>::Queue() [59]
+[56]     0.0    0.00    0.00       2         QueueInterface<LocRadius>::QueueInterface() [56]
+-----------------------------------------------
+                0.00    0.00       2/2           Queue<LocRadius>::~Queue() [60]
+[57]     0.0    0.00    0.00       2         QueueInterface<LocRadius>::~QueueInterface() [57]
+-----------------------------------------------
+                0.00    0.00       2/2           BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[58]     0.0    0.00    0.00       2         BinarySearchTree::doubleWithLeftChild(Node*) [58]
+                0.00    0.00       2/8           BinarySearchTree::rotateWithRightChild(Node*) [51]
+                0.00    0.00       2/8           BinarySearchTree::rotateWithLeftChild(Node*) [50]
+-----------------------------------------------
+                0.00    0.00       2/2           main [6]
+[59]     0.0    0.00    0.00       2         Queue<LocRadius>::Queue() [59]
+                0.00    0.00       2/2           QueueInterface<LocRadius>::QueueInterface() [56]
+-----------------------------------------------
+                0.00    0.00       2/2           main [6]
+[60]     0.0    0.00    0.00       2         Queue<LocRadius>::~Queue() [60]
+                0.00    0.00       2/24          Queue<LocRadius>::isEmpty() const [24]
+                0.00    0.00       2/2           QueueInterface<LocRadius>::~QueueInterface() [57]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [99]
+[61]     0.0    0.00    0.00       1         _GLOBAL__sub_I_main [61]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [62]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I_main [61]
+[62]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [62]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[63]     0.0    0.00    0.00       1         LocationArray::print() [63]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[64]     0.0    0.00    0.00       1         LocationArray::LocationArray() [64]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[65]     0.0    0.00    0.00       1         LocationArray::~LocationArray() [65]
+-----------------------------------------------
+                0.00    0.00       1/1           Queue<Node*>::Queue() [72]
+[66]     0.0    0.00    0.00       1         QueueInterface<Node*>::QueueInterface() [66]
+-----------------------------------------------
+                0.00    0.00       1/1           Queue<Node*>::~Queue() [73]
+[67]     0.0    0.00    0.00       1         QueueInterface<Node*>::~QueueInterface() [67]
+-----------------------------------------------
+                0.00    0.00       1/1           BinarySearchTree::remove(Node*, std::string) [54]
+[68]     0.0    0.00    0.00       1         BinarySearchTree::minValueNode(Node*) [68]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[69]     0.0    0.00    0.00       1         BinarySearchTree::printLevelOrder() [69]
+                0.00    0.00      25/25          Queue<Node*>::enqueue(Node*) [22]
+                0.00    0.00      25/25          Queue<Node*>::peekFront() const [23]
+                0.00    0.00      25/25          Queue<Node*>::dequeue() [21]
+                0.00    0.00       7/7           Queue<Node*>::size() const [52]
+                0.00    0.00       1/1           Queue<Node*>::Queue() [72]
+                0.00    0.00       1/1           Queue<Node*>::~Queue() [73]
+-----------------------------------------------
+                0.00    0.00       1/1           BinarySearchTree::insert(std::string, int, int, Node*) [19]
+[70]     0.0    0.00    0.00       1         BinarySearchTree::doubleWithRightChild(Node*) [70]
+                0.00    0.00       1/8           BinarySearchTree::rotateWithLeftChild(Node*) [50]
+                0.00    0.00       1/8           BinarySearchTree::rotateWithRightChild(Node*) [51]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[71]     0.0    0.00    0.00       1         BinarySearchTree::BinarySearchTree() [71]
+-----------------------------------------------
+                0.00    0.00       1/1           BinarySearchTree::printLevelOrder() [69]
+[72]     0.0    0.00    0.00       1         Queue<Node*>::Queue() [72]
+                0.00    0.00       1/1           QueueInterface<Node*>::QueueInterface() [66]
+-----------------------------------------------
+                0.00    0.00       1/1           BinarySearchTree::printLevelOrder() [69]
+[73]     0.0    0.00    0.00       1         Queue<Node*>::~Queue() [73]
+                0.00    0.00       1/1           Queue<Node*>::isEmpty() const [74]
+                0.00    0.00       1/1           QueueInterface<Node*>::~QueueInterface() [67]
+-----------------------------------------------
+                0.00    0.00       1/1           Queue<Node*>::~Queue() [73]
+[74]     0.0    0.00    0.00       1         Queue<Node*>::isEmpty() const [74]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2014 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [61] _GLOBAL__sub_I_main    [68] BinarySearchTree::minValueNode(Node*) [72] Queue<Node*>::Queue()
+  [62] __static_initialization_and_destruction_0(int, int) [69] BinarySearchTree::printLevelOrder() [73] Queue<Node*>::~Queue()
+  [26] BoxOfAnything<LocRadius>::getPrevious() [47] BinarySearchTree::findWithinRadius(int, int, int) [31] LocRadius::LocRadius()
+  [13] BoxOfAnything<LocRadius>::setPrevious(BoxOfAnything<LocRadius>*) [48] BinarySearchTree::findByCoordHelper(Node*, int, int) [32] LocRadius::LocRadius(int, int, int)
+  [27] BoxOfAnything<LocRadius>::getValue() [58] BinarySearchTree::doubleWithLeftChild(Node*) [33] std::string __gnu_cxx::__to_xstring<std::string, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...)
+  [28] BoxOfAnything<LocRadius>::BoxOfAnything(LocRadius) [50] BinarySearchTree::rotateWithLeftChild(Node*) [34] bool __gnu_cxx::__is_null_pointer<char>(char*)
+  [14] BoxOfAnything<Node*>::getPrevious() [70] BinarySearchTree::doubleWithRightChild(Node*) [24] Queue<LocRadius>::isEmpty() const
+  [12] BoxOfAnything<Node*>::setPrevious(BoxOfAnything<Node*>*) [51] BinarySearchTree::rotateWithRightChild(Node*) [35] Queue<LocRadius>::peekFront() const
+  [15] BoxOfAnything<Node*>::getValue() [49] BinarySearchTree::findWithinRadiusHelper(Node*, int, int, int) [52] Queue<Node*>::size() const
+  [16] BoxOfAnything<Node*>::BoxOfAnything(Node*) [9] BinarySearchTree::max(int, int) [74] Queue<Node*>::isEmpty() const
+  [44] LocationArray::findByCoord(int, int) [8] BinarySearchTree::height(Node*) [23] Queue<Node*>::peekFront() const
+  [45] LocationArray::findWithinRadius(int, int, int) [18] BinarySearchTree::insert(std::string, int, int) [36] char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&)
+  [63] LocationArray::print() [19] BinarySearchTree::insert(std::string, int, int, Node*) [37] char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag)
+  [17] LocationArray::insert(std::string*) [54] BinarySearchTree::remove(Node*, std::string) [38] char* std::string::_S_construct_aux<char*>(char*, char*, std::allocator<char> const&, std::__false_type)
+  [53] LocationArray::remove(std::string) [55] BinarySearchTree::remove(std::string) [39] std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<char*>(char*, char*, std::allocator<char> const&)
+  [64] LocationArray::LocationArray() [71] BinarySearchTree::BinarySearchTree() [40] std::iterator_traits<char*>::difference_type std::__distance<char*>(char*, char*, std::random_access_iterator_tag)
+  [65] LocationArray::~LocationArray() [20] Node::Node(std::string, int, int) [41] std::iterator_traits<char*>::iterator_category std::__iterator_category<char*>(char* const&)
+  [56] QueueInterface<LocRadius>::QueueInterface() [29] Queue<LocRadius>::dequeue() [42] std::iterator_traits<char*>::difference_type std::distance<char*>(char*, char*)
+  [57] QueueInterface<LocRadius>::~QueueInterface() [30] Queue<LocRadius>::enqueue(LocRadius) [43] std::to_string(int)
+  [66] QueueInterface<Node*>::QueueInterface() [59] Queue<LocRadius>::Queue() [11] bool std::operator><char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  [67] QueueInterface<Node*>::~QueueInterface() [60] Queue<LocRadius>::~Queue() [10] bool std::operator< <char, std::char_traits<char>, std::allocator<char> >(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  [25] BinarySearchTree::getBalance(Node*) [21] Queue<Node*>::dequeue()
+  [46] BinarySearchTree::findByCoord(int, int) [22] Queue<Node*>::enqueue(Node*)

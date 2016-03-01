@@ -1,8 +1,8 @@
 /*
  * Dustin Horvath
  * 2729265
- * EECS 560 Lab 4
- * 2/20/16
+ * EECS 560 Lab 5
+ * 2/27/16
  *
  */
 
@@ -11,6 +11,7 @@
 #include <sstream>
 #include <string>
 #include "Queue.h"
+//used for pow and sqrt
 #include <math.h>
 
 class Node {
@@ -212,12 +213,6 @@ public:
     return root;
   }
 
-
-
-
-
-
-
   Node* minValueNode(Node* node){
     struct Node* current = node;
 
@@ -294,17 +289,26 @@ public:
   // I added this because I needed to print all the values in the tree. It was just by
   //  coincidence that it happened to be pre-order.
   
-  void findByCoordHelper(Node* subtree, int x, int y){
+  Node* findByCoordHelper(Node* subtree, int x, int y){
     comparisons++;
+      Node* found;
+      comparisons++;
     if(subtree != nullptr){
-      comparisons += 2;
       if(subtree -> m_x == x && subtree -> m_y == y){
-        std::cout << subtree -> m_name << " " << subtree -> m_x << " " << subtree -> m_y << " \n";
+      comparisons++;
+        return subtree;
       }
-
-      findByCoordHelper(subtree -> m_left, x, y);
-      findByCoordHelper(subtree -> m_right, x, y);
-
+      else if(findByCoordHelper(subtree -> m_left, x, y) != nullptr){
+      comparisons += 2;
+        return findByCoordHelper(subtree -> m_left, x, y);
+      }
+      else if(findByCoordHelper(subtree -> m_right, x, y) != nullptr){
+      comparisons += 2;
+        return findByCoordHelper(subtree -> m_right, x, y);
+      }
+    }
+    else{
+      return nullptr;
     }
   }
 
@@ -317,7 +321,14 @@ public:
    * print, because preOrderHelper is recursive.
    */
   void findByCoord(int x, int y){
-    findByCoordHelper(m_root, x, y);
+    Node* found = findByCoordHelper(m_root, x, y);
+    comparisons++;
+    if(found != nullptr){
+        std::cout << "Found " << found -> m_name << " at (" << x << "," << y << ") \n";
+    }
+    else{
+      std::cout << "Found no location at (" << x << "," << y << ").\n";
+    }
   }
 
 
@@ -414,6 +425,9 @@ public:
   int comparisons = 0;
   int buildcomparisons = 0;
 
+  /* Stores locations in the following format:
+   * [Name1, X1, Y1, Name2, X2, Y2, Name3......Name(Length-1), X(length-1), Y(length-1)]
+   */
   LocationArray(){
     m_length = 0;
   }
@@ -635,6 +649,17 @@ int main(){
   //tree.remove("FortHays");
   //tree.remove("Hooterville");
   //tree.remove("Russellville");
+
+  tree.comparisons = 0;
+  tree.buildcomparisons = 0;
+  la.comparisons = 0;
+  la.buildcomparisons = 0;
+
+  std::cout << "Finding (16,22) by coordinates.\n";
+  tree.findByCoord(16,22);
+  la.findByCoord(16,22);
+  std::cout << "Array implementation used " << la.comparisons + la.buildcomparisons << " comparisons.\n";
+  std::cout << "Tree implementation used " << tree.comparisons + tree.buildcomparisons << " comparisons.\n";
 
   std::cout << "Exiting...\n";
   return 0;
