@@ -655,9 +655,11 @@ int main(){
   la.comparisons = 0;
   la.buildcomparisons = 0;
 
-  std::cout << "Finding (16,22) by coordinates.\n";
+  std::cout << "Finding (16,22) and (25,32) by coordinates.\n";
   tree.findByCoord(16,22);
+  tree.findByCoord(25,32);
   la.findByCoord(16,22);
+  la.findByCoord(25,32);
   std::cout << "Array implementation used " << la.comparisons + la.buildcomparisons << " comparisons.\n";
   std::cout << "Tree implementation used " << tree.comparisons + tree.buildcomparisons << " comparisons.\n";
 
