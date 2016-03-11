@@ -8,15 +8,28 @@
 class MinHeap{
   public:
 
-  int arr[101];
-  int sorted[101];
+  int *arr;
+  int *sorted;
   int arrLength;
   int sortedLength;
   
-  MinHeap(){
-    arr[0] = -111;
+  MinHeap(int size){
+
+
+
+
+    arr = new int[size+1];
+    sorted = new int[size+1];
+
+    arr[0] = -1111;
+
     arrLength = 0;
     sortedLength = 0;
+  }
+
+  ~MinHeap(){
+    delete [] arr;
+    delete [] sorted;
   }
 
   void buildHeap(int insert[], int n){
@@ -146,7 +159,7 @@ int main(){
 
   int generated[numPoints];
 
-  MinHeap heap = MinHeap();
+  MinHeap heap = MinHeap(numPoints);
 
   std::cout << "Generating values.\n";
   for(int i = 0; i < numPoints; i++){
