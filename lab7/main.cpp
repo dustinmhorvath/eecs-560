@@ -9,22 +9,25 @@ class MinHeap{
   public:
 
   int arr[101];
-  int length;
+  int sorted[101];
+  int arrLength;
+  int sortedLength;
   
   MinHeap(){
     arr[0] = -111;
-    length = 0;
+    arrLength = 0;
+    sortedLength = 0;
   }
 
   void buildHeap(int insert[], int n){
     // Copy the new values into the array
     for(int i = 0; i < n; i++){
       arr[i+1] = insert[i];
-      length++;
+      arrLength++;
     }
 
     // Does not use parameters anymore, all stored in member vars
-    for(int i = floor(length/2); i > 0; i--){
+    for(int i = floor(arrLength/2); i > 0; i--){
       push_down(i);
     }
   }
@@ -37,10 +40,10 @@ class MinHeap{
     bool cont = true;
     while( cont ){
       int k;
-      if(arr[2*position] > arr[2*position + 1] && 2*position + 1 <= length){
+      if(arr[2*position] > arr[2*position + 1] && 2*position + 1 <= arrLength){
         k = 2*position + 1;
       }
-      else if(2*position <= length){
+      else if(2*position <= arrLength){
         k = 2*position;
       }
       else{
@@ -60,15 +63,42 @@ class MinHeap{
     }
   }
 
+  void deleteMin(){
+    if(arrLength == 0){
+      return;
+    }
+
+    // Grab copy of top, replace with last
+    int temp = arr[1];
+    arr[1] = arr[arrLength];
+    arrLength--;
+
+    // Store the front into a new sorted array.
+    sortedLength++;
+    sorted[sortedLength] = temp;
+
+    push_down(1);
+  }
+
+  void heapSort(){
+    while(arrLength > 0){
+      deleteMin();
+    }
+  }
+
   // Verify function was tested by manually adding very high values to the
   // start of the heap and attempting to verify. Returned failure with bad
   // value.
   bool verify(){
+    if(arrLength == 0){
+      std::cout << "No heap to print\n.";
+      return false;
+    }
     bool verified = true;
     std::cout << "Verifying...\n";
-    for(int i = 1; i < length; i++){
-      if( (arr[2*i + 1] < arr[i] && 2*i+1 <= length ) ||
-        (arr[2*i] < arr[i] && 2*i <= length)  ){
+    for(int i = 1; i < arrLength; i++){
+      if( (arr[2*i + 1] < arr[i] && 2*i+1 <= arrLength ) ||
+        (arr[2*i] < arr[i] && 2*i <= arrLength)  ){
         verified = false;
       }
     }
@@ -81,12 +111,30 @@ class MinHeap{
     return verified;
   }
 
-  void print(){
-    for(int i = 1; i <= length; i++){
-      std::cout << arr[i] << " ";
+  void printHeap(){
+    if(arrLength > 0){
+      for(int i = 1; i <= arrLength; i++){
+        std::cout << arr[i] << " ";
+      }
+    }
+    else{
+      std::cout << "No array to print.";
     }
     std::cout << "\n";
   }
+  
+  void printSorted(){
+    if(sortedLength > 0){
+      for(int i = 1; i <= sortedLength; i++){
+        std::cout << sorted[i] << " ";
+      }
+    }
+    else{
+      std::cout << "No array to print.";
+    }
+    std::cout << "\n";
+  }
+
 
 };
 
@@ -108,12 +156,12 @@ int main(){
   std::cout << "Building heap.\n";
   heap.buildHeap(generated, numPoints);   
   
-  heap.print();
-  
+  heap.printHeap();
   heap.verify();
   
-  
-  
+  heap.heapSort();
+  heap.printSorted();
+    
   std::cout << "Exiting...\n";
   return 0;
 }
