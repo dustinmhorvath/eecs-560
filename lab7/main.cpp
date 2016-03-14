@@ -346,22 +346,31 @@ int main(){
   heap.printSorted();
   heap.verifySorted();
 
-/*  
+  
+  int normals = 0;
+  int modifieds = 0;
+  int runs = 10;
   std::cout << "\n";
-  for(int i = 0; i < 10; i++){
+  for(int i = 0; i < runs; i++){
     heap.generate(2000);
     heap.verifyHeap();
     heap.heapSort();
     heap.verifySorted();
     int heapComparisons = heap.comparisons;
+    heap.comparisons = 0;
     heap.heapSort_modified();
     heap.verifySorted();
     int modifiedComparisons = heap.comparisons;
     std::cout << "Heapsort used " << heapComparisons << " comparisons.\n";
     std::cout << "Modified heapsort used " << modifiedComparisons << " comparisons.\n";
+    normals += heapComparisons;
+    modifieds += modifiedComparisons;
     std::cout << "\n";
   }
-*/
+  
+  std::cout << "Heapsort averaged " << normals/runs << " comparisons.\n";
+  std::cout << "Modified heapsort averaged " << modifieds/runs << " comparisons.\n";
+
 
 
   std::cout << "Exiting...\n";
