@@ -6,19 +6,22 @@
 #include <iostream>
 #include <math.h>
 
+#define SIZE 2000
+
 class MinMaxHeap{
 public:
   int* arr;
   int m_length;
-
+/*
   MinMaxHeap() {
-    arr = nullptr;
     m_length = 0;
+    arr = nullptr;
   }
-
+*/
   MinMaxHeap(int size){
     generate(size);
     m_length = size;
+
     buildHeap();
   }
 
@@ -51,7 +54,7 @@ public:
 
   void generate(int size){
     // Allocate arrays for heap and sorted list.
-    arr = new int[size];
+    arr = new int[SIZE];
 
     // Set out lengths at zero for now.
     // Generates 'size' random values, then store them in our heap array. This
@@ -72,50 +75,49 @@ public:
       arr[i] = temp;
       
     }
-
   }
 
-  void BubbleUp(int i) {
+  void bubbleUp(int i) {
     int index = (int) floor(log2(i + 1)) % 2;
     int parent = floor((i - 1) / 2);
     if (index == 0){ //i is on the min level
       if (arr[i] > arr[parent]) {
         swap(i, parent);
-        BubbleUpMax(parent);
+        bubbleUpMax(parent);
       } 
       else {
-        BubbleUpMin(i);
+        bubbleUpMin(i);
       }
     } 
     else{ //i is on the max level
       if (arr[i] < arr[parent]) {
         swap(i, parent);
-        BubbleUpMin(parent);
+        bubbleUpMin(parent);
       }
       else {
-        BubbleUpMax(i);
+        bubbleUpMax(i);
       }
     }
   }
 
-  void BubbleUpMin(int i) {
+  void bubbleUpMin(int i) {
     int parent = floor((i - 1) / 2);
     int grandparent = floor((parent - 1) / 2);
     if (grandparent != 0 || parent == 1){ // have a grand parent
       if (arr[i] < arr[grandparent]) {
         swap(i, grandparent);
-        BubbleUpMin(grandparent);
+        bubbleUpMin(grandparent);
       }
     }
   }
 
-  void BubbleUpMax(int i) {
+  void bubbleUpMax(int i) {
     int parent = floor((i - 1) / 2);
     int grandparent = floor((parent - 1) / 2);
     if (grandparent != 0){ // have a grand parent
       if (arr[i] > arr[grandparent]) {
         swap(i, grandparent);
-        BubbleUpMax(grandparent);
+        bubbleUpMax(grandparent);
       }
     }
   }
@@ -178,13 +180,13 @@ public:
 
   void insert(int val) {
     if(arr == nullptr) {
-      int* temp = new int[2000];
+      int* temp = new int[SIZE];
       arr = temp;
     }
     if (val > 0) {
       m_length++;
       arr[m_length - 1] = val;
-      BubbleUp(m_length - 1);
+      bubbleUp(m_length - 1);
     }
     else {
       std::cout << "invalid input" << "\n";
@@ -203,23 +205,34 @@ public:
     }
   }
 
-  void deleteMax() {
+  int deleteMax() {
     //compare which index has the biggest value
     if (arr[1] > arr[2]) {
+      int temp = arr[1];
       arr[1] = arr[m_length - 1];
       arr[m_length - 1] = 0;
       m_length--;
       trickleDown(1);
+      return temp;
     }
     else {
+      int temp = arr[2];
       arr[2] = arr[m_length - 1];
       arr[m_length - 1] = 0;
       m_length--;
       trickleDown(2);
+      return temp;
     }
   }
 
-  void levelorder() {
+  void printArr(){
+    for(int i = 0; i < m_length; i++){
+      std::cout << arr[i] << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  void levelorder(){
     if (m_length != 0) {
       std::cout << "Level order: " << "\n";
       int height = 0;
@@ -248,10 +261,10 @@ public:
     }
   }
 
-  void swap(int pos1, int pos2) {
-    int temp = arr[pos1];
-    arr[pos1] = arr[pos2];
-    arr[pos2] = temp;
+  void swap(int x, int y) {
+    int temp = arr[x];
+    arr[x] = arr[y];
+    arr[y] = temp;
   }
 
   int smallestIndex(int i) {
@@ -365,11 +378,12 @@ int main(){
   srand (seed);
   bool cont = true;
   int option = 0;
+  int temp = 0;
 
   // Fyi, this constructor calls 'generate', which generates the random values
   // sets initial length global vars, and calls buildheap. If you want to test
   // some specific seed, change this value for your first set of data.
-  MinMaxHeap heap = MinMaxHeap(25);
+  MinMaxHeap heap = MinMaxHeap(50);
 
 
 
@@ -380,7 +394,8 @@ int main(){
     std::cout << "2. Perform deleteMin\n";
     std::cout << "3. Perform deleteMax\n";
     std::cout << "4. Print the current MinMaxHeap\n";
-    std::cout << "5. Exit\n";
+    std::cout << "5. Run Demo\n";
+    std::cout << "6. Exit\n";
     std::cout << "Select an option: ";
     std::cin >> option;
 
@@ -402,12 +417,41 @@ int main(){
         heap.levelorder();
         break;
       case 5:
+        heap.insert(5);
+        heap.insert(87);
+        heap.deleteMax();
+        heap.printArr();
+        heap.deleteMin();
+        heap.printArr();
+        heap.insert(50);
+        temp = heap.deleteMax();
+        heap.printArr();
+        heap.insert(temp);
+        heap.insert(2);
+        heap.insert(1);
+        heap.insert(100);
+        heap.insert(99);
+        heap.deleteMin();
+        heap.printArr();
+        heap.deleteMax();
+        heap.printArr();
+        heap.deleteMin();
+        heap.printArr();
+        heap.deleteMax();
+        heap.printArr();
+        heap.deleteMax();
+        heap.printArr();
+        heap.deleteMax();
+        heap.printArr();
+
+        break;
+      case 6:
         std::cout << "Exiting...\n";
         cont = false;
         break;
       default:
         std::cout << "Invalid input.\n";
-      break;
+        break;
 
 
 
@@ -417,6 +461,4 @@ int main(){
 
   }
 
-
-  return 0;
 }
