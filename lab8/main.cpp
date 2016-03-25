@@ -1,362 +1,422 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
 #include <math.h>
-#include "Heap.cpp"
 
-class MinHeap{
-  public:
+class MinMaxHeap{
+public:
+  int* arr;
+  int m_length;
 
-  int *arr;
-  int *sorted;
-  int arrLength;
-  int sortedLength;
-  int firstConstruct;
-  int comparisons = 0;
-
-  MinHeap(int size){
-    firstConstruct = true;
-    generate(size);    
+  MinMaxHeap() {
+    arr = nullptr;
+    m_length = 0;
   }
 
-  ~MinHeap(){
-    delete [] arr;
-    delete [] sorted;
+  MinMaxHeap(int size){
+    generate(size);
+    m_length = size;
+    buildHeap();
+  }
+
+  MinMaxHeap(int* arr, int size) {
+    arr = arr;
+    m_length = size;
+    buildHeap();
+  }
+
+  void buildHeap() {
+    int index = (m_length - 1) / 2;
+    for (int i = index; i >= 0; i--) {
+      trickleDown(i);
+    }
+  }
+
+  ~MinMaxHeap() {
+    delete arr;
+  }
+
+  bool checkArr(int value, int start, int end){
+    for(int i = start; i < end; i++){
+      if(arr[i] == value){
+        return true;
+      }
+    }
+    return false;
+
   }
 
   void generate(int size){
-    if(!firstConstruct){
-      delete [] arr;
-      delete [] sorted;
-    }
     // Allocate arrays for heap and sorted list.
-    arr = new int[size+1];
-    sorted = new int[size+1];
+    arr = new int[size];
 
-    // Store a magic number in index 0.
-    arr[0] = -1111;
     // Set out lengths at zero for now.
-    arrLength = 0;
-    sortedLength = 0;  
     // Generates 'size' random values, then store them in our heap array. This
     // is a little inefficient atm because I pulled it from main for
     // abstraction, but I'm not in the mood to clean it up.
-    int generated[size];
     std::cout << "Generating " << size << " random values.\n";
-    int floor = -1000;
-    int ceiling = 1000;
+    int floor = 1;
+    int ceiling = 100;
     int range = (ceiling - floor);
-    
+
     for(int i = 0; i < size; i++){
-      generated[i] = floor + ( std::rand() % ( ceiling - floor + 1 ) );
+      int temp;
+      do{
+        temp = floor + ( std::rand() % ( ceiling - floor + 1 ) );
+      } while( checkArr(temp, 0, i)) ;
+        
+
+      arr[i] = temp;
+      
     }
 
-
-    // Heapify
-    buildHeap(generated, size);
-
-    comparisons = 0;
   }
-  
-  void buildHeap(int insert[], int n){
-    std::cout << "Building heap...\n";
 
-    // Copy the new values into the array
-    for(int i = 0; i < n; i++){
-      arr[i+1] = insert[i];
-      arrLength++;
-    }
-
-    // Does not use parameters anymore, all stored in member vars
-    for(int i = floor(arrLength/2); i > 0; i--){
-      push_down(i);
-    }
-  }
- 
-
-  void push_down(int i){
-    // moves an item down the heap until the correct spot for it is found
-    // The item being moved down the heap starts in position i
-    int val = arr[i];
-    int position = i;
-    bool cont = true;
-    comparisons++;
-    while( cont ){
-      comparisons++;
-      int k;
-      if(arr[2*position] > arr[2*position + 1] && 2*position + 1 <= arrLength){
-        comparisons+=2;
-        k = 2*position + 1;
+  void BubbleUp(int i) {
+    int index = (int) floor(log2(i + 1)) % 2;
+    int parent = floor((i - 1) / 2);
+    if (index == 0){ //i is on the min level
+      if (arr[i] > arr[parent]) {
+        swap(i, parent);
+        BubbleUpMax(parent);
+      } 
+      else {
+        BubbleUpMin(i);
       }
-      else if(2*position <= arrLength){
-        comparisons+=3;
-        k = 2*position;
+    } 
+    else{ //i is on the max level
+      if (arr[i] < arr[parent]) {
+        swap(i, parent);
+        BubbleUpMin(parent);
       }
-      else{
-        comparisons+=3;
-        arr[position] = val;
-        cont = false;
+      else {
+        BubbleUpMax(i);
       }
-
-      comparisons++;
-      if(val > arr[k]){
-        arr[position] = arr[k];
-        position = k;
-      }
-      else{
-        arr[position] = val;
-        cont = false;
-      }
-
     }
   }
 
-  int push_down_modified(int i){
-    // moves an item down the heap until the correct spot for it is found
-    // The item being moved down the heap starts in position i
-    int val = arr[i];
-    int position = i;
-    bool cont = true;
-    comparisons++;
-    while( cont ){
-      comparisons++;
-      int k;
-      if(arr[2*position] > arr[2*position + 1] && 2*position + 1 <= arrLength){
-        comparisons+=2;
-        k = 2*position + 1;
-      }
-      else if(2*position <= arrLength){
-        comparisons+=3;
-        k = 2*position;
-      }
-      else{
-        comparisons+=3;
-        arr[position] = val;
-        cont = false;
-      }
-
-      comparisons++;
-      if(position != k){
-        arr[position] = arr[k];
-        position = k;
-      }
-      else{
-        arr[position] = val;
-        cont = false;
-      }
-
-    }
-    return position;
-  }
-
-
-  void push_up(int i){
-    //move an item up the heap until the correct spot for it is found
-    //The item being moved up the heap starts in position i
-    int val = arr[i];
-    int position = i;
-    comparisons+=2;
-    while ( val < arr[position/2] && position > 1){
-      comparisons+=2;
-      //integer division for find parent
-      arr[position] = arr[position/2];
-      position = position/2;
-    }
-    arr[position] = val;
-  }
-
-
-  void deleteMin(){
-    comparisons++;
-    if(arrLength == 0){
-      return;
-    }
-
-    // Grab copy of top, replace with last
-    int temp = arr[1];
-    arr[1] = arr[arrLength];
-    arrLength--;
-
-    // Store the front into a new sorted array.
-    sortedLength++;
-    sorted[sortedLength] = temp;
-
-    push_down(1);
-  }
-
-  void deleteMin_modified(){
-    comparisons++;
-    if(arrLength == 0){
-      return;
-    }
-
-    // Grab copy of top, replace with last
-    int temp = arr[1];
-    arr[1] = arr[arrLength];
-    arrLength--;
-
-    // Store the front into a new sorted array.
-    sortedLength++;
-    sorted[sortedLength] = temp;
-
-    int tempIndex = push_down_modified(1);
-    push_up(tempIndex);
-  }
-
-  void heapSort(){
-    sortedLength = 0;
-    int tempArr[arrLength + 1];
-    int tempSize = arrLength;
-    
-    for(int i = 0; i <= arrLength; i++){
-      tempArr[i] = arr[i];
-    }
-
-    std::cout << "Running heapsort...\n";
-    comparisons++;
-    while(arrLength > 0){
-      comparisons++;
-      deleteMin();
-    }
-
-    for(int i = 0; i <= tempSize; i++){
-      arr[i] = tempArr[i];
-    }
-    arrLength = tempSize;
-  }
-
-  void heapSort_modified(){
-    sortedLength = 0;
-    int tempArr[arrLength + 1];
-    int tempSize = arrLength;
-    
-    for(int i = 0; i <= arrLength; i++){
-      tempArr[i] = arr[i];
-    }
-
-    
-    std::cout << "Running modified heapsort...\n";
-    comparisons++;
-    while(arrLength > 0){
-      comparisons++;
-      deleteMin_modified();
-    }
-    
-    for(int i = 0; i <= tempSize; i++){
-      arr[i] = tempArr[i];
-    }
-
-    arrLength = tempSize;
-  }
-
-  // Verify function was tested by manually adding very high values to the
-  // start of the heap and attempting to verify. Returned failure with bad
-  // value.
-  bool verifyHeap(){
-    if(arrLength == 0){
-      std::cout << "No heap to print\n.";
-      return false;
-    }
-    bool verified = true;
-    std::cout << "Verifying heap...";
-    // Needs equals here? 
-    // Nah, last one will be implied correct after checking all the others.
-    for(int i = 1; i < arrLength; i++){
-      if( (arr[2*i + 1] < arr[i] && 2*i+1 <= arrLength ) ||
-        (arr[2*i] < arr[i] && 2*i <= arrLength)  ){
-        verified = false;
+  void BubbleUpMin(int i) {
+    int parent = floor((i - 1) / 2);
+    int grandparent = floor((parent - 1) / 2);
+    if (grandparent != 0 || parent == 1){ // have a grand parent
+      if (arr[i] < arr[grandparent]) {
+        swap(i, grandparent);
+        BubbleUpMin(grandparent);
       }
     }
-    if(verified){
-      std::cout << "SUCCESS: Heap is built in MinHeap order.\n";
-    }
-    else{
-      std::cout << "FAIL: Heap was not built in MinHeap order.\n";
-    }
-    return verified;
   }
 
-  bool verifySorted(){
-    bool verified = true;
-    std::cout << "Verifying sorted list...";
-    if(sortedLength == 0){
-      std::cout << "No sorted array to print.\n";
-      return false;
-    }
-    for(int i = 1; i < sortedLength; i++){
-      if(sorted[i] > sorted[i+1]){
-        verified = false;
+  void BubbleUpMax(int i) {
+    int parent = floor((i - 1) / 2);
+    int grandparent = floor((parent - 1) / 2);
+    if (grandparent != 0){ // have a grand parent
+      if (arr[i] > arr[grandparent]) {
+        swap(i, grandparent);
+        BubbleUpMax(grandparent);
       }
     }
-    if(verified){
-      std::cout << "SUCCESS: Sorted array verified in order.\n";
-    }
-    else{
-      std::cout << "FAIL: Sorted array is not in order.\n";
-    }
-    return verified;
   }
 
-  void printHeap(){
-    if(arrLength > 0){
-      for(int i = 1; i <= arrLength; i++){
-        std::cout << arr[i] << " ";
-      }
+  void trickleDown(int i) {
+    int index = (int) floor(log2(i + 1)) % 2;
+    if (index == 0){ //i is on the min level
+      trickleDownMin(i);
     }
-    else{
-      std::cout << "No array to print.";
+    else{ //i is on the max level
+      trickleDownMax(i);
     }
-    std::cout << "\n";
-  }
-  
-  void printSorted(){
-    if(sortedLength > 0){
-      for(int i = 1; i <= sortedLength; i++){
-        std::cout << sorted[i] << " ";
-      }
-    }
-    else{
-      std::cout << "No array to print.";
-    }
-    std::cout << "\n";
   }
 
+  void trickleDownMin(int i) {
+    if (arr[2 * i + 1] != 0){ //if arr[i] has children
+      int firstchildrenPos = 2 * i + 1;
+      int firstgrandchildrenPos = 2 * (2 * i + 1) + 1;
+
+      int m = smallestIndex(i); //find the index of the smallest node
+      int parent = floor((m - 1) / 2);
+      if (m >= firstgrandchildrenPos){ //arr[m] is a grandchild
+        if (arr[m] < arr[i]) {
+          swap(m, i);
+          if (arr[m] > arr[parent]) {
+            swap(m, parent);
+          }
+          trickleDownMin(m);
+        }
+      } 
+      else{ //arr[m] is a child
+        if (arr[m] < arr[i])
+          swap(m, i);
+      }
+    }
+  }
+
+  void trickleDownMax(int i) {
+    if (arr[2 * i + 1] != 0){ //if arr[i] has children
+      int firstchildrenPos = 2 * i + 1;
+      int firstgrandchildrenPos = 2 * (2 * i + 1) + 1;
+
+      int m = biggestIndex(i); //find the index of the smallest node
+      int parent = floor((m - 1) / 2);
+      if (m >= firstgrandchildrenPos){ //arr[m] is a grandchild
+        if (arr[m] > arr[i]) {
+          swap(m, i);
+          if (arr[m] < arr[parent]) {
+            swap(m, parent);
+          }
+          trickleDownMin(m);
+        }
+      }
+      else{ //arr[m] is a child
+        if (arr[m] > arr[i])
+          swap(m, i);
+      }
+    }
+  }
+
+  void insert(int val) {
+    if(arr == nullptr) {
+      int* temp = new int[2000];
+      arr = temp;
+    }
+    if (val > 0) {
+      m_length++;
+      arr[m_length - 1] = val;
+      BubbleUp(m_length - 1);
+    }
+    else {
+      std::cout << "invalid input" << "\n";
+    }
+  }
+
+  void deleteMin() {
+    if (m_length != 0) {
+      arr[0] = arr[m_length - 1];
+      arr[m_length - 1] = 0;
+      m_length--;
+      trickleDown(0);
+    }
+    else {
+      std::cout << "Heap Empty" << "\n";
+    }
+  }
+
+  void deleteMax() {
+    //compare which index has the biggest value
+    if (arr[1] > arr[2]) {
+      arr[1] = arr[m_length - 1];
+      arr[m_length - 1] = 0;
+      m_length--;
+      trickleDown(1);
+    }
+    else {
+      arr[2] = arr[m_length - 1];
+      arr[m_length - 1] = 0;
+      m_length--;
+      trickleDown(2);
+    }
+  }
+
+  void levelorder() {
+    if (m_length != 0) {
+      std::cout << "Level order: " << "\n";
+      int height = 0;
+      int size = m_length;
+      while (size > pow(2, height)) {
+        size - pow(2, height);
+        height++;
+      }
+      int index = 0;
+      for (int i = 0; i <= height; i++) {
+        for (int j = 0; j < pow(2, i); j++) {
+          if (arr[index] != 0) {
+
+            std::cout << arr[index] << " ";
+            index++;
+          }
+          else {
+            break;
+          }
+        }
+        std::cout << "\n";
+      }
+    }
+    else {
+      std::cout << "Heap empty " << "\n";
+    }
+  }
+
+  void swap(int pos1, int pos2) {
+    int temp = arr[pos1];
+    arr[pos1] = arr[pos2];
+    arr[pos2] = temp;
+  }
+
+  int smallestIndex(int i) {
+    int smallestindex = 0;
+    int lastchildrenPos = 2 * i + 2;
+    int lastgrandchildrenPos = 2 * (2 * i + 2) + 2;
+
+    if ((m_length - 1 <= lastchildrenPos) || m_length - 1 <= lastgrandchildrenPos - 4){ //if arr[i] has no grandchildren
+      if (m_length - 1 < lastchildrenPos){ //has only one child
+        smallestindex = m_length - 1;
+      }
+      else{ //has two children
+        if (arr[lastchildrenPos - 1] > arr[lastchildrenPos]) {
+          smallestindex = lastchildrenPos;
+        }
+        else {
+          smallestindex = lastchildrenPos - 1;
+        }
+      }
+      return smallestindex;
+    }
+    if ((m_length - 1 <= lastgrandchildrenPos) && (m_length - 1 > lastgrandchildrenPos - 4)){ //if arr[i] has grandchildren
+      //find the smallest node among all the children and grandchildren
+      if (arr[lastchildrenPos - 1] > arr[lastchildrenPos]) {
+        smallestindex = lastchildrenPos;
+      }
+      else {
+        smallestindex = lastchildrenPos - 1;
+      }
+      for (int i = lastgrandchildrenPos - 3; i <= m_length - 1; i++) {
+        if (arr[i] < arr[smallestindex]) {
+          smallestindex = i;
+        }
+      }
+      return smallestindex;
+    }
+    if (m_length - 1 > lastgrandchildrenPos) {
+      //find the smallest node among all the children and grandchildren
+      if (arr[lastchildrenPos - 1] > arr[lastchildrenPos]) {
+        smallestindex = lastchildrenPos;
+      }
+      else {
+        smallestindex = lastchildrenPos - 1;
+      }
+      for (int i = lastgrandchildrenPos - 3; i <= lastgrandchildrenPos; i++) {
+        if (arr[i] < arr[smallestindex]) {
+          smallestindex = i;
+        }
+      }
+      return smallestindex;
+    }
+  }
+
+  int biggestIndex(int i) {
+    int biggestIndex = 0;
+    int lastchildrenPos = 2 * i + 2;
+    int lastgrandchildrenPos = 2 * (2 * i + 2) + 2;
+
+    if ((m_length - 1 <= lastchildrenPos) || m_length - 1 <= lastgrandchildrenPos - 4){ //if arr[i] has no grandchildren
+      if (m_length - 1 < lastchildrenPos){ //has only one child
+        biggestIndex = m_length - 1;
+      }
+      else{ //has two children
+        if (arr[lastchildrenPos - 1] < arr[lastchildrenPos]) {
+          biggestIndex = lastchildrenPos;
+        }
+        else {
+          biggestIndex = lastchildrenPos - 1;
+        }
+      }
+      return biggestIndex;
+    }
+    if ((m_length - 1 <= lastgrandchildrenPos) && (m_length - 1 > lastgrandchildrenPos - 4)){ //if arr[i] has grandchildren
+      //find the biggest node among all the children and grandchildren
+      if (arr[lastchildrenPos - 1] < arr[lastchildrenPos]) {
+        biggestIndex = lastchildrenPos;
+      }
+      else {
+        biggestIndex = lastchildrenPos - 1;
+      }
+      for (int i = lastgrandchildrenPos - 3; i <= m_length - 1; i++) {
+        if (arr[i] > arr[biggestIndex]) {
+          biggestIndex = i;
+        }
+      }
+      return biggestIndex;
+    }
+    if (m_length - 1 > lastgrandchildrenPos) {
+      //find the biggest node among all the children and grandchildren
+      if (arr[lastchildrenPos - 1] < arr[lastchildrenPos]) {
+        biggestIndex = lastchildrenPos;
+      }
+      else {
+        biggestIndex = lastchildrenPos - 1;
+      }
+      for (int i = lastgrandchildrenPos - 3; i <= lastgrandchildrenPos; i++) {
+        if (arr[i] > arr[biggestIndex]) {
+          biggestIndex = i;
+        }
+      }
+      return biggestIndex;
+    }
+  }
 
 };
 
+
 int main(){
-  
+
   int seed = 5;
   srand (seed);
+  bool cont = true;
+  int option = 0;
 
   // Fyi, this constructor calls 'generate', which generates the random values
   // sets initial length global vars, and calls buildheap. If you want to test
   // some specific seed, change this value for your first set of data.
-  MinHeap heap = MinHeap(25);
-
-  Heap mm = Heap();
-  /*heap.printHeap();
-  heap.verifyHeap();
-  
-  heap.heapSort_modified();
-  heap.printSorted();
-  heap.verifySorted();
-
-  heap.heapSort();
-  heap.printSorted();
-  heap.verifySorted();
-
-  
-  std::cout << "\n";
-  heap.generate(2000);
-  heap.verifyHeap();*/
+  MinMaxHeap heap = MinMaxHeap(25);
 
 
-      
 
 
-  std::cout << "Exiting...\n";
+  while(cont){
+    std::cout << "What do you want to do?\n";
+    std::cout << "1. Insert a new item\n";
+    std::cout << "2. Perform deleteMin\n";
+    std::cout << "3. Perform deleteMax\n";
+    std::cout << "4. Print the current MinMaxHeap\n";
+    std::cout << "5. Exit\n";
+    std::cout << "Select an option: ";
+    std::cin >> option;
+
+    switch(option){
+      case 1:
+        std::cout << "What value to insert? ";
+        std::cin >> option;
+        heap.insert(option);
+        break;
+      case 2:
+        heap.deleteMin();
+        std::cout << "Deletemin completed.\n";
+        break;
+      case 3:
+        heap.deleteMax();
+        std::cout << "Deletemax completed.\n";
+        break;
+      case 4:
+        heap.levelorder();
+        break;
+      case 5:
+        std::cout << "Exiting...\n";
+        cont = false;
+        break;
+      default:
+        std::cout << "Invalid input.\n";
+      break;
+
+
+
+    }
+
+
+
+  }
+
+
   return 0;
 }
