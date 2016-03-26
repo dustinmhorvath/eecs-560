@@ -9,15 +9,11 @@
 #define SIZE 2000
 
 class MinMaxHeap{
+
 public:
   int* arr;
   int m_length;
-/*
-  MinMaxHeap() {
-    m_length = 0;
-    arr = nullptr;
-  }
-*/
+
   MinMaxHeap(int size){
     generate(size);
     m_length = size;
@@ -31,17 +27,17 @@ public:
     buildHeap();
   }
 
-  void buildHeap() {
-    int index = (m_length - 1) / 2;
-    for (int i = index; i >= 0; i--) {
-      trickleDown(i);
-    }
-  }
-
   ~MinMaxHeap() {
     delete arr;
   }
 
+  void buildHeap() {
+    int start = (m_length - 1) / 2;
+    for (int i = start; i >= 0; i--) {
+      trickleDown(i);
+    }
+  }
+  
   bool checkArr(int value, int start, int end){
     for(int i = start; i < end; i++){
       if(arr[i] == value){
@@ -53,13 +49,10 @@ public:
   }
 
   void generate(int size){
-    // Allocate arrays for heap and sorted list.
     arr = new int[SIZE];
 
     // Set out lengths at zero for now.
-    // Generates 'size' random values, then store them in our heap array. This
-    // is a little inefficient atm because I pulled it from main for
-    // abstraction, but I'm not in the mood to clean it up.
+    // Generates 'size' random values, then store them in our heap array.
     std::cout << "Generating " << size << " random values.\n";
     int floor = 1;
     int ceiling = 100;
@@ -133,7 +126,7 @@ public:
   }
 
   void trickleDownMin(int i) {
-    if (arr[2 * i + 1] != 0){ //if arr[i] has children
+    if (arr[2 * i + 1] != 0 && 2*i + 1 < m_length){ //if arr[i] has children
       int firstchildrenPos = 2 * i + 1;
       int firstgrandchildrenPos = 2 * (2 * i + 1) + 1;
 
@@ -374,7 +367,7 @@ public:
 
 int main(){
 
-  int seed = 5;
+  int seed = 10;
   srand (seed);
   bool cont = true;
   int option = 0;
