@@ -1,8 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Dustin Horvath
+ * MinMaxHeap
+ * Does what a MinMaxHeap does. Has a little menu for adding and deleting
+ * values.
+ *
+ *
+ *******************************************************************************
+ * NOTE: RUN THE DEMO to perform all the actions required for this assignment. *
+ *******************************************************************************
+ *
+ *
  */
+
 #include <iostream>
 #include <math.h>
 
@@ -69,49 +78,49 @@ public:
     arr[x] = temp;
   }
 
-  void bubbleUp(int i) {
+  void trickleUp(int i) {
     int parentIndex = floor((i - 1) / 2);
     int index = (int) floor(log2(i + 1)) % 2;
     // index=0 on min level
     if (index == 0){ 
       if (arr[i] > arr[parentIndex]) {
         swap(i, parentIndex);
-        bubbleUpMax(parentIndex);
+        trickleUpMax(parentIndex);
       } 
       else {
-        bubbleUpMin(i);
+        trickleUpMin(i);
       }
     } 
     // index=1 on max level
     else{ 
       if (arr[i] < arr[parentIndex]) {
         swap(i, parentIndex);
-        bubbleUpMin(parentIndex);
+        trickleUpMin(parentIndex);
       }
       else {
-        bubbleUpMax(i);
+        trickleUpMax(i);
       }
     }
   }
 
-  void bubbleUpMin(int i) {
-    int parentIndex = floor((i - 1) / 2);
-    int grandparent = floor((parentIndex - 1) / 2);
-    if (grandparent != 0 || parentIndex == 1){ // have a grand parent
-      if (arr[i] < arr[grandparent]) {
-        swap(i, grandparent);
-        bubbleUpMin(grandparent);
-      }
-    }
-  }
-
-  void bubbleUpMax(int i) {
+  void trickleUpMax(int i) {
     int parentIndex = floor((i - 1) / 2);
     int grandparent = floor((parentIndex - 1) / 2);
     if (grandparent != 0){ // have a grand parent
       if (arr[i] > arr[grandparent]) {
         swap(i, grandparent);
-        bubbleUpMax(grandparent);
+        trickleUpMax(grandparent);
+      }
+    }
+  }
+
+  void trickleUpMin(int i) {
+    int parentIndex = floor((i - 1) / 2);
+    int grandparent = floor((parentIndex - 1) / 2);
+    if (grandparent != 0 || parentIndex == 1){ // have a grand parent
+      if (arr[i] < arr[grandparent]) {
+        swap(i, grandparent);
+        trickleUpMin(grandparent);
       }
     }
   }
@@ -210,7 +219,7 @@ public:
       m_length++;
 
       arr[m_length - 1] = val;
-      bubbleUp(m_length - 1);
+      trickleUp(m_length - 1);
     }
     else {
       std::cout << "Cannot insert bad value" << "\n";
@@ -287,8 +296,8 @@ public:
       int index = 0;
       for (int i = 0; i <= height; i++) {
         for (int j = 0; j < pow(2, i); j++) {
-   
-            if (arr[index] != 0) {
+
+          if (arr[index] != 0) {
 
             std::cout << arr[index] << " ";
             index++;
@@ -303,7 +312,7 @@ public:
     }
   }
 
-  
+
   int getSmallestIndex(int i) {
     int lastChild = 2*i+2;
     int lastGrandchild = 2*(2*i+2)+2;
@@ -327,7 +336,7 @@ public:
       return index;
     }
     // index has values in grandchildren
-    if ((m_length - 1 <= lastGrandchild) && (m_length - 1 > lastGrandchild - 4)){
+    if ( (m_length - 1 <= lastGrandchild) && (m_length - 1 > lastGrandchild - 4) ){
       //find the smallest node among all the children and grandchildren
       if (arr[lastChild - 1] > arr[lastChild]) {
         index = lastChild;
@@ -462,6 +471,7 @@ int main(){
       heap.printArr();
       break;
     case 6:
+      heap.levelorder();
       heap.insert(5);
       heap.insert(87);
       heap.deleteMax();
@@ -488,7 +498,7 @@ int main(){
       heap.printArr();
       heap.deleteMax();
       heap.printArr();
-
+      std::cout << "\n";
       break;
     case 7:
       std::cout << "Exiting...\n";
