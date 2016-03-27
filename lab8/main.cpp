@@ -21,11 +21,6 @@ public:
     buildHeap();
   }
 
-  MinMaxHeap(int* arr, int size) {
-    arr = arr;
-    m_length = size;
-    buildHeap();
-  }
 
   ~MinMaxHeap() {
     delete arr;
@@ -60,19 +55,18 @@ public:
 
     for(int i = 0; i < size; i++){
       int temp;
+      // do-while block ensures that every value inserted is unique
       do{
         temp = floor + ( std::rand() % ( ceiling - floor + 1 ) );
       } while( checkArr(temp, 0, i)) ;
         
-
       arr[i] = temp;
-      
     }
   }
 
   void bubbleUp(int i) {
-    int index = (int) floor(log2(i + 1)) % 2;
     int parent = floor((i - 1) / 2);
+    int index = (int) floor(log2(i + 1)) % 2;
     if (index == 0){ //i is on the min level
       if (arr[i] > arr[parent]) {
         swap(i, parent);
@@ -116,17 +110,27 @@ public:
   }
 
   void trickleDown(int i) {
+    // expression confirmed producing correct values
     int index = (int) floor(log2(i + 1)) % 2;
-    if (index == 0){ //i is on the min level
-      trickleDownMin(i);
+    // i=0 for min level
+    if (index == 0){
+      int temp = trickleDownMin(i);
+      for(int i = 0; i < m_length/2; i++){
+        temp = trickleDownMin(temp);
+      }
     }
-    else{ //i is on the max level
-      trickleDownMax(i);
+    // i=1 for max level
+    else{
+      int temp = trickleDownMax(i);
+      for(int i = 0; i < m_length/2; i++){
+        temp = trickleDownMax(temp);
+      }
+
     }
   }
 
-  void trickleDownMin(int i) {
-    if (arr[2 * i + 1] != 0 && 2*i + 1 < m_length){ //if arr[i] has children
+  int trickleDownMin(int i) {
+    if (arr[2 * i + 1] != 0 && 2*i+1 < m_length){ //if arr[i] has children
       int firstchildrenPos = 2 * i + 1;
       int firstgrandchildrenPos = 2 * (2 * i + 1) + 1;
 
@@ -142,14 +146,17 @@ public:
         }
       } 
       else{ //arr[m] is a child
-        if (arr[m] < arr[i])
+        if (arr[m] < arr[i]){
           swap(m, i);
+        }
       }
+      return m;
     }
+    return i;
   }
 
-  void trickleDownMax(int i) {
-    if (arr[2 * i + 1] != 0){ //if arr[i] has children
+  int trickleDownMax(int i) {
+    if (arr[2 * i + 1] != 0 && 2*i+1 < m_length){ //if arr[i] has children
       int firstchildrenPos = 2 * i + 1;
       int firstgrandchildrenPos = 2 * (2 * i + 1) + 1;
 
@@ -168,7 +175,9 @@ public:
         if (arr[m] > arr[i])
           swap(m, i);
       }
+      return m;
     }
+    return i;
   }
 
   void insert(int val) {
@@ -367,7 +376,7 @@ public:
 
 int main(){
 
-  int seed = 10;
+  int seed = 0;
   srand (seed);
   bool cont = true;
   int option = 0;
@@ -378,17 +387,15 @@ int main(){
   // some specific seed, change this value for your first set of data.
   MinMaxHeap heap = MinMaxHeap(50);
 
-
-
-
   while(cont){
     std::cout << "What do you want to do?\n";
     std::cout << "1. Insert a new item\n";
     std::cout << "2. Perform deleteMin\n";
     std::cout << "3. Perform deleteMax\n";
-    std::cout << "4. Print the current MinMaxHeap\n";
-    std::cout << "5. Run Demo\n";
-    std::cout << "6. Exit\n";
+    std::cout << "4. Print levelOrder.\n";
+    std::cout << "5. Print flat array.\n";
+    std::cout << "6. Run Demo\n";
+    std::cout << "7. Exit\n";
     std::cout << "Select an option: ";
     std::cin >> option;
 
@@ -410,6 +417,9 @@ int main(){
         heap.levelorder();
         break;
       case 5:
+        heap.printArr();
+        break;
+      case 6:
         heap.insert(5);
         heap.insert(87);
         heap.deleteMax();
@@ -438,7 +448,7 @@ int main(){
         heap.printArr();
 
         break;
-      case 6:
+      case 7:
         std::cout << "Exiting...\n";
         cont = false;
         break;
