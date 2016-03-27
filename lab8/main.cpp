@@ -21,7 +21,6 @@ public:
     buildHeap();
   }
 
-
   ~MinMaxHeap() {
     delete arr;
   }
@@ -32,7 +31,7 @@ public:
       trickleDown(i);
     }
   }
-  
+
   bool checkArr(int value, int start, int end){
     for(int i = start; i < end; i++){
       if(arr[i] == value){
@@ -59,27 +58,35 @@ public:
       do{
         temp = floor + ( std::rand() % ( ceiling - floor + 1 ) );
       } while( checkArr(temp, 0, i)) ;
-        
+
       arr[i] = temp;
     }
   }
 
+  void swap(int x, int y) {
+    int temp = arr[y];
+    arr[y] = arr[x];
+    arr[x] = temp;
+  }
+
   void bubbleUp(int i) {
-    int parent = floor((i - 1) / 2);
+    int parentIndex = floor((i - 1) / 2);
     int index = (int) floor(log2(i + 1)) % 2;
-    if (index == 0){ //i is on the min level
-      if (arr[i] > arr[parent]) {
-        swap(i, parent);
-        bubbleUpMax(parent);
+    // index=0 on min level
+    if (index == 0){ 
+      if (arr[i] > arr[parentIndex]) {
+        swap(i, parentIndex);
+        bubbleUpMax(parentIndex);
       } 
       else {
         bubbleUpMin(i);
       }
     } 
-    else{ //i is on the max level
-      if (arr[i] < arr[parent]) {
-        swap(i, parent);
-        bubbleUpMin(parent);
+    // index=1 on max level
+    else{ 
+      if (arr[i] < arr[parentIndex]) {
+        swap(i, parentIndex);
+        bubbleUpMin(parentIndex);
       }
       else {
         bubbleUpMax(i);
@@ -88,9 +95,9 @@ public:
   }
 
   void bubbleUpMin(int i) {
-    int parent = floor((i - 1) / 2);
-    int grandparent = floor((parent - 1) / 2);
-    if (grandparent != 0 || parent == 1){ // have a grand parent
+    int parentIndex = floor((i - 1) / 2);
+    int grandparent = floor((parentIndex - 1) / 2);
+    if (grandparent != 0 || parentIndex == 1){ // have a grand parent
       if (arr[i] < arr[grandparent]) {
         swap(i, grandparent);
         bubbleUpMin(grandparent);
@@ -99,8 +106,8 @@ public:
   }
 
   void bubbleUpMax(int i) {
-    int parent = floor((i - 1) / 2);
-    int grandparent = floor((parent - 1) / 2);
+    int parentIndex = floor((i - 1) / 2);
+    int grandparent = floor((parentIndex - 1) / 2);
     if (grandparent != 0){ // have a grand parent
       if (arr[i] > arr[grandparent]) {
         swap(i, grandparent);
@@ -114,64 +121,78 @@ public:
     int index = (int) floor(log2(i + 1)) % 2;
     // i=0 for min level
     if (index == 0){
-      int temp = trickleDownMin(i);
-      for(int i = 0; i < m_length/2; i++){
-        temp = trickleDownMin(temp);
-      }
+      int temp = trickleDownToMinLevel(i);
+      temp = trickleDownToMinLevel(temp);
     }
     // i=1 for max level
     else{
-      int temp = trickleDownMax(i);
-      for(int i = 0; i < m_length/2; i++){
-        temp = trickleDownMax(temp);
-      }
+      int temp = trickleDownToMaxLevel(i);
+      temp = trickleDownToMaxLevel(temp);
 
     }
   }
 
-  int trickleDownMin(int i) {
-    if (arr[2 * i + 1] != 0 && 2*i+1 < m_length){ //if arr[i] has children
+  int trickleDownToMinLevel(int i) {
+    // arr[i] is not leaf
+    if (arr[2 * i + 1] != 0 && 2*i+1 < m_length){
       int firstchildrenPos = 2 * i + 1;
       int firstgrandchildrenPos = 2 * (2 * i + 1) + 1;
 
-      int m = smallestIndex(i); //find the index of the smallest node
-      int parent = floor((m - 1) / 2);
-      if (m >= firstgrandchildrenPos){ //arr[m] is a grandchild
+      // gets the smallest node
+      int m = getSmallestIndex(i);
+      int parentIndex = floor((m - 1) / 2);
+
+
+      // if m is a grandchild
+      if (m >= firstgrandchildrenPos){
         if (arr[m] < arr[i]) {
           swap(m, i);
-          if (arr[m] > arr[parent]) {
-            swap(m, parent);
+          if (arr[m] > arr[parentIndex]) {
+            swap(m, parentIndex);
           }
-          trickleDownMin(m);
+          trickleDownToMinLevel(m);
         }
       } 
-      else{ //arr[m] is a child
+
+
+
+      // else m is a child
+      else{
         if (arr[m] < arr[i]){
           swap(m, i);
         }
       }
+      // return last index evaluated
       return m;
     }
     return i;
   }
 
-  int trickleDownMax(int i) {
-    if (arr[2 * i + 1] != 0 && 2*i+1 < m_length){ //if arr[i] has children
+  int trickleDownToMaxLevel(int i) {
+    // i is not leaf
+    if (arr[2 * i + 1] != 0 && 2*i+1 < m_length){
       int firstchildrenPos = 2 * i + 1;
       int firstgrandchildrenPos = 2 * (2 * i + 1) + 1;
 
-      int m = biggestIndex(i); //find the index of the smallest node
-      int parent = floor((m - 1) / 2);
-      if (m >= firstgrandchildrenPos){ //arr[m] is a grandchild
+      // gets smallest node
+      int m = getLargestIndex(i);
+      int parentIndex = floor((m - 1) / 2);
+
+
+      // m is a grandchild
+      if (m >= firstgrandchildrenPos){
         if (arr[m] > arr[i]) {
           swap(m, i);
-          if (arr[m] < arr[parent]) {
-            swap(m, parent);
+          if (arr[m] < arr[parentIndex]) {
+            swap(m, parentIndex);
           }
-          trickleDownMin(m);
+          trickleDownToMinLevel(m);
         }
       }
-      else{ //arr[m] is a child
+
+
+      // else m is a child
+      else{
         if (arr[m] > arr[i])
           swap(m, i);
       }
@@ -187,43 +208,63 @@ public:
     }
     if (val > 0) {
       m_length++;
+
       arr[m_length - 1] = val;
       bubbleUp(m_length - 1);
     }
     else {
-      std::cout << "invalid input" << "\n";
+      std::cout << "Cannot insert bad value" << "\n";
     }
   }
 
-  void deleteMin() {
+  int deleteMin() {
+    int temp;
     if (m_length != 0) {
+      // swap last value into root
+      temp = arr[0];
       arr[0] = arr[m_length - 1];
+      // shorten arr
       arr[m_length - 1] = 0;
       m_length--;
+      // push the new root down to proper position
       trickleDown(0);
+      std::cout << "Deleted min " << temp << ".\n";
+      return temp;
     }
     else {
-      std::cout << "Heap Empty" << "\n";
+      std::cout << "Heap is empty" << "\n";
+      return 0;
     }
   }
 
   int deleteMax() {
-    //compare which index has the biggest value
-    if (arr[1] > arr[2]) {
-      int temp = arr[1];
-      arr[1] = arr[m_length - 1];
-      arr[m_length - 1] = 0;
-      m_length--;
-      trickleDown(1);
-      return temp;
+    if(m_length > 0){
+      //compare which root child has the biggest value
+      if (arr[1] > arr[2]) {
+        int temp = arr[1];
+        // swap from end
+        arr[1] = arr[m_length - 1];
+        // shorten
+        arr[m_length - 1] = 0;
+        m_length--;
+        // push down to proper location
+        trickleDown(1);
+        std::cout << "Deleted max " << temp << ".\n";
+        return temp;
+      }
+      else {
+        int temp = arr[2];
+        arr[2] = arr[m_length - 1];
+        arr[m_length - 1] = 0;
+        m_length--;
+        trickleDown(2);
+        std::cout << "Deleted max " << temp << ".\n";
+        return temp;
+      }
     }
     else {
-      int temp = arr[2];
-      arr[2] = arr[m_length - 1];
-      arr[m_length - 1] = 0;
-      m_length--;
-      trickleDown(2);
-      return temp;
+      std::cout << "Heap is empty" << "\n";
+      return 0;
     }
   }
 
@@ -235,10 +276,10 @@ public:
   }
 
   void levelorder(){
-    if (m_length != 0) {
-      std::cout << "Level order: " << "\n";
-      int height = 0;
+    if (m_length > 0) {
+      std::cout << "Printing level order..." << "\n";
       int size = m_length;
+      int height = 0;
       while (size > pow(2, height)) {
         size - pow(2, height);
         height++;
@@ -246,128 +287,129 @@ public:
       int index = 0;
       for (int i = 0; i <= height; i++) {
         for (int j = 0; j < pow(2, i); j++) {
-          if (arr[index] != 0) {
+   
+            if (arr[index] != 0) {
 
             std::cout << arr[index] << " ";
             index++;
           }
-          else {
-            break;
-          }
         }
+
         std::cout << "\n";
       }
     }
     else {
-      std::cout << "Heap empty " << "\n";
+      std::cout << "No elements in heap\n";
     }
   }
 
-  void swap(int x, int y) {
-    int temp = arr[x];
-    arr[x] = arr[y];
-    arr[y] = temp;
-  }
+  
+  int getSmallestIndex(int i) {
+    int lastChild = 2*i+2;
+    int lastGrandchild = 2*(2*i+2)+2;
 
-  int smallestIndex(int i) {
-    int smallestindex = 0;
-    int lastchildrenPos = 2 * i + 2;
-    int lastgrandchildrenPos = 2 * (2 * i + 2) + 2;
-
-    if ((m_length - 1 <= lastchildrenPos) || m_length - 1 <= lastgrandchildrenPos - 4){ //if arr[i] has no grandchildren
-      if (m_length - 1 < lastchildrenPos){ //has only one child
-        smallestindex = m_length - 1;
+    int index = 0;
+    // index has no grandchildren
+    if ((m_length - 1 <= lastChild) || m_length - 1 <= lastGrandchild - 4){
+      // only one child
+      if (m_length - 1 < lastChild){
+        index = m_length - 1;
       }
-      else{ //has two children
-        if (arr[lastchildrenPos - 1] > arr[lastchildrenPos]) {
-          smallestindex = lastchildrenPos;
+      // has children in both positions
+      else{
+        if (arr[lastChild - 1] > arr[lastChild]) {
+          index = lastChild;
         }
         else {
-          smallestindex = lastchildrenPos - 1;
+          index = lastChild - 1;
         }
       }
-      return smallestindex;
+      return index;
     }
-    if ((m_length - 1 <= lastgrandchildrenPos) && (m_length - 1 > lastgrandchildrenPos - 4)){ //if arr[i] has grandchildren
+    // index has values in grandchildren
+    if ((m_length - 1 <= lastGrandchild) && (m_length - 1 > lastGrandchild - 4)){
       //find the smallest node among all the children and grandchildren
-      if (arr[lastchildrenPos - 1] > arr[lastchildrenPos]) {
-        smallestindex = lastchildrenPos;
+      if (arr[lastChild - 1] > arr[lastChild]) {
+        index = lastChild;
       }
       else {
-        smallestindex = lastchildrenPos - 1;
+        index = lastChild - 1;
       }
-      for (int i = lastgrandchildrenPos - 3; i <= m_length - 1; i++) {
-        if (arr[i] < arr[smallestindex]) {
-          smallestindex = i;
+      for (int i = lastGrandchild - 3; i <= m_length - 1; i++) {
+        if (arr[i] < arr[index]) {
+          index = i;
         }
       }
-      return smallestindex;
+      return index;
     }
-    if (m_length - 1 > lastgrandchildrenPos) {
+    if (m_length - 1 > lastGrandchild) {
       //find the smallest node among all the children and grandchildren
-      if (arr[lastchildrenPos - 1] > arr[lastchildrenPos]) {
-        smallestindex = lastchildrenPos;
+      if (arr[lastChild - 1] > arr[lastChild]) {
+        index = lastChild;
       }
       else {
-        smallestindex = lastchildrenPos - 1;
+        index = lastChild - 1;
       }
-      for (int i = lastgrandchildrenPos - 3; i <= lastgrandchildrenPos; i++) {
-        if (arr[i] < arr[smallestindex]) {
-          smallestindex = i;
+      for (int i = lastGrandchild - 3; i <= lastGrandchild; i++) {
+        if (arr[i] < arr[index]) {
+          index = i;
         }
       }
-      return smallestindex;
+      return index;
     }
   }
 
-  int biggestIndex(int i) {
-    int biggestIndex = 0;
-    int lastchildrenPos = 2 * i + 2;
-    int lastgrandchildrenPos = 2 * (2 * i + 2) + 2;
+  int getLargestIndex(int i) {
+    int lastChild = 2*i+2;
+    int lastGrandchild = 2*(2*i+2)+2;
 
-    if ((m_length - 1 <= lastchildrenPos) || m_length - 1 <= lastgrandchildrenPos - 4){ //if arr[i] has no grandchildren
-      if (m_length - 1 < lastchildrenPos){ //has only one child
-        biggestIndex = m_length - 1;
+    int index = 0;
+    if ((m_length - 1 <= lastChild) || m_length - 1 <= lastGrandchild - 4){
+      // only one child
+      if (m_length - 1 < lastChild){
+        index = m_length - 1;
       }
-      else{ //has two children
-        if (arr[lastchildrenPos - 1] < arr[lastchildrenPos]) {
-          biggestIndex = lastchildrenPos;
+      // two children
+      else{
+        if (arr[lastChild - 1] < arr[lastChild]) {
+          index = lastChild;
         }
         else {
-          biggestIndex = lastchildrenPos - 1;
+          index = lastChild - 1;
         }
       }
-      return biggestIndex;
+      return index;
     }
-    if ((m_length - 1 <= lastgrandchildrenPos) && (m_length - 1 > lastgrandchildrenPos - 4)){ //if arr[i] has grandchildren
+    // index has grandchildren
+    if ((m_length - 1 <= lastGrandchild) && (m_length - 1 > lastGrandchild - 4)){
       //find the biggest node among all the children and grandchildren
-      if (arr[lastchildrenPos - 1] < arr[lastchildrenPos]) {
-        biggestIndex = lastchildrenPos;
+      if (arr[lastChild - 1] < arr[lastChild]) {
+        index = lastChild;
       }
       else {
-        biggestIndex = lastchildrenPos - 1;
+        index = lastChild - 1;
       }
-      for (int i = lastgrandchildrenPos - 3; i <= m_length - 1; i++) {
-        if (arr[i] > arr[biggestIndex]) {
-          biggestIndex = i;
+      for (int i = lastGrandchild - 3; i <= m_length - 1; i++) {
+        if (arr[i] > arr[index]) {
+          index = i;
         }
       }
-      return biggestIndex;
+      return index;
     }
-    if (m_length - 1 > lastgrandchildrenPos) {
+    if (m_length - 1 > lastGrandchild) {
       //find the biggest node among all the children and grandchildren
-      if (arr[lastchildrenPos - 1] < arr[lastchildrenPos]) {
-        biggestIndex = lastchildrenPos;
+      if (arr[lastChild - 1] < arr[lastChild]) {
+        index = lastChild;
       }
       else {
-        biggestIndex = lastchildrenPos - 1;
+        index = lastChild - 1;
       }
-      for (int i = lastgrandchildrenPos - 3; i <= lastgrandchildrenPos; i++) {
-        if (arr[i] > arr[biggestIndex]) {
-          biggestIndex = i;
+      for (int i = lastGrandchild - 3; i <= lastGrandchild; i++) {
+        if (arr[i] > arr[index]) {
+          index = i;
         }
       }
-      return biggestIndex;
+      return index;
     }
   }
 
@@ -400,61 +442,61 @@ int main(){
     std::cin >> option;
 
     switch(option){
-      case 1:
-        std::cout << "What value to insert? ";
-        std::cin >> option;
-        heap.insert(option);
-        break;
-      case 2:
-        heap.deleteMin();
-        std::cout << "Deletemin completed.\n";
-        break;
-      case 3:
-        heap.deleteMax();
-        std::cout << "Deletemax completed.\n";
-        break;
-      case 4:
-        heap.levelorder();
-        break;
-      case 5:
-        heap.printArr();
-        break;
-      case 6:
-        heap.insert(5);
-        heap.insert(87);
-        heap.deleteMax();
-        heap.printArr();
-        heap.deleteMin();
-        heap.printArr();
-        heap.insert(50);
-        temp = heap.deleteMax();
-        heap.printArr();
-        heap.insert(temp);
-        heap.insert(2);
-        heap.insert(1);
-        heap.insert(100);
-        heap.insert(99);
-        heap.deleteMin();
-        heap.printArr();
-        heap.deleteMax();
-        heap.printArr();
-        heap.deleteMin();
-        heap.printArr();
-        heap.deleteMax();
-        heap.printArr();
-        heap.deleteMax();
-        heap.printArr();
-        heap.deleteMax();
-        heap.printArr();
+    case 1:
+      std::cout << "What value to insert? ";
+      std::cin >> option;
+      heap.insert(option);
+      break;
+    case 2:
+      heap.deleteMin();
+      std::cout << "Deletemin completed.\n";
+      break;
+    case 3:
+      heap.deleteMax();
+      std::cout << "Deletemax completed.\n";
+      break;
+    case 4:
+      heap.levelorder();
+      break;
+    case 5:
+      heap.printArr();
+      break;
+    case 6:
+      heap.insert(5);
+      heap.insert(87);
+      heap.deleteMax();
+      heap.printArr();
+      heap.deleteMin();
+      heap.printArr();
+      heap.insert(50);
+      temp = heap.deleteMax();
+      heap.printArr();
+      heap.insert(temp);
+      heap.insert(2);
+      heap.insert(1);
+      heap.insert(100);
+      heap.insert(99);
+      heap.deleteMin();
+      heap.printArr();
+      heap.deleteMax();
+      heap.printArr();
+      heap.deleteMin();
+      heap.printArr();
+      heap.deleteMax();
+      heap.printArr();
+      heap.deleteMax();
+      heap.printArr();
+      heap.deleteMax();
+      heap.printArr();
 
-        break;
-      case 7:
-        std::cout << "Exiting...\n";
-        cont = false;
-        break;
-      default:
-        std::cout << "Invalid input.\n";
-        break;
+      break;
+    case 7:
+      std::cout << "Exiting...\n";
+      cont = false;
+      break;
+    default:
+      std::cout << "Invalid input.\n";
+      break;
 
 
 
