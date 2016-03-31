@@ -18,7 +18,7 @@
 #define SIZE 2000
 
 //void generate(int size, int*& arr){
-int* generate(int size){
+int* generate(int size, int lower, int upper){
   // Allocate arrays for heap and sorted list.
   int* arr = new int[size+1];
 
@@ -26,8 +26,8 @@ int* generate(int size){
   arr[0] = -1111;
 
   std::cout << "Generating " << size << " random values.\n";
-  int floor = 1;
-  int ceiling = 50000;
+  int floor = lower;
+  int ceiling = upper;
   int range = (ceiling - floor);
 
   for(int i = 1; i <= size; i++){
@@ -601,18 +601,19 @@ int main(){
   srand (seed);
 
 
-  int sizes[] = {5, 10, 5};
+  int sizes[] = {100000, 200000, 400000};
+  int numsizes = sizeof(sizes)/sizeof(*sizes);
   
-  for(int trial = 0; trial < sizeof(sizes)/sizeof(*sizes); trial++){
+  for(int trial = 0; trial < numsizes; trial++){
 
-    int* arr = generate(sizes[trial]);
+    int* arr = generate(sizes[trial], -sizes[trial], sizes[trial]);
     int* arr2 = new int[sizes[trial]];
 
     for(int i = 0; i < sizes[trial]; i++){
       arr2[i] = arr[i+1];
     }
 
-    for(int i = 0; i <= sizes[trial]; i++){
+    /*for(int i = 0; i <= sizes[trial]; i++){
       std::cout << arr[i] << " ";
     }
     std::cout << "\n";
@@ -620,12 +621,13 @@ int main(){
       std::cout << arr2[i] << " ";
     }
     std::cout << "\n";
+    */
 
     MinMaxHeap minmaxheap = MinMaxHeap(sizes[trial], arr2);
     MinHeap minheap = MinHeap(sizes[trial], arr);
 
-    minmaxheap.levelorder();
-    minheap.printHeap();
+    //minmaxheap.levelorder();
+    //minheap.printHeap();
 
   }
 
