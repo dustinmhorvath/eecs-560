@@ -1,13 +1,7 @@
 /*
  * Dustin Horvath
- * MinMaxHeap
- * Does what a MinMaxHeap does. Has a little menu for adding and deleting
- * values.
- *
- *
- *******************************************************************************
- * NOTE: RUN THE DEMO to perform all the actions required for this assignment. *
- *******************************************************************************
+ * MINMAXHEAP VS MINHEAP WWF THROWDOWN
+ * ONE ENTERS ONLY ONE WILL LEAVE
  *
  *
  */
@@ -600,11 +594,14 @@ int main(){
   int seed = 0;
   srand (seed);
 
-
   int sizes[] = {100000, 200000, 400000};
   int numsizes = sizeof(sizes)/sizeof(*sizes);
   
+  clock_t t0, t1;
+
   for(int trial = 0; trial < numsizes; trial++){
+
+    t0 = clock();
 
     int* arr = generate(sizes[trial], -sizes[trial], sizes[trial]);
     int* arr2 = new int[sizes[trial]];
@@ -629,6 +626,7 @@ int main(){
     //minmaxheap.levelorder();
     //minheap.printHeap();
 
+    std::cout << clock()-t0 << "\n";
   }
 
 }
