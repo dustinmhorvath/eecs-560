@@ -489,7 +489,7 @@ public:
 
     }
   }
- 
+
   void deleteMin(){
     if(arrLength == 0){
       return;
@@ -599,32 +599,35 @@ int main(){
 
   int seed = 0;
   srand (seed);
+
+
+  int sizes[] = {5, 10, 5};
   
-  
-  int size = 5;
-  int* arr;
-  arr = generate(size);
-  int* arr2 = new int[size];
-  for(int i = 0; i < size; i++){
-    arr2[i] = arr[i+1];
+  for(int trial = 0; trial < sizeof(sizes)/sizeof(*sizes); trial++){
+
+    int* arr = generate(sizes[trial]);
+    int* arr2 = new int[sizes[trial]];
+
+    for(int i = 0; i < sizes[trial]; i++){
+      arr2[i] = arr[i+1];
+    }
+
+    for(int i = 0; i <= sizes[trial]; i++){
+      std::cout << arr[i] << " ";
+    }
+    std::cout << "\n";
+    for(int i = 0; i < sizes[trial]; i++){
+      std::cout << arr2[i] << " ";
+    }
+    std::cout << "\n";
+
+    MinMaxHeap minmaxheap = MinMaxHeap(sizes[trial], arr2);
+    MinHeap minheap = MinHeap(sizes[trial], arr);
+
+    minmaxheap.levelorder();
+    minheap.printHeap();
+
   }
-  
-  for(int i = 0; i <= size; i++){
-    std::cout << arr[i] << " ";
-  }
-  std::cout << "\n";
-  for(int i = 0; i < size; i++){
-    std::cout << arr2[i] << " ";
-  }
-  std::cout << "\n";
-
-
-
-  MinMaxHeap minmaxheap = MinMaxHeap(size, arr2);
-  MinHeap minheap = MinHeap(size, arr);
-
-  minmaxheap.levelorder();
-  minheap.printHeap();
 
 }
 
