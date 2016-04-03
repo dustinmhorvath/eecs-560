@@ -13,6 +13,8 @@
 // used for pretty output
 #include <iomanip>
 
+#define BSIZE 1000
+
 int* generate(int size, int lower, int upper){
   // Allocate arrays for heap and sorted list.
   int* arr = new int[size+1];
@@ -38,7 +40,7 @@ public:
   int m_length;
 
   MinMaxHeap(int *array, int size){
-    arr = new int[size + 1000];
+    arr = new int[size + BSIZE];
     for(int i = 0; i < size; i++){
       arr[i] = array[i];
     }
@@ -412,7 +414,7 @@ class MinHeap{
 public:
 
   MinHeap(int size, int* unsortedarray){
-    arr = new int[size+1000];
+    arr = new int[size+BSIZE];
     for(int i = 0; i <= size; i++){
       arr[i] = unsortedarray[i];
     }

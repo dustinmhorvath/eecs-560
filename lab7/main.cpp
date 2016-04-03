@@ -209,17 +209,20 @@ class MinHeap{
     int tempArr[arrLength + 1];
     int tempSize = arrLength;
     
+    // Get myself a copy of this thang for the other heapsort
     for(int i = 0; i <= arrLength; i++){
       tempArr[i] = arr[i];
     }
 
     std::cout << "Running heapsort...\n";
     comparisons++;
+    // Keep popping off front and downheaping until the array is gone
     while(arrLength > 0){
       comparisons++;
       deleteMin();
     }
 
+    // Restore copy
     for(int i = 0; i <= tempSize; i++){
       arr[i] = tempArr[i];
     }
@@ -231,6 +234,7 @@ class MinHeap{
     int tempArr[arrLength + 1];
     int tempSize = arrLength;
     
+    // Get myself a copy of this thang for the other heapsort
     for(int i = 0; i <= arrLength; i++){
       tempArr[i] = arr[i];
     }
@@ -238,11 +242,13 @@ class MinHeap{
     
     std::cout << "Running modified heapsort...\n";
     comparisons++;
+    // Keep popping off front and downheaping until the array is gone
     while(arrLength > 0){
       comparisons++;
       deleteMin_modified();
     }
     
+    // Restore copy
     for(int i = 0; i <= tempSize; i++){
       arr[i] = tempArr[i];
     }
