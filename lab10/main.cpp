@@ -20,21 +20,6 @@ int main(){
 
   clock_t t0;
   t0 = clock();
-  //double coin = (double)rand() / RAND_MAX;
-
-  //int floor = 1;
-  //int ceiling = 50000;
-  //int ops = floor + ( std::rand() % ( ceiling - floor + 1 ) );
-
-  //rand()%(width*height) gets random cell
-  //rand()%4 get random 0-3
-
-  // NESW = 0,1,2,3
-  // cell - width = N
-  // cell + width = S
-  // cell - 1 = W
-  // cell + 1 = E
-
 
   int width = 5;
   int height = 5;
@@ -51,15 +36,18 @@ int main(){
     horizontal[i]= 0;
   }
 
-  int numconnected = width*(height-1);
+  int numconnected = width*(height);
   int connected[numconnected];
   for(int i = 0; i < numconnected; i++){
     connected[i]= -1;
   }
 
   int count = 0;
-  int num = 15;
+  int num = 50;
+  //int cell = 0;
+  //for(int node = 0; node < numconnected; node++){
   while(count < num){
+    //cell = node;
     // Randomly select a cell
     int cell = rand()%(width*height);
     std::cout << "Cell: " << cell << "\n";
@@ -69,22 +57,22 @@ int main(){
       int wall = rand()%4;
       std::cout << "Wall: " << wall << "\n\n";
       // North
-      if(wall == 0 && cell-width >= 0){
+      if(wall == 0 && cell >= width){
         connected[cell] = cell-width;
         horizontal[cell-width] = 1;
       }
       // East
-      else if(wall == 1 && (cell+1)%width != 0 && cell+1 < width*height){
+      else if(wall == 1 && (cell+1)%width != 0){
         connected[cell] = cell+1;
         vertical[cell - cell/width] = 1;
       }
       // South
-      else if(wall == 2 && cell+width < width*height){
+      else if(wall == 2 && (cell+width) < width*height){
         connected[cell] = cell+width;
         horizontal[cell] = 1;
       }
       // West
-      else if((cell-1)%width != 0 && cell-1 >= 0){
+      else if(wall == 3 && cell%width != 0){
         connected[cell] = cell-1;
         vertical[cell - cell/width - 1] = 1;
       }
@@ -117,16 +105,16 @@ int main(){
   for(int i = 0; i < height; i++){
     std::cout << std::left << std::setw(colwidth) << "|";
     for(int j = 0; j < width; j++){
-      int cell = j + i*5;
+      int cell = j + i*width;
       
-      if(horizontal[cell] == 1){
+      if(horizontal[cell] == 1 && cell+width <= height*width){
         std::cout << std::left << std::setw(colwidth) << "";
       }
       else{
         std::cout << std::left << std::setw(colwidth) << "_";
       }
 
-      if(vertical[cell - cell/width ] == 1){
+      if(vertical[cell - cell/width ] == 1 && (cell+1)%width != 0){
         std::cout << std::left << std::setw(colwidth) << "";
       }
       else{
