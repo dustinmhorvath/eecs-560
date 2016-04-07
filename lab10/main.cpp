@@ -25,10 +25,10 @@ int main(){
   //int floor = 1;
   //int ceiling = 50000;
   //int ops = floor + ( std::rand() % ( ceiling - floor + 1 ) );
-  
+
   //rand()%(width*height) gets random cell
   //rand()%4 get random 0-3
-  
+
   // NESW = 0,1,2,3
   // cell - width = N
   // cell + width = S
@@ -44,7 +44,7 @@ int main(){
   for(int i = 0; i < numvert; i++){
     vertical[i]= 0;
   }
-  
+
   int numhor = width*(height-1);
   int horizontal[numhor]; //should initialize as zeroes
   for(int i = 0; i < numhor; i++){
@@ -57,38 +57,43 @@ int main(){
     connected[i]= -1;
   }
 
-  // Randomly select a cell
-  int cell = rand()%(width*height);
-  std::cout << "Cell: " << cell << "\n";
+  int count = 0;
+  int num = 15;
+  while(count < num){
+    // Randomly select a cell
+    int cell = rand()%(width*height);
+    std::cout << "Cell: " << cell << "\n";
     // Check if it's connected already
-  if(connected[cell] == -1){
-    // Randomly select a wall
-    int wall = rand()%4;
-    std::cout << "Wall: " << wall << "\n";
-    // North
-    if(wall == 0 && cell-width >= 0){
-      connected[cell] = cell-width;
-      horizontal[cell-width] = 1;
+    if(connected[cell] == -1){
+      // Randomly select a wall
+      int wall = rand()%4;
+      std::cout << "Wall: " << wall << "\n\n";
+      // North
+      if(wall == 0 && cell-width >= 0){
+        connected[cell] = cell-width;
+        horizontal[cell-width] = 1;
+      }
+      // East
+      else if(wall == 1 && (cell+1)%width != 0 && cell+1 < width*height){
+        connected[cell] = cell+1;
+        vertical[cell - cell/width] = 1;
+      }
+      // South
+      else if(wall == 2 && cell+width < width*height){
+        connected[cell] = cell+width;
+        horizontal[cell] = 1;
+      }
+      // West
+      else if((cell-1)%width != 0 && cell-1 >= 0){
+        connected[cell] = cell-1;
+        vertical[cell - cell/width - 1] = 1;
+      }
+
     }
-    // East
-    else if(wall == 1 && cell+1 < width*height){
-      connected[cell] = cell+1;
-      vertical[cell - cell/width] = 1;
-    }
-    // South
-    else if(wall == 2 && cell+width < width*height){
-      connected[cell] = cell+width;
-      horizontal[cell+width] = 1;
-    }
-    // West
-    else if(cell-1 > width*height){
-      connected[cell] = cell-1;
-      vertical[cell - cell/width - 1] = 1;
-    }
-    
+    count++;
   }
 
-
+  // TEST CHECK OUTPUT
   for(int i = 0; i < numvert; i++){
     std::cout << vertical[i] << " ";
   }
@@ -100,7 +105,41 @@ int main(){
   for(int i = 0; i < numconnected; i++){
     std::cout << connected[i] << " ";
   }
+  std::cout << "\n\n";
+  // END TEST
+
+
+  int colwidth = 1;
+  for(int i = 0; i < width; i++){
+    std::cout << std::left << std::setw(colwidth) << " _";
+  }
   std::cout << "\n";
+  for(int i = 0; i < height; i++){
+    std::cout << std::left << std::setw(colwidth) << "|";
+    for(int j = 0; j < width; j++){
+      int cell = j + i*5;
+      
+      if(horizontal[cell] == 1){
+        std::cout << std::left << std::setw(colwidth) << "";
+      }
+      else{
+        std::cout << std::left << std::setw(colwidth) << "_";
+      }
+
+      if(vertical[cell - cell/width ] == 1){
+        std::cout << std::left << std::setw(colwidth) << "";
+      }
+      else{
+        std::cout << std::left << std::setw(colwidth) << "|";
+      }
+            
+    }
+    std::cout << "\n";
+  }
+  std::cout << "\n";
+
+  
+
 
 }
 
