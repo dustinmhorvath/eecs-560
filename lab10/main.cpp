@@ -39,48 +39,51 @@ public:
   }
 
   void unionSets(int root1, int root2){
-    if(connected[root2] < connected[root1]){
+    /*if(connected[root2] < connected[root1]){
       connected[root1] = root2;
-    }
-    else{
+      }
+      else{
       if(connected[root1] == connected[root2]){
-        --connected[root1];
+      --connected[root1];
       }
       connected[root2] = root1;
-    }
+      }*/
+    connected[root2] = root1;
   }
 
   void buildmaze(){
-    
-    for(int i = 0; i < numconnected-1; i++){
+
+    for(int i = 0; i < numconnected - 1; i++){
+
       int wall = rand()%4;
       int cell = i;
-      // North
-        if(wall == 0 && cell >= m_width){
-          unionSets(cell, cell-m_width);
-          horizontal[cell-m_width] = 1;
-        }
-        // East
-        else if(wall == 1 && (cell+1)%m_width != 0){
-          unionSets(cell, cell+1);
-          vertical[cell - cell/m_width] = 1;
-        }
-        // South
-        else if(wall == 2 && (cell+m_width) < m_width*m_height){
-          unionSets(cell, cell+m_width);
-          horizontal[cell] = 1;
-        }
-        // West
-        else if(wall == 3 && cell%m_width != 0){
-          unionSets(cell, cell-1);
-          vertical[cell - cell/m_width - 1] = 1;
-        }
-        else{
-          i--;
-        }
-        
 
-      
+      // North
+      if(wall == 0 && cell >= m_width && find(cell) != find(cell-m_width)){
+        unionSets(cell, cell-m_width);
+        horizontal[cell-m_width] = 1;
+      }
+      // East
+      else if(wall == 1 && (cell+1)%m_width != 0 && find(cell) != find(cell+1)){
+        unionSets(cell, cell+1);
+        vertical[cell - cell/m_width] = 1;
+      }
+      // South
+      else if(wall == 2 && (cell+m_width) < m_width*m_height && find(cell) != find(cell+m_width)){
+        unionSets(cell, cell+m_width);
+        horizontal[cell] = 1;
+      }
+      // West
+      else if(wall == 3 && cell%m_width != 0 && find(cell) != find(cell-1)){
+        unionSets(cell, cell-1);
+        vertical[cell - cell/m_width - 1] = 1;
+      }
+      else{
+        i--;
+      }
+
+
+
 
     }
   }
@@ -112,26 +115,36 @@ public:
 
   void print(){
     int colwidth = 1;
-    for(int i = 0; i < m_width; i++){
+
+    //print top row
+    std::cout << std::left << std::setw(colwidth) << "  ";
+    for(int i = 1; i < m_width; i++){
       std::cout << std::left << std::setw(colwidth) << " _";
     }
+
     std::cout << "\n";
     for(int i = 0; i < m_height; i++){
-      std::cout << std::left << std::setw(colwidth) << "|";
+      
+      if(i==0){
+        std::cout << std::left << std::setw(colwidth) << "";
+      }
+      else{
+        std::cout << std::left << std::setw(colwidth) << "|";
+      }
       for(int j = 0; j < m_width; j++){
         int cell = j + i*m_width;
 
         if(horizontal[cell] == 1 && cell+m_width <= m_height*m_width){
           std::cout << std::left << std::setw(colwidth) << "";
         }
-        else{
+        else if(i!=m_height-1 || j!=m_width-1){
           std::cout << std::left << std::setw(colwidth) << "_";
         }
 
         if(vertical[cell - cell/m_width ] == 1 && (cell+1)%m_width != 0){
           std::cout << std::left << std::setw(colwidth) << "";
         }
-        else{
+        else if(i!=m_height-1 || j!=m_width-1){
           std::cout << std::left << std::setw(colwidth) << "|";
         }
 
@@ -141,7 +154,7 @@ public:
   }
 
 
-  private:
+private:
   int* connected;
   int* vertical;
   int* horizontal;
@@ -151,36 +164,37 @@ public:
   int m_width;
   int m_height;
 
-  };
+};
 
 
-  int main(){
+int main(){
 
-    int seed = 0;
-    srand (seed);
+  int seed = 0;
+  srand (seed);
 
-    clock_t t0;
-    t0 = clock();
+  clock_t t0;
+  t0 = clock();
 
-    int width = 5;
-    int height = 5;
-
-
-    DisjSets disset = DisjSets(width, height);
-    disset.print();
-    disset.buildmaze();
-//    std::cout << "find 2: " << disset.find(2) << "\n";
-//    disset.printvalues();
-    disset.print();
-    disset.printvalues();
+  int width = 10;
+  int height = 10;
 
 
-
-
-    std::cout << "\n";
+  DisjSets disset = DisjSets(width, height);
+  disset.print();
+  disset.buildmaze();
+  //    std::cout << "find 2: " << disset.find(2) << "\n";
+  //    disset.printvalues();
+  disset.print();
+  disset.printvalues();
+  std::cout << disset.find(1) << "\n";
+  std::cout << disset.find(11) << "\n";
 
 
 
+  std::cout << "\n";
 
-  }
+
+
+
+}
 
