@@ -9,12 +9,16 @@
 #include <math.h>
 // used for pretty output
 #include <iomanip>
-#include <vector>
 
-class DisjSets{
+#define WIDTH 25
+#define HEIGHT 15
+#define SEED 0
+
+
+class Disjoint{
 
 public:
-  DisjSets(int width, int height){
+  Disjoint(int width, int height){
     m_width = width;
     m_height = height;
     numconnected = m_width*(m_height);
@@ -39,6 +43,8 @@ public:
   }
 
   void unionSets(int root1, int root2){
+    // NOTE: THIS TERRIBLE VERSION FROM THE TEXTBOOK DOESN'T WORK
+    //  JUST AN FYI
     /*if(connected[root2] < connected[root1]){
       connected[root1] = root2;
       }
@@ -48,7 +54,12 @@ public:
       }
       connected[root2] = root1;
       }*/
-    connected[root2] = root1;
+    
+    //connected[root2] = root1;
+    
+    int xset = find(root1);
+    int yset = find(root2);
+    connected[xset] = yset;
   }
 
   void buildmaze(){
@@ -169,25 +180,26 @@ private:
 
 int main(){
 
-  int seed = 0;
+  int seed = SEED;
   srand (seed);
 
   clock_t t0;
   t0 = clock();
 
-  int width = 10;
-  int height = 10;
+  int width = WIDTH;
+  int height = HEIGHT;
 
 
-  DisjSets disset = DisjSets(width, height);
+  Disjoint disset = Disjoint(width, height);
   disset.print();
+  std::cout << "\nBuilding maze....\n\n";
   disset.buildmaze();
   //    std::cout << "find 2: " << disset.find(2) << "\n";
   //    disset.printvalues();
   disset.print();
-  disset.printvalues();
-  std::cout << disset.find(1) << "\n";
-  std::cout << disset.find(11) << "\n";
+  //disset.printvalues();
+  //std::cout << disset.find(1) << "\n";
+  //std::cout << disset.find(11) << "\n";
 
 
 
