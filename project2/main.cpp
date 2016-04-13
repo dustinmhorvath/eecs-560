@@ -10,11 +10,14 @@
 #include <sstream>
 #include <string>
 
+
 class HashTable{
 public:
 
   HashTable(std::string names[], std::string addresses[], std::string phones[],
-      std::string charges[], int numentries){
+      std::string charges[], int a_numentries){
+
+    numentries = a_numentries;
 
     namelist = names;
     addresslist = addresses;
@@ -42,9 +45,11 @@ private:
   std::string* phonelist;
   std::string* chargeslist;
 
-  int nameTable[47] = {-1};
-  int phoneTable[53] = {-1};
-  int areaCodeTable[113] = {-1};
+  int numentries;
+
+  int* nameTable[47] = {nullptr};
+  int* phoneTable[53] = {nullptr};
+  int* areaCodeTable[113] = {nullptr};
 
   bool nameTableBuilt;
   bool phoneTableBuilt;
@@ -57,7 +62,24 @@ private:
   }
 
   void buildNameTable(){
+    if(nameTableBuilt){
 
+    }
+    else if(phoneTableBuilt){
+
+    }
+    else if(areaCodeTableBuilt){
+
+    }
+    else{
+      // For every name
+      for(int i = 0; i < numentries; i++){
+        std::cout << namelist[i] << "\n";
+        int hash = nameHash(namelist[i]);
+
+
+      }
+    }
   }
 
   void buildPhoneTable(){
@@ -75,8 +97,14 @@ private:
 
   int nameHash(std::string name){
     int a = (int)name.at(1);
-    int b = (int)name.at(6);
-    int c = (int)name.at(12);
+    int b = 0;
+    if(name.length() > 6){
+      b = (int)name.at(6);
+    }
+    int c = 0;
+    if(name.length() > 12){
+      c = (int)name.at(12);
+    }
     int value = a + b + c;
 
     return value%47;
@@ -87,6 +115,36 @@ private:
     int areacode = std::stoi(areastring);
     return (areacode*(areacode + 3)) % 113 ;
   }
+
+
+};
+
+class DicNode{
+  public:
+
+  DicNode(std::string a_name, std::string a_address, int a_phone, double a_charges){
+    name = a_name;
+    address = a_address;
+    phonenumber = a_phone;
+    charges = a_charges;
+
+    m_next = nullptr;
+  }
+
+  void setNext(DicNode* a_next){
+    m_next = a_next;
+  }
+
+  DicNode* getNext(){
+    return m_next;
+  }
+
+private:
+std::string name;
+std::string address;
+int phonenumber;
+double charges;
+DicNode* m_next;
 
 
 };
