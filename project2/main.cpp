@@ -21,6 +21,11 @@ public:
     phonelist = phones;
     chargeslist = charges;
 
+    nameTableBuilt = false;
+    phoneTableBuilt = false;
+    areaCodeTableBuilt = false;
+
+    buildtable();
 
   }
 
@@ -37,6 +42,31 @@ private:
   std::string* phonelist;
   std::string* chargeslist;
 
+  int nameTable[47] = {-1};
+  int phoneTable[53] = {-1};
+  int areaCodeTable[113] = {-1};
+
+  bool nameTableBuilt;
+  bool phoneTableBuilt;
+  bool areaCodeTableBuilt;
+
+  void buildtable(){
+    buildNameTable();
+    buildPhoneTable();
+    buildAreaCodeTable();
+  }
+
+  void buildNameTable(){
+
+  }
+
+  void buildPhoneTable(){
+
+  }
+
+  void buildAreaCodeTable(){
+
+  }
 
   int phoneHash(std::string phonenumber){
     std::string lastfour = phonenumber.substr(6);
