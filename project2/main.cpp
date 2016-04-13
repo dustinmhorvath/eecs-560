@@ -12,6 +12,17 @@
 
 #define MAXENTRIES 500
 
+class HashTable{
+  HashTable(int size){
+    
+
+  }
+
+
+
+
+}
+
 inline std::string trim_right_copy(
     const std::string& s,
     const std::string& delimiters = " \f\n\r\t\v" )
@@ -53,12 +64,14 @@ int areacodeHash(std::string phonenumber){
   return areacode;
 }
 
+
 int main(){
 
-  std::string namelist[MAXENTRIES];
-  std::string addresslist[MAXENTRIES];
-  std::string phonelist[MAXENTRIES];
-  std::string chargeslist[MAXENTRIES];
+  // Initialize arrays with magic number
+  std::string namelist[MAXENTRIES] = {-1};
+  std::string addresslist[MAXENTRIES] = {-1};
+  std::string phonelist[MAXENTRIES] = {-1};
+  std::string chargeslist[MAXENTRIES] = {-1};
 
 
   std::string phonebookfile = "phonebook.txt";
@@ -89,6 +102,7 @@ int main(){
   //std::cout << phoneHash(phonelist[0]) << "\n";
   //std::cout << nameHash(namelist[0]) << "\n";
   //std::cout << areacodeHash(phonelist[0]) << "\n";
+
   
 
 
