@@ -10,6 +10,37 @@
 #include <sstream>
 #include <string>
 
+class DicNode{
+  public:
+
+  DicNode(std::string a_name, std::string a_address, std::string a_phone, std::string a_charges){
+    name = a_name;
+    address = a_address;
+    phonenumber = a_phone;
+    charges = a_charges;
+
+    m_next = nullptr;
+  }
+
+  void setNext(DicNode* a_next){
+    m_next = a_next;
+  }
+
+  DicNode* getNext(){
+    return m_next;
+  }
+
+private:
+std::string name;
+std::string address;
+std::string phonenumber;
+std::string charges;
+DicNode* m_next;
+
+
+};
+
+
 
 class HashTable{
 public:
@@ -47,9 +78,9 @@ private:
 
   int numentries;
 
-  int* nameTable[47] = {nullptr};
-  int* phoneTable[53] = {nullptr};
-  int* areaCodeTable[113] = {nullptr};
+  DicNode* nameTable[47] = {nullptr};
+  DicNode* phoneTable[53] = {nullptr};
+  DicNode* areaCodeTable[113] = {nullptr};
 
   bool nameTableBuilt;
   bool phoneTableBuilt;
@@ -62,23 +93,22 @@ private:
   }
 
   void buildNameTable(){
-    if(nameTableBuilt){
-
-    }
-    else if(phoneTableBuilt){
-
-    }
-    else if(areaCodeTableBuilt){
-
-    }
-    else{
-      // For every name
-      for(int i = 0; i < numentries; i++){
-        std::cout << namelist[i] << "\n";
-        int hash = nameHash(namelist[i]);
-
-
+    //if(nameTableBuilt){
+    //else if(phoneTableBuilt){
+    //else if(areaCodeTableBuilt){
+    
+    // For every name
+    for(int i = 0; i < numentries; i++){
+      int hash = nameHash(namelist[i]);
+      DicNode* current_node = nameTable[hash];
+      while(current_node != nullptr){
+        current_node = current_node -> getNext();
       }
+
+      current_node = new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+
+
+
     }
   }
 
@@ -115,36 +145,6 @@ private:
     int areacode = std::stoi(areastring);
     return (areacode*(areacode + 3)) % 113 ;
   }
-
-
-};
-
-class DicNode{
-  public:
-
-  DicNode(std::string a_name, std::string a_address, int a_phone, double a_charges){
-    name = a_name;
-    address = a_address;
-    phonenumber = a_phone;
-    charges = a_charges;
-
-    m_next = nullptr;
-  }
-
-  void setNext(DicNode* a_next){
-    m_next = a_next;
-  }
-
-  DicNode* getNext(){
-    return m_next;
-  }
-
-private:
-std::string name;
-std::string address;
-int phonenumber;
-double charges;
-DicNode* m_next;
 
 
 };
