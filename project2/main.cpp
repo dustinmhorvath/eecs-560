@@ -149,7 +149,7 @@ private:
     return nullptr;
   }
 
-  void addByName(std::string name, std::string address, std::string phone, std::string charges){
+  void addToNameTable(std::string name, std::string address, std::string phone, std::string charges){
     int hash = nameHash(name);
     DicNode* current_node = nameTable[hash];
 
@@ -170,7 +170,7 @@ private:
     }
   }
 
-  void addByPhone(std::string name, std::string address, std::string phone, std::string charges){
+  void addToPhoneTable(std::string name, std::string address, std::string phone, std::string charges){
     int hash = phoneHash(name);
     DicNode* current_node = phoneTable[hash];
 
@@ -190,12 +190,16 @@ private:
       phoneTable[hash] = new DicNode(name, address, phone, charges);
     }
   }
-  
+ 
+  void addToAreaCodeTable(std::string name, std::string address, std::string phone, std::string charges){
+
+  }
+
   void buildNameTable(){
     
     // For every name
     for(int i = 0; i < numentries; i++){
-      addByName(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+      addToNameTable(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
     }
     nameTableBuilt = true;
   }
@@ -203,13 +207,18 @@ private:
   void buildPhoneTable(){
     // For every phone number
     for(int i = 0; i < numentries; i++){
-      addByPhone(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+      addToPhoneTable(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
     }
     phoneTableBuilt = true;
 
   }
 
   void buildAreaCodeTable(){
+    // For every phone number
+    for(int i = 0; i < numentries; i++){
+      addToAreaCodeTable(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+    }
+    areaCodeTableBuilt = true;
 
   }
 
