@@ -36,7 +36,10 @@ class DicNode{
   std::string getPhoneNumber(){
     return phonenumber;
   }
-  std::string getcharges(){
+  std::string getAddress(){
+    return address;
+  }
+  std::string getCharges(){
     return charges;
   }
 
@@ -74,9 +77,8 @@ public:
   }
 
   void test(){
-    std::cout << phoneHash(phonelist[0]) << "\n";
-    std::cout << areacodeHash(phonelist[0]) << "\n";
-    std::cout << nameHash(namelist[0]) << "\n";
+    DicNode* testptr = findByName("XEROX");
+    std::cout << testptr -> getAddress() << "\n";
   }
 
 
@@ -98,8 +100,8 @@ private:
 
   void buildtable(){
     buildNameTable();
-    buildPhoneTable();
-    buildAreaCodeTable();
+    //buildPhoneTable();
+    //buildAreaCodeTable();
   }
 
   // Search nameTable for a_name and return a pointer to it if found, else
@@ -150,49 +152,47 @@ private:
   }
 
   void addToNameTable(std::string name, std::string address, std::string phone, std::string charges){
+    // Get the top hash table node
     int hash = nameHash(name);
-    DicNode* current_node = nameTable[hash];
-
+    DicNode* hash_node = nameTable[hash];
+   
+    // Check if already exists elsewhere and remember location
+    DicNode* found_node = nullptr;
     if(findByAreaCode(phone) != nullptr){
-      nameTable[hash] = findByAreaCode(phone);
+      found_node = findByAreaCode(phone);
     }
     else if(findByPhoneNumber(phone) != nullptr){
-      nameTable[hash] = findByPhoneNumber(phone);
+      found_node = findByPhoneNumber(phone);
     }
-    else if(current_node != nullptr){
-      while(current_node -> getNext() != nullptr){
-        current_node = current_node -> getNext();
-      }
-      current_node -> setNext(new DicNode(name, address, phone, charges));
-    }
-    else{
+    
+    // If nullptr at this hash value, make a new node
+    if(hash_node == nullptr){
       nameTable[hash] = new DicNode(name, address, phone, charges);
+    }
+    // If there is a node, find where next nullptr is
+    else{
+      // Keep looking for nullptr while next node exists
+      while(hash_node -> getNext() != nullptr){
+        hash_node = hash_node -> getNext();
+      }
+      // Now we know that NEXT node is null, so we can set next to a new one
+      // If search for existing node was successful
+      if(found_node != nullptr){
+        hash_node -> setNext(found_node);
+      }
+      // If not, add new node to linked list
+      else{
+        hash_node -> setNext(new DicNode(name, address, phone, charges));
+      }
     }
   }
 
   void addToPhoneTable(std::string name, std::string address, std::string phone, std::string charges){
-    int hash = phoneHash(name);
-    DicNode* current_node = phoneTable[hash];
-
-    if(findByAreaCode(phone) != nullptr){
-      phoneTable[hash] = findByAreaCode(phone);
-    }
-    else if(findByName(name) != nullptr){
-      phoneTable[hash] = findByName(name);
-    }
-    else if(current_node != nullptr){
-      while(current_node -> getNext() != nullptr){
-        current_node = current_node -> getNext();
-      }
-      current_node -> setNext(new DicNode(name, address, phone, charges));
-    }
-    else{
-      phoneTable[hash] = new DicNode(name, address, phone, charges);
-    }
+  
   }
  
   void addToAreaCodeTable(std::string name, std::string address, std::string phone, std::string charges){
-
+  
   }
 
   void buildNameTable(){
