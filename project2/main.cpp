@@ -96,6 +96,13 @@ public:
   }
 
   void test(){
+    printNameTableNodes();
+    printPhoneTableNodes();
+    printAreaCodeTableNodes();
+  }
+
+  void printNameTableNodes(){
+    int counter = 0;
     for(int i = 0; i < 47; i++){
       DicNode* tempptr = nameTable[i];
       if(tempptr != nullptr){
@@ -104,10 +111,50 @@ public:
       while(tempptr != nullptr){
         std::cout << tempptr -> getName() << "\n";
         tempptr = tempptr -> getNextByName();
+        counter++;
       }
       std::cout << "\n";
     }
+    std::cout << "Found " << counter << " nodes.\n\n";
+
   }
+
+  void printPhoneTableNodes(){
+    int counter = 0;
+    for(int i = 0; i < 53; i++){
+      DicNode* tempptr = phoneTable[i];
+      if(tempptr != nullptr){
+        std::cout << phoneHash(tempptr -> getPhoneNumber()) << "\n";
+      }
+      while(tempptr != nullptr){
+        std::cout << tempptr -> getPhoneNumber() << "\n";
+        tempptr = tempptr -> getNextByPhone();
+        counter++;
+      }
+      std::cout << "\n";
+    }
+    std::cout << "Found " << counter << " nodes.\n\n";
+
+  }
+
+  void printAreaCodeTableNodes(){
+    int counter = 0;
+    for(int i = 0; i < 113; i++){
+      DicNode* tempptr = areaCodeTable[i];
+      if(tempptr != nullptr){
+        std::cout << areacodeHash(tempptr -> getPhoneNumber()) << "\n";
+      }
+      while(tempptr != nullptr){
+        std::cout << tempptr -> getPhoneNumber() << "\n";
+        tempptr = tempptr -> getNextByArea();
+        counter++;
+      }
+      std::cout << "\n";
+    }
+    std::cout << "Found " << counter << " nodes.\n\n";
+
+  }
+
 
 
 private:
@@ -128,8 +175,8 @@ private:
 
   void buildtable(){
     buildNameTable();
-    //buildPhoneTable();
-    //buildAreaCodeTable();
+    buildPhoneTable();
+    buildAreaCodeTable();
   }
 
   // Search nameTable for a_name and return a pointer to it if found, else
@@ -152,7 +199,7 @@ private:
     return nullptr;
   }
 
-  DicNode* findByAreaCode(DicNode* item){
+  DicNode* findByArea(DicNode* item){
     if(!areaCodeTableBuilt){
       return nullptr;
     }
@@ -195,8 +242,8 @@ private:
    
     // Check if already exists elsewhere and remember location
     DicNode* found_node = nullptr;
-    if(findByAreaCode(item) != nullptr){
-      found_node = findByAreaCode(item);
+    if(findByArea(item) != nullptr){
+      found_node = findByArea(item);
     }
     else if(findByPhoneNumber(item) != nullptr){
       found_node = findByPhoneNumber(item);
@@ -225,11 +272,77 @@ private:
   }
 
   void addToPhoneTable(DicNode* item){
-  
+    // Get the top hash table node
+    int hash = phoneHash(item -> getPhoneNumber());
+    DicNode* hash_node = phoneTable[hash];
+   
+    // Check if already exists elsewhere and remember location
+    DicNode* found_node = nullptr;
+    if(findByArea(item) != nullptr){
+      found_node = findByArea(item);
+    }
+    else if(findByName(item) != nullptr){
+      found_node = findByName(item);
+    }
+    
+    // If nullptr at this hash value, make a new node
+    if(hash_node == nullptr){
+      phoneTable[hash] = item;
+    }
+    // If there is a node, find where next nullptr is
+    else{
+      // Keep looking for nullptr while next node exists
+      while(hash_node -> getNextByPhone() != nullptr){
+        hash_node = hash_node -> getNextByPhone();
+      }
+      // Now we know that NEXT node is null, so we can set next to a new one
+      // If search for existing node was successful
+      if(found_node != nullptr){
+        hash_node -> setNextPhone(found_node);
+      }
+      // If not, add new node to linked list
+      else{
+        hash_node -> setNextPhone(item);
+      }
+    }
+
   }
  
   void addToAreaCodeTable(DicNode* item){
-  
+    // Get the top hash table node
+    int hash = areacodeHash(item -> getPhoneNumber());
+    DicNode* hash_node = areaCodeTable[hash];
+   
+    // Check if already exists elsewhere and remember location
+    DicNode* found_node = nullptr;
+    if(findByPhoneNumber(item) != nullptr){
+      found_node = findByPhoneNumber(item);
+    }
+    else if(findByName(item) != nullptr){
+      found_node = findByName(item);
+    }
+    
+    // If nullptr at this hash value, make a new node
+    if(hash_node == nullptr){
+      areaCodeTable[hash] = item;
+    }
+    // If there is a node, find where next nullptr is
+    else{
+      // Keep looking for nullptr while next node exists
+      while(hash_node -> getNextByArea() != nullptr){
+        hash_node = hash_node -> getNextByArea();
+      }
+      // Now we know that NEXT node is null, so we can set next to a new one
+      // If search for existing node was successful
+      if(found_node != nullptr){
+        hash_node -> setNextArea(found_node);
+      }
+      // If not, add new node to linked list
+      else{
+        hash_node -> setNextArea(item);
+      }
+    }
+
   }
 
   void buildNameTable(){
