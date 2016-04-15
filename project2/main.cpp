@@ -19,16 +19,33 @@ class DicNode{
     phonenumber = a_phone;
     charges = a_charges;
 
-    m_next = nullptr;
+    m_next_name = nullptr;
+    m_next_phone = nullptr;
+    m_next_area = nullptr;
   }
 
-  void setNext(DicNode* a_next){
-    m_next = a_next;
+  void setNextName(DicNode* a_next){
+    m_next_name = a_next;
+  }
+  void setNextArea(DicNode* a_next){
+    m_next_area = a_next;
+  }
+  void setNextPhone(DicNode* a_next){
+    m_next_phone = a_next;
   }
 
-  DicNode* getNext(){
-    return m_next;
+
+
+  DicNode* getNextByName(){
+    return m_next_name;
   }
+  DicNode* getNextByArea(){
+    return m_next_area;
+  }
+  DicNode* getNextByPhone(){
+    return m_next_phone;
+  }
+
 
   std::string getName(){
     return name;
@@ -48,7 +65,9 @@ std::string name;
 std::string address;
 std::string phonenumber;
 std::string charges;
-DicNode* m_next;
+DicNode* m_next_name;
+DicNode* m_next_area;
+DicNode* m_next_phone;
 
 
 };
@@ -77,8 +96,17 @@ public:
   }
 
   void test(){
-    DicNode* testptr = findByName("XEROX");
-    std::cout << testptr -> getAddress() << "\n";
+    for(int i = 0; i < 47; i++){
+      DicNode* tempptr = nameTable[i];
+      if(tempptr != nullptr){
+        std::cout << nameHash(tempptr -> getName()) << "\n";
+      }
+      while(tempptr != nullptr){
+        std::cout << tempptr -> getName() << "\n";
+        tempptr = tempptr -> getNextByName();
+      }
+      std::cout << "\n";
+    }
   }
 
 
@@ -106,92 +134,101 @@ private:
 
   // Search nameTable for a_name and return a pointer to it if found, else
   // return a nullptr.
-  DicNode* findByName(std::string a_name){
+  DicNode* findByName(DicNode* item){
     if(!nameTableBuilt){
       return nullptr;
     }
-    int namehash = nameHash(a_name);
+    int namehash = nameHash(item -> getName());
     DicNode* current_node = nameTable[namehash];
     while(current_node != nullptr){
-      if((current_node -> getName()).compare(a_name) == 0){
+      if((current_node -> getName()).compare(item -> getName()) == 0 &&
+        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
         return current_node;
       }
-      current_node = current_node -> getNext();
+      current_node = current_node -> getNextByName();
     }
     return nullptr;
   }
 
-  DicNode* findByAreaCode(std::string phonenumber){
+  DicNode* findByAreaCode(DicNode* item){
     if(!areaCodeTableBuilt){
       return nullptr;
     }
-    int areacodehash = areacodeHash(phonenumber);
+    int areacodehash = areacodeHash(item -> getPhoneNumber());
     DicNode* current_node = areaCodeTable[areacodehash];
     while(current_node != nullptr){
-      if((current_node -> getPhoneNumber()).compare(phonenumber) == 0){
+      if((current_node -> getName()).compare(item -> getName()) == 0 &&
+        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
         return current_node;
       }
-      current_node = current_node -> getNext();
+      current_node = current_node -> getNextByArea();
     }
     return nullptr;
   }
 
-  DicNode* findByPhoneNumber(std::string phonenumber){
+  DicNode* findByPhoneNumber(DicNode* item){
     if(!phoneTableBuilt){
       return nullptr;
     }
-    int phonehash = phoneHash(phonenumber);
+    int phonehash = phoneHash(item -> getPhoneNumber());
     DicNode* current_node = phoneTable[phonehash];
     while(current_node != nullptr){
-      if((current_node -> getPhoneNumber()).compare(phonenumber) == 0){
+      if((current_node -> getName()).compare(item -> getName()) == 0 &&
+        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
         return current_node;
       }
-      current_node = current_node -> getNext();
+      current_node = current_node -> getNextByPhone();
     }
     return nullptr;
   }
 
-  void addToNameTable(std::string name, std::string address, std::string phone, std::string charges){
+  void addToNameTable(DicNode* item){
     // Get the top hash table node
-    int hash = nameHash(name);
+    int hash = nameHash(item -> getName());
     DicNode* hash_node = nameTable[hash];
    
     // Check if already exists elsewhere and remember location
     DicNode* found_node = nullptr;
-    if(findByAreaCode(phone) != nullptr){
-      found_node = findByAreaCode(phone);
+    if(findByAreaCode(item) != nullptr){
+      found_node = findByAreaCode(item);
     }
-    else if(findByPhoneNumber(phone) != nullptr){
-      found_node = findByPhoneNumber(phone);
+    else if(findByPhoneNumber(item) != nullptr){
+      found_node = findByPhoneNumber(item);
     }
     
     // If nullptr at this hash value, make a new node
     if(hash_node == nullptr){
-      nameTable[hash] = new DicNode(name, address, phone, charges);
+      nameTable[hash] = item;
     }
     // If there is a node, find where next nullptr is
     else{
       // Keep looking for nullptr while next node exists
-      while(hash_node -> getNext() != nullptr){
-        hash_node = hash_node -> getNext();
+      while(hash_node -> getNextByName() != nullptr){
+        hash_node = hash_node -> getNextByName();
       }
       // Now we know that NEXT node is null, so we can set next to a new one
       // If search for existing node was successful
       if(found_node != nullptr){
-        hash_node -> setNext(found_node);
+        hash_node -> setNextName(found_node);
       }
       // If not, add new node to linked list
       else{
-        hash_node -> setNext(new DicNode(name, address, phone, charges));
+        hash_node -> setNextName(item);
       }
     }
   }
 
-  void addToPhoneTable(std::string name, std::string address, std::string phone, std::string charges){
+  void addToPhoneTable(DicNode* item){
   
   }
  
-  void addToAreaCodeTable(std::string name, std::string address, std::string phone, std::string charges){
+  void addToAreaCodeTable(DicNode* item){
   
   }
 
@@ -199,7 +236,7 @@ private:
     
     // For every name
     for(int i = 0; i < numentries; i++){
-      addToNameTable(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+      addToNameTable(new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]));
     }
     nameTableBuilt = true;
   }
@@ -207,7 +244,7 @@ private:
   void buildPhoneTable(){
     // For every phone number
     for(int i = 0; i < numentries; i++){
-      addToPhoneTable(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+      addToPhoneTable(new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]));
     }
     phoneTableBuilt = true;
 
@@ -216,7 +253,7 @@ private:
   void buildAreaCodeTable(){
     // For every phone number
     for(int i = 0; i < numentries; i++){
-      addToAreaCodeTable(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+      addToAreaCodeTable(new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]));
     }
     areaCodeTableBuilt = true;
 
