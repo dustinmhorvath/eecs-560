@@ -43,7 +43,7 @@ int m_width;
       temp_visited[temp_node] = true;
 
       for (int i = m_width-1; i >= 0; i--){
-        if (matrix[temp_node][i] > 0 && !temp_visited[i] && temp_node != i) {
+        if (matrix[temp_node][i] > 0 && temp_node != i && !temp_visited[i] ) {
           stack.push(i);
           parent = temp_node;
         }
