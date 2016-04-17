@@ -19,15 +19,45 @@ class DicNode{
     phonenumber = a_phone;
     charges = a_charges;
 
-    m_next = nullptr;
+    m_next_name = nullptr;
+    m_next_phone = nullptr;
+    m_next_area = nullptr;
   }
 
-  void setNext(DicNode* a_next){
-    m_next = a_next;
+  void setNextName(DicNode* a_next){
+    m_next_name = a_next;
+  }
+  void setNextArea(DicNode* a_next){
+    m_next_area = a_next;
+  }
+  void setNextPhone(DicNode* a_next){
+    m_next_phone = a_next;
   }
 
-  DicNode* getNext(){
-    return m_next;
+
+
+  DicNode* getNextByName(){
+    return m_next_name;
+  }
+  DicNode* getNextByArea(){
+    return m_next_area;
+  }
+  DicNode* getNextByPhone(){
+    return m_next_phone;
+  }
+
+
+  std::string getName(){
+    return name;
+  }
+  std::string getPhoneNumber(){
+    return phonenumber;
+  }
+  std::string getAddress(){
+    return address;
+  }
+  std::string getCharges(){
+    return charges;
   }
 
 private:
@@ -35,7 +65,9 @@ std::string name;
 std::string address;
 std::string phonenumber;
 std::string charges;
-DicNode* m_next;
+DicNode* m_next_name;
+DicNode* m_next_area;
+DicNode* m_next_phone;
 
 
 };
@@ -64,10 +96,65 @@ public:
   }
 
   void test(){
-    std::cout << phoneHash(phonelist[0]) << "\n";
-    std::cout << areacodeHash(phonelist[0]) << "\n";
-    std::cout << nameHash(namelist[0]) << "\n";
+    printNameTableNodes();
+    printPhoneTableNodes();
+    printAreaCodeTableNodes();
   }
+
+  void printNameTableNodes(){
+    int counter = 0;
+    for(int i = 0; i < 47; i++){
+      DicNode* tempptr = nameTable[i];
+      if(tempptr != nullptr){
+        std::cout << nameHash(tempptr -> getName()) << "\n";
+      }
+      while(tempptr != nullptr){
+        std::cout << tempptr -> getName() << "\n";
+        tempptr = tempptr -> getNextByName();
+        counter++;
+      }
+      std::cout << "\n";
+    }
+    std::cout << "Found " << counter << " nodes.\n\n";
+
+  }
+
+  void printPhoneTableNodes(){
+    int counter = 0;
+    for(int i = 0; i < 53; i++){
+      DicNode* tempptr = phoneTable[i];
+      if(tempptr != nullptr){
+        std::cout << phoneHash(tempptr -> getPhoneNumber()) << "\n";
+      }
+      while(tempptr != nullptr){
+        std::cout << tempptr -> getPhoneNumber() << "\n";
+        tempptr = tempptr -> getNextByPhone();
+        counter++;
+      }
+      std::cout << "\n";
+    }
+    std::cout << "Found " << counter << " nodes.\n\n";
+
+  }
+
+  void printAreaCodeTableNodes(){
+    int counter = 0;
+    for(int i = 0; i < 113; i++){
+      DicNode* tempptr = areaCodeTable[i];
+      if(tempptr != nullptr){
+        std::cout << areacodeHash(tempptr -> getPhoneNumber()) << "\n";
+      }
+      while(tempptr != nullptr){
+        std::cout << tempptr -> getPhoneNumber() << "\n";
+        tempptr = tempptr -> getNextByArea();
+        counter++;
+      }
+      std::cout << "\n";
+    }
+    std::cout << "Found " << counter << " nodes.\n\n";
+
+  }
+
 
 
 private:
@@ -92,31 +179,196 @@ private:
     buildAreaCodeTable();
   }
 
-  void buildNameTable(){
-    //if(nameTableBuilt){
-    //else if(phoneTableBuilt){
-    //else if(areaCodeTableBuilt){
-    
-    // For every name
-    for(int i = 0; i < numentries; i++){
-      int hash = nameHash(namelist[i]);
-      DicNode* current_node = nameTable[hash];
-      while(current_node != nullptr){
-        current_node = current_node -> getNext();
+  // Search nameTable for a_name and return a pointer to it if found, else
+  // return a nullptr.
+  DicNode* findByName(DicNode* item){
+    if(!nameTableBuilt){
+      return nullptr;
+    }
+    int namehash = nameHash(item -> getName());
+    DicNode* current_node = nameTable[namehash];
+    while(current_node != nullptr){
+      if((current_node -> getName()).compare(item -> getName()) == 0 &&
+        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
+        return current_node;
       }
+      current_node = current_node -> getNextByName();
+    }
+    return nullptr;
+  }
 
-      current_node = new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]);
+  DicNode* findByArea(DicNode* item){
+    if(!areaCodeTableBuilt){
+      return nullptr;
+    }
+    int areacodehash = areacodeHash(item -> getPhoneNumber());
+    DicNode* current_node = areaCodeTable[areacodehash];
+    while(current_node != nullptr){
+      if((current_node -> getName()).compare(item -> getName()) == 0 &&
+        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
+        return current_node;
+      }
+      current_node = current_node -> getNextByArea();
+    }
+    return nullptr;
+  }
 
+  DicNode* findByPhoneNumber(DicNode* item){
+    if(!phoneTableBuilt){
+      return nullptr;
+    }
+    int phonehash = phoneHash(item -> getPhoneNumber());
+    DicNode* current_node = phoneTable[phonehash];
+    while(current_node != nullptr){
+      if((current_node -> getName()).compare(item -> getName()) == 0 &&
+        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
+        return current_node;
+      }
+      current_node = current_node -> getNextByPhone();
+    }
+    return nullptr;
+  }
 
-
+  void addToNameTable(DicNode* item){
+    // Get the top hash table node
+    int hash = nameHash(item -> getName());
+    DicNode* hash_node = nameTable[hash];
+   
+    // Check if already exists elsewhere and remember location
+    DicNode* found_node = nullptr;
+    if(findByArea(item) != nullptr){
+      found_node = findByArea(item);
+    }
+    else if(findByPhoneNumber(item) != nullptr){
+      found_node = findByPhoneNumber(item);
+    }
+    
+    // If nullptr at this hash value, make a new node
+    if(hash_node == nullptr){
+      nameTable[hash] = item;
+    }
+    // If there is a node, find where next nullptr is
+    else{
+      // Keep looking for nullptr while next node exists
+      while(hash_node -> getNextByName() != nullptr){
+        hash_node = hash_node -> getNextByName();
+      }
+      // Now we know that NEXT node is null, so we can set next to a new one
+      // If search for existing node was successful
+      if(found_node != nullptr){
+        hash_node -> setNextName(found_node);
+      }
+      // If not, add new node to linked list
+      else{
+        hash_node -> setNextName(item);
+      }
     }
   }
 
+  void addToPhoneTable(DicNode* item){
+    // Get the top hash table node
+    int hash = phoneHash(item -> getPhoneNumber());
+    DicNode* hash_node = phoneTable[hash];
+   
+    // Check if already exists elsewhere and remember location
+    DicNode* found_node = nullptr;
+    if(findByArea(item) != nullptr){
+      found_node = findByArea(item);
+    }
+    else if(findByName(item) != nullptr){
+      found_node = findByName(item);
+    }
+    
+    // If nullptr at this hash value, make a new node
+    if(hash_node == nullptr){
+      phoneTable[hash] = item;
+    }
+    // If there is a node, find where next nullptr is
+    else{
+      // Keep looking for nullptr while next node exists
+      while(hash_node -> getNextByPhone() != nullptr){
+        hash_node = hash_node -> getNextByPhone();
+      }
+      // Now we know that NEXT node is null, so we can set next to a new one
+      // If search for existing node was successful
+      if(found_node != nullptr){
+        hash_node -> setNextPhone(found_node);
+      }
+      // If not, add new node to linked list
+      else{
+        hash_node -> setNextPhone(item);
+      }
+    }
+
+  }
+ 
+  void addToAreaCodeTable(DicNode* item){
+    // Get the top hash table node
+    int hash = areacodeHash(item -> getPhoneNumber());
+    DicNode* hash_node = areaCodeTable[hash];
+   
+    // Check if already exists elsewhere and remember location
+    DicNode* found_node = nullptr;
+    if(findByPhoneNumber(item) != nullptr){
+      found_node = findByPhoneNumber(item);
+    }
+    else if(findByName(item) != nullptr){
+      found_node = findByName(item);
+    }
+    
+    // If nullptr at this hash value, make a new node
+    if(hash_node == nullptr){
+      areaCodeTable[hash] = item;
+    }
+    // If there is a node, find where next nullptr is
+    else{
+      // Keep looking for nullptr while next node exists
+      while(hash_node -> getNextByArea() != nullptr){
+        hash_node = hash_node -> getNextByArea();
+      }
+      // Now we know that NEXT node is null, so we can set next to a new one
+      // If search for existing node was successful
+      if(found_node != nullptr){
+        hash_node -> setNextArea(found_node);
+      }
+      // If not, add new node to linked list
+      else{
+        hash_node -> setNextArea(item);
+      }
+    }
+
+  }
+
+  void buildNameTable(){
+    
+    // For every name
+    for(int i = 0; i < numentries; i++){
+      addToNameTable(new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]));
+    }
+    nameTableBuilt = true;
+  }
+
   void buildPhoneTable(){
+    // For every phone number
+    for(int i = 0; i < numentries; i++){
+      addToPhoneTable(new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]));
+    }
+    phoneTableBuilt = true;
 
   }
 
   void buildAreaCodeTable(){
+    // For every phone number
+    for(int i = 0; i < numentries; i++){
+      addToAreaCodeTable(new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]));
+    }
+    areaCodeTableBuilt = true;
 
   }
 

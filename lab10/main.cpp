@@ -1,6 +1,7 @@
 /*
  * Dustin Horvath
- *
+ * Maze generation program.
+ * Uses union/find to unite nodes into single set.
  *
  */
 
@@ -8,12 +9,13 @@
 // used for pretty output
 #include <iomanip>
 
-// for fun
+// for fun. Wasn't worth pulling in my own. Only used for BFS.
 #include <queue>
 
+// CHANGE THESE VALUES TO CHANGE MAZE SIZE
 // These are used down in main(), and controlled here for convenience
-#define WIDTH 75
-#define HEIGHT 23
+#define WIDTH 60
+#define HEIGHT 30
 #define SEED 3
 
 
