@@ -863,6 +863,19 @@ int main(){
       tempnode -> payCharges(tempstring);
       std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
       break;
+    case 7:
+    case 8:
+      if(option == 7){
+        std::cout << "Name of customer: ";
+      }
+      else{
+        std::cout << "Phone number of customer: ";
+      }
+      std::getline(std::cin, tempstring);
+      std::cin.clear();
+      tempnode = table.getNodeAmbiguous(tempstring);
+      std::cout << "Customer " << tempnode -> getName() << " has a balance of " << tempnode -> getCharges() << ".\n";
+      break;
     case 11:
       std::cout << "Area code to print: ";
       std::cin >> tempstring;
