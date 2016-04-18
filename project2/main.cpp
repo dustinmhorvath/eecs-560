@@ -155,7 +155,77 @@ public:
 
   }
 
+  bool d_addByName(){
+    std::string name;
+    std::string address;
+    std::string phone;
+    std::string charges;
+    std::cout << "Provide name: ";
+    std::cin >> name;
+    std::cout << "Provide address: ";
+    std::cin >> address;
+    std::cout << "Provide phone number: ";
+    std::cin >> phone;
+    std::cout << "Provide charges: ";
+    std::cin >> charges;
+    DicNode* create = new DicNode(name, address, phone, charges);
+    addToNameTable(create);
+    addToPhoneTable(create);
+    addToAreaCodeTable(create);
+    return true;
+  }
 
+  bool d_addByPhone(){
+    std::string name;
+    std::string address;
+    std::string phone;
+    std::string charges;
+    std::cout << "Provide name: ";
+    std::cin >> name;
+    std::cout << "Provide address: ";
+    std::cin >> address;
+    std::cout << "Provide phone number: ";
+    std::cin >> phone;
+    std::cout << "Provide charges: ";
+    std::cin >> charges;
+    DicNode* create = new DicNode(name, address, phone, charges);
+    addToPhoneTable(create);
+    addToNameTable(create);
+    addToAreaCodeTable(create);
+    return true;
+  }
+
+  DicNode* d_removeByName(std::string name){
+    // TODO check here if it has no parents
+    DicNode* nameparent = findParentByName(name);
+    DicNode* namegrandchild = nameparent -> getNextByName() -> getNextByName(); 
+    DicNode* phoneparent = findByPhoneNumber(nameparent);
+    DicNode* phonegrandchild = phoneparent -> getNextByPhone() -> getNextByPhone();
+    DicNode* areacodeparent = findByArea(nameparent);
+    DicNode* areacodegrandchild = areacodeparent -> getNextByArea() -> getNextByArea();
+
+    DicNode* toreturn =  nameparent -> getNextByName();
+
+    phoneparent -> setNextPhone(phonegrandchild);
+    nameparent -> setNextName(namegrandchild);
+    areacodeparent -> setNextArea(areacodegrandchild);
+    
+    return toreturn;
+  }
+
+  void d_printByAreaCode(int areacode){
+    std::stringstream ss;
+    ss << areacode;
+    std::string area = ss.str();
+    int areacodehash = areacodeHash(area);
+    DicNode* currentnode = areaCodeTable[areacodehash];
+    while(currentnode != nullptr){
+      if((currentnode -> getPhoneNumber()).substr(0,3).compare(area) == 0){
+        std::cout << currentnode -> getName() << "  " << currentnode -> getPhoneNumber() << "\n";
+      }
+      currentnode = currentnode -> getNextByArea();
+    }
+  }
 
 private:
   std::string* namelist;
@@ -177,6 +247,25 @@ private:
     buildNameTable();
     buildPhoneTable();
     buildAreaCodeTable();
+  }
+
+  // Returns the parent node of the node with 'name'
+  DicNode* findParentByName(std::string name){
+    if(!nameTableBuilt){
+      return nullptr;
+    }
+    int namehash = nameHash(name);
+    DicNode* current_node = nameTable[namehash];
+    if(current_node == nullptr){
+      return nullptr;
+    }
+    while(current_node -> getNextByName() != nullptr){
+      if((current_node -> getNextByName() -> getName()).compare(name) == 0){
+        return current_node;
+      }
+      current_node = current_node -> getNextByName();
+    }
+    return nullptr;
   }
 
   // Search nameTable for a_name and return a pointer to it if found, else
@@ -398,7 +487,6 @@ private:
     return (areacode*(areacode + 3)) % 113 ;
   }
 
-
 };
 
 inline std::string trim_right_copy(
@@ -468,7 +556,60 @@ int main(){
   }
 
   HashTable table = HashTable(namelist, addresslist, phonelist, chargeslist, numentries);
-  table.test();
+  //table.test();
+
+  bool cont = true;
+  int option = 0;
+  int tempint = 0;
+  std::string tempstring;
+  while(cont){
+    std::cout << "1. Insert new by name.\n";
+    std::cout << "2. Insert new by phone number.\n";
+    std::cout << "3. Remove all customers by name.\n";
+    std::cout << "4. Insert all customers by phone.\n";
+    std::cout << "5. Add a payment by name or phone.\n";
+    std::cout << "6. Add a charge by name or phone.\n";
+    std::cout << "7. Print a bill by name.\n";
+    std::cout << "8. Print a bill by phone.\n";
+    std::cout << "9. Print all customers for a namehash.\n";
+    std::cout << "10. Print monthly billing schedule.\n";
+    std::cout << "11. Print all customers in area code.\n";
+    std::cout << "12. Exit.\n";
+    std::cout << "Select an option: ";
+    std::cin >> option;
+
+    switch(option){
+      case 1:
+        table.d_addByName();
+        break;
+      case 2:
+        table.d_addByPhone();
+        break;
+      case 3:
+        std::cout << "Customer to remove: ";
+        std::cin >> tempstring;
+        table.d_removeByName(tempstring);
+        break;
+      case 4:
+//        table.d_removeByPhone();
+        break;
+
+      case 11:
+        std::cout << "Area code to print: ";
+        std::cin >> tempint;
+        table.d_printByAreaCode(tempint);
+        break;
+      case 12:
+        cont = false;
+      break;
+      default:
+        std::cout << "Invalid input.\n";
+        option = 0;
+        break;
+    }
+
+
+  }
 
   std::cout << "Exiting...\n";
   return 0;
