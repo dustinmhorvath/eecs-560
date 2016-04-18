@@ -10,6 +10,15 @@
 #include <sstream>
 #include <string>
 
+#define NAMESIZE 48
+#define PHONESIZE 54
+#define AREASIZE 114
+
+bool isDigits(const std::string &str){
+  return str.find_first_not_of("0123456789") == std::string::npos;
+}
+
+
 class DicNode{
 public:
 
@@ -60,7 +69,17 @@ public:
     return charges;
   }
 
-  private:
+  std::string payCharges(std::string value){
+    int nodecharges;
+    std::istringstream ( charges ) >> nodecharges;
+    int payment;
+    std::istringstream ( value ) >> payment;
+
+    charges = (nodecharges - payment);
+
+  }
+
+private:
   std::string name;
   std::string address;
   std::string phonenumber;
@@ -69,22 +88,22 @@ public:
   DicNode* m_next_area;
   DicNode* m_next_phone;
 
-  
+
 
 
 };
 
-  static bool compareDicNodes(DicNode* item1, DicNode* item2){
-    if( (item1 -> getName()).compare(         item2 -> getName()          ) == 0 &&
-        (item1 -> getPhoneNumber()).compare(  item2 -> getPhoneNumber()   ) == 0 &&
-        (item1 -> getAddress()).compare(      item2 -> getAddress()       ) == 0 &&
-        (item1 -> getCharges()).compare(      item2 -> getCharges()       ) == 0){
-      return true;
-    }
-    else{
-      return false;
-    }
+static bool compareDicNodes(DicNode* item1, DicNode* item2){
+  if( (item1 -> getName()).compare(         item2 -> getName()          ) == 0 &&
+      (item1 -> getPhoneNumber()).compare(  item2 -> getPhoneNumber()   ) == 0 &&
+      (item1 -> getAddress()).compare(      item2 -> getAddress()       ) == 0 &&
+      (item1 -> getCharges()).compare(      item2 -> getCharges()       ) == 0){
+    return true;
   }
+  else{
+    return false;
+  }
+}
 
 
 class HashTable{
@@ -195,7 +214,7 @@ public:
     int namehash = nameHash(node -> getName());
     int phonehash = phoneHash(node -> getPhoneNumber());
     int areahash = areacodeHash(node -> getPhoneNumber());
-    
+
     // For each, check if has no parent
     if(compareDicNodes(nameTable[namehash], node)){
       nameTable[namehash] = node -> getNextByName();
@@ -223,7 +242,7 @@ public:
       DicNode* areacodechild = node -> getNextByArea();
       areacodeparent -> setNextArea(areacodechild);
     }
-    
+
     // Return the node, which will need destroyed by caller
     return node;
   }
@@ -252,7 +271,7 @@ public:
     int namehash = nameHash(node -> getName());
     int phonehash = phoneHash(node -> getPhoneNumber());
     int areahash = areacodeHash(node -> getPhoneNumber());
-    
+
     // For each, check if has no parent
     if(compareDicNodes(nameTable[namehash], node)){
       nameTable[namehash] = node -> getNextByName();
@@ -280,11 +299,30 @@ public:
       DicNode* areacodechild = node -> getNextByArea();
       areacodeparent -> setNextArea(areacodechild);
     }
-    
+
     // Return the node, which will need destroyed by caller
     return node;
   }
 
+  DicNode* getNodeAmbiguous(std::string input){
+    if(isDigits(input)){
+      return getFirstByPhone(input);
+    }
+    else{
+      return getFirstByName(input);
+    }
+  }
+
+  void payBalanceAmbiguous(std::string charge, std::string input){
+    DicNode* tempnode = nullptr;
+    if(isDigits(input)){
+      tempnode =  getFirstByPhone(input);
+    }
+    else{
+      tempnode =  getFirstByName(input);
+    }
+    tempnode -> payCharges(charge); 
+  }
 
 private:
   std::string* namelist;
@@ -294,9 +332,9 @@ private:
 
   int numentries;
 
-  DicNode* nameTable[47] = {nullptr};
-  DicNode* phoneTable[53] = {nullptr};
-  DicNode* areaCodeTable[113] = {nullptr};
+  DicNode* nameTable[NAMESIZE] = {nullptr};
+  DicNode* phoneTable[PHONESIZE] = {nullptr};
+  DicNode* areaCodeTable[AREASIZE] = {nullptr};
 
   bool nameTableBuilt;
   bool phoneTableBuilt;
@@ -460,7 +498,13 @@ private:
     return nullptr;
   }
 
-    void addToNameTable(DicNode* item){
+
+
+
+
+
+
+  void addToNameTable(DicNode* item){
     // Get the top hash table node
     int hash = nameHash(item -> getName());
     DicNode* hash_node = nameTable[hash];
@@ -647,7 +691,6 @@ inline std::string trim_copy(
 }
 
 
-
 int main(){
 
 
@@ -714,10 +757,10 @@ int main(){
     std::cout << "9. Print all customers for a namehash.\n";
     std::cout << "10. Print monthly billing schedule.\n";
     std::cout << "11. Print all customers in area code.\n";
-    std::cout << "12. Print nameTable.\n";
-    std::cout << "13. Print phoneTable.\n";
-    std::cout << "14. Print areacodeTable.\n";
-    std::cout << "15. Exit.\n";
+    std::cout << "12. EXIT.\n";
+    std::cout << "13. Print nameTable.\n";
+    std::cout << "14. Print phoneTable.\n";
+    std::cout << "15. Print areacodeTable.\n";
     std::cout << "Select an option: ";
     std::cin >> option;
     // This cin bullshit is absolutely absurd. This has been a problem for
@@ -793,7 +836,16 @@ int main(){
       }
       delete tempnode;
       break;
-
+    case 5:
+      std::cout << "Name or phone number of customer: ";
+      std::getline(std::cin, tempstring);
+      std::cin.clear();
+      tempnode = table.getNodeAmbiguous(tempstring);
+      std::cout << "Balance to pay of " << tempnode -> getCharges() << "? Enter amount to pay: ";
+      std::getline(std::cin, tempstring);
+      std::cin.clear();
+      tempnode -> payCharges(tempstring);
+      std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
     case 11:
       std::cout << "Area code to print: ";
       std::cin >> tempstring;
@@ -801,16 +853,16 @@ int main(){
       std::cin.ignore();
       table.d_printByAreaCode(tempstring);
       break;
-    case 12:
+    case 13:
       table.printNameTableNodes();
       break;
-    case 13:
+    case 14:
       table.printPhoneTableNodes();
       break;
-    case 14:
+    case 15:
       table.printAreaCodeTableNodes();
       break;
-    case 15:
+    case 12:
       cont = false;
       break;
     default:
