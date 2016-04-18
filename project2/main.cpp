@@ -142,7 +142,7 @@ public:
 
   void printNameTableNodes(){
     int counter = 0;
-    for(int i = 0; i < 47; i++){
+    for(int i = 0; i < NAMESIZE; i++){
       DicNode* tempptr = nameTable[i];
       if(tempptr != nullptr){
         std::cout << nameHash(tempptr -> getName()) << "\n";
@@ -160,7 +160,7 @@ public:
 
   void printPhoneTableNodes(){
     int counter = 0;
-    for(int i = 0; i < 53; i++){
+    for(int i = 0; i < PHONESIZE; i++){
       DicNode* tempptr = phoneTable[i];
       if(tempptr != nullptr){
         std::cout << phoneHash(tempptr -> getPhoneNumber()) << "\n";
@@ -178,7 +178,7 @@ public:
 
   void printAreaCodeTableNodes(){
     int counter = 0;
-    for(int i = 0; i < 113; i++){
+    for(int i = 0; i < AREASIZE; i++){
       DicNode* tempptr = areaCodeTable[i];
       if(tempptr != nullptr){
         std::cout << areacodeHash(tempptr -> getPhoneNumber()) << "\n";
@@ -844,13 +844,22 @@ int main(){
       delete tempnode;
       break;
     case 5:
+    case 6:
       std::cout << "Name or phone number of customer: ";
       std::getline(std::cin, tempstring);
       std::cin.clear();
       tempnode = table.getNodeAmbiguous(tempstring);
-      std::cout << "Balance to pay of " << tempnode -> getCharges() << "? Enter amount to pay: ";
+      if(option == 5){
+        std::cout << "Balance to pay of " << tempnode -> getCharges() << "? Enter amount to pay: ";
+      }
+      else{
+        std::cout << "Balance to pay of " << tempnode -> getCharges() << "? Enter charges to apply: ";
+      }
       std::getline(std::cin, tempstring);
       std::cin.clear();
+      if(option == 6){
+        tempstring = "-" + tempstring;
+      }
       tempnode -> payCharges(tempstring);
       std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
       break;
