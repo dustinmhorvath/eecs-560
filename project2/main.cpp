@@ -187,10 +187,7 @@ public:
     return toreturn;
   }
 
-  void d_printByAreaCode(int areacode){
-    std::stringstream ss;
-    ss << areacode;
-    std::string area = ss.str();
+  void d_printByAreaCode(std::string area){
     int areacodehash = areacodeHash(area);
     DicNode* currentnode = areaCodeTable[areacodehash];
     while(currentnode != nullptr){
@@ -538,7 +535,6 @@ int main(){
   std::string charges;
   bool cont = true;
   int option = 0;
-  int tempint = 0;
   std::string tempstring;
   DicNode* tempnode;
   while(cont){
@@ -594,8 +590,8 @@ int main(){
 
     case 11:
       std::cout << "Area code to print: ";
-      std::cin >> tempint;
-      table.d_printByAreaCode(tempint);
+      std::cin >> tempstring;
+      table.d_printByAreaCode(tempstring);
       break;
     case 12:
       cont = false;
