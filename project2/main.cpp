@@ -71,16 +71,16 @@ public:
 
   void payCharges(std::string value){
     /*double nodebalance;
-    std::istringstream ( charges ) >> nodebalance;
-    double payment;
-    std::istringstream ( value ) >> payment;*/
+      std::istringstream ( charges ) >> nodebalance;
+      double payment;
+      std::istringstream ( value ) >> payment;*/
 
     double nodebalance = std::atof(charges.c_str());
     double payment = std::atof(value.c_str());
-    
+
     std::ostringstream sstream;
     sstream << (nodebalance - payment);
-    
+
     charges = sstream.str();
 
 
@@ -717,7 +717,7 @@ inline std::string trim_copy(
 
 int main(int argc, char* argv[]){
 
-  
+
   std::string phonebookfile = "phonebook.txt";
   std::string testfile;
   if(argc > 1){
@@ -763,7 +763,7 @@ int main(int argc, char* argv[]){
 
   HashTable table = HashTable(namelist, addresslist, phonelist, chargeslist, numentries);
   //table.test();
-  
+
   // Some handy temp vars
   int tempint;
   std::string tempstring;
@@ -772,6 +772,7 @@ int main(int argc, char* argv[]){
   std::string address;
   std::string phone;
   std::string charges;
+  std::string arguments[5];
   int option = 0;
 
   if(argc > 1){
@@ -779,32 +780,44 @@ int main(int argc, char* argv[]){
     while(std::getline(instructionfile, line)){
       line = trim_copy(line);
       option = std::stoi(line);
+      // Read in another line with arguments
       std::getline(instructionfile, line);
       line = trim_copy(line);
-      switch(option){
-        case 1:
-          name = line.substr(0,21);
-          name = trim_copy(name);
-          address = line.substr(21,28);
-          address = trim_copy(address);
-          std::stringstream ss(line.substr(48));
-          ss >> phone;
-          phone = trim_copy(phone);
-          ss >> charges;
-          tempnode = new DicNode(name, address, phone, charges);
-          table.d_addByName(tempnode);
-
-          break;
-        case 2:
-
-          break;
-
+      if(option == 1){
+        std::istringstream ss(line);
+        for(int i = 0; i < 4; i++){
+          std::getline(ss, tempstring, ',');
+          arguments[i] = trim_copy(tempstring);
+        }   
+        tempnode = new DicNode(arguments[0], arguments[1], arguments[2], arguments[3]);
+        table.d_addByName(tempnode);
+      }
+      else if(option == 2){
+        std::istringstream ss(line);
+        for(int i = 0; i < 4; i++){
+          std::getline(ss, tempstring, ',');
+          arguments[i] = trim_copy(tempstring);
+        }
+        tempnode = new DicNode(arguments[1], arguments[2], arguments[0], arguments[3]);
+        table.d_addByPhone(tempnode);
+        std::cin.clear();
+      }
+      else if(option == 3){
+        tempstring = trim_copy(line);
+        tempnode = table.d_removeByName(tempstring);
+        if(tempnode == nullptr){
+          std::cout << "Could not find customer with name " << tempstring << ".\n";
+        }
+        else{
+          std::cout << "Charges for " << tempnode -> getName() << " are " << tempnode -> getCharges() << ".\n";
+        }
+        delete tempnode;
 
 
       }
     }
   }
-  
+
 
 
   bool cont = true;
