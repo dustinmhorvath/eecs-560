@@ -642,8 +642,8 @@ int main(){
   while(cont){
     std::cout << "1. Insert new by name.\n";
     std::cout << "2. Insert new by phone number.\n";
-    std::cout << "3. Remove all customers by name.\n";
-    std::cout << "4. Insert all customers by phone.\n";
+    std::cout << "3. Remove a customer by name.\n";
+    std::cout << "4. Insert a customer by phone.\n";
     std::cout << "5. Add a payment by name or phone.\n";
     std::cout << "6. Add a charge by name or phone.\n";
     std::cout << "7. Print a bill by name.\n";
@@ -654,45 +654,55 @@ int main(){
     std::cout << "12. Exit.\n";
     std::cout << "Select an option: ";
     std::cin >> option;
-      std::cin >> std::ws;
+    // This cin bullshit is absolutely absurd. This has been a problem for
+    // YEARS and should have been fixed **YEARS** ago. Compiler devs should be
+    // ashamed. And it STILL doesn't work right.
+    std::cin.clear();
+    std::cin.ignore(10, '\n');
 
     switch(option){
     case 1:
       std::cout << "Provide name: ";
-      std::cin >> name;
-      std::cin >> std::ws;
+      std::getline(std::cin, name);
+      std::cin.clear();
       std::cout << "Provide address: ";
-      std::cin >> address;
-      std::cin >> std::ws;
+      std::getline(std::cin, address);
+      std::cin.clear();
       std::cout << "Provide phone number: ";
       std::cin >> phone;
-      std::cin >> std::ws;
+      std::cin.clear();
+      std::cin.ignore(10, '\n');
       std::cout << "Provide charges: ";
       std::cin >> charges;
-      std::cin >> std::ws;
+      std::cin.clear();
+      std::cin.ignore(10, '\n');
       tempnode = new DicNode(name, address, phone, charges);
       table.d_addByName(tempnode);
       break;
     case 2:
       std::cout << "Provide name: ";
-      std::cin >> name;
-      std::cin >> std::ws;
+      std::getline(std::cin, name);
+      std::cin.clear();
+      std::cin.ignore(10, '\n');
       std::cout << "Provide address: ";
-      std::cin >> address;
-      std::cin >> std::ws;
+      std::getline(std::cin, address);
+      std::cin.clear();
+      std::cin.ignore(10, '\n');
       std::cout << "Provide phone number: ";
       std::cin >> phone;
-      std::cin >> std::ws;
+      std::cin.clear();
+      std::cin.ignore(10, '\n');
       std::cout << "Provide charges: ";
       std::cin >> charges;
-      std::cin >> std::ws;
+      std::cin.clear();
+      std::cin.ignore(10, '\n');
       tempnode = new DicNode(name, address, phone, charges);
       table.d_addByPhone(tempnode);
       break;
     case 3:
       std::cout << "Customer to remove: ";
-      std::cin >> tempstring;
-      std::cin >> std::ws;
+      std::getline(std::cin, tempstring);
+      std::cin.clear();
       tempstring = trim_copy(tempstring);
       tempnode = table.d_removeByName(tempstring);
       if(tempnode == nullptr){
@@ -709,7 +719,8 @@ int main(){
     case 11:
       std::cout << "Area code to print: ";
       std::cin >> tempstring;
-      std::cin >> std::ws;
+      std::cin.clear();
+      std::cin.ignore();
       table.d_printByAreaCode(tempstring);
       break;
     case 12:
