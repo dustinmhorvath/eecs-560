@@ -69,13 +69,20 @@ public:
     return charges;
   }
 
-  std::string payCharges(std::string value){
-    int nodecharges;
-    std::istringstream ( charges ) >> nodecharges;
-    int payment;
-    std::istringstream ( value ) >> payment;
+  void payCharges(std::string value){
+    /*double nodebalance;
+    std::istringstream ( charges ) >> nodebalance;
+    double payment;
+    std::istringstream ( value ) >> payment;*/
 
-    charges = (nodecharges - payment);
+    double nodebalance = std::atof(charges.c_str());
+    double payment = std::atof(value.c_str());
+    
+    std::ostringstream sstream;
+    sstream << (nodebalance - payment);
+    
+    charges = sstream.str();
+
 
   }
 
@@ -846,6 +853,7 @@ int main(){
       std::cin.clear();
       tempnode -> payCharges(tempstring);
       std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
+      break;
     case 11:
       std::cout << "Area code to print: ";
       std::cin >> tempstring;
