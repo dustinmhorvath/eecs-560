@@ -171,20 +171,24 @@ public:
 
   DicNode* d_removeByName(std::string name){
     // TODO check here if it has no parents
-    DicNode* nameparent = findParentByName(name);
+    // Get node by name
+    DicNode* node = getFirstByName(name);
+    // Get all the node's parents
+    DicNode* nameparent = getParentByName(node);
+    DicNode* phoneparent = getParentByNumber(node);
+    DicNode* areacodeparent = getParentByArea(node);
+    // Get all the grandchildren through that node
     DicNode* namegrandchild = nameparent -> getNextByName() -> getNextByName(); 
-    DicNode* phoneparent = findByPhoneNumber(nameparent);
     DicNode* phonegrandchild = phoneparent -> getNextByPhone() -> getNextByPhone();
-    DicNode* areacodeparent = findByArea(nameparent);
     DicNode* areacodegrandchild = areacodeparent -> getNextByArea() -> getNextByArea();
 
-    DicNode* toreturn =  nameparent -> getNextByName();
-
+    // Parents take ownership of grandchildren
     phoneparent -> setNextPhone(phonegrandchild);
     nameparent -> setNextName(namegrandchild);
     areacodeparent -> setNextArea(areacodegrandchild);
 
-    return toreturn;
+    // Return the node, which will need destroyed by caller
+    return node;
   }
 
   void d_printByAreaCode(std::string area){
@@ -220,18 +224,15 @@ private:
     buildAreaCodeTable();
   }
 
-  // Returns the parent node of the node with 'name'
-  DicNode* findParentByName(std::string name){
+  // Returns the first node with 'name'
+  DicNode* getFirstByName(std::string name){
     if(!nameTableBuilt){
       return nullptr;
     }
     int namehash = nameHash(name);
     DicNode* current_node = nameTable[namehash];
-    if(current_node == nullptr){
-      return nullptr;
-    }
-    while(current_node -> getNextByName() != nullptr){
-      if((current_node -> getNextByName() -> getName()).compare(name) == 0){
+    while(current_node  != nullptr){
+      if((current_node -> getName()).compare(name) == 0){
         return current_node;
       }
       current_node = current_node -> getNextByName();
@@ -293,6 +294,19 @@ private:
       current_node = current_node -> getNextByPhone();
     }
     return nullptr;
+  }
+
+  bool compareDicNodes(DicNode* item1, DicNode* item2){
+    if( (item1 -> getName()).compare(         item2 -> getName()          ) == 0 &&
+        (item1 -> getPhoneNumber()).compare(  item2 -> getPhoneNumber()   ) == 0 &&
+        (item1 -> getAddress()).compare(      item2 -> getAddress()       ) == 0 &&
+        (item1 -> getCharges()).compare(      item2 -> getCharges()       ) == 0){
+      return true;
+    }
+    else{
+      return false;
+    }
+
   }
 
   void addToNameTable(DicNode* item){
