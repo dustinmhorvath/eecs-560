@@ -60,7 +60,7 @@ public:
     return charges;
   }
 
-private:
+  private:
   std::string name;
   std::string address;
   std::string phonenumber;
@@ -69,9 +69,22 @@ private:
   DicNode* m_next_area;
   DicNode* m_next_phone;
 
+  
+
 
 };
 
+  static bool compareDicNodes(DicNode* item1, DicNode* item2){
+    if( (item1 -> getName()).compare(         item2 -> getName()          ) == 0 &&
+        (item1 -> getPhoneNumber()).compare(  item2 -> getPhoneNumber()   ) == 0 &&
+        (item1 -> getAddress()).compare(      item2 -> getAddress()       ) == 0 &&
+        (item1 -> getCharges()).compare(      item2 -> getCharges()       ) == 0){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 
 
 class HashTable{
@@ -169,24 +182,48 @@ public:
     return true;
   }
 
+  // Finds a node by name, routes pointers around it from its parents to its
+  // children, then returns the node in question.
+  // REQUIRES CALLER DESTROY NODE THEY RECEIVE
   DicNode* d_removeByName(std::string name){
-    // TODO check here if it has no parents
     // Get node by name
     DicNode* node = getFirstByName(name);
-    // Get all the node's parents
-    DicNode* nameparent = getParentByName(node);
-    DicNode* phoneparent = getParentByPhone(node);
-    DicNode* areacodeparent = getParentByArea(node);
-    // Get all the grandchildren through that node
-    DicNode* namegrandchild = nameparent -> getNextByName() -> getNextByName(); 
-    DicNode* phonegrandchild = phoneparent -> getNextByPhone() -> getNextByPhone();
-    DicNode* areacodegrandchild = areacodeparent -> getNextByArea() -> getNextByArea();
-
-    // Parents take ownership of grandchildren
-    phoneparent -> setNextPhone(phonegrandchild);
-    nameparent -> setNextName(namegrandchild);
-    areacodeparent -> setNextArea(areacodegrandchild);
-
+    // Score us some hash yo
+    if(node == nullptr){
+      return nullptr;
+    }
+    int namehash = nameHash(node -> getName());
+    int phonehash = phoneHash(node -> getPhoneNumber());
+    int areahash = areacodeHash(node -> getPhoneNumber());
+    
+    // For each, check if has no parent
+    if(compareDicNodes(nameTable[namehash], node)){
+      nameTable[namehash] = node -> getNextByName();
+    }
+    // If has a parent, route appropriate pointers over it from parent to
+    // child.
+    else{
+      DicNode* nameparent = getParentByName(node);
+      DicNode* namechild = node -> getNextByName(); 
+      nameparent -> setNextName(namechild);
+    }
+    if(compareDicNodes(phoneTable[phonehash], node)){
+      phoneTable[phonehash] = node -> getNextByPhone();
+    }
+    else{
+      DicNode* phoneparent = getParentByPhone(node);
+      DicNode* phonechild = node -> getNextByPhone();
+      phoneparent -> setNextPhone(phonechild);
+    }
+    if(compareDicNodes(areaCodeTable[areahash], node)){
+      areaCodeTable[areahash] = node -> getNextByArea();
+    }
+    else{
+      DicNode* areacodeparent = getParentByArea(node);
+      DicNode* areacodechild = node -> getNextByArea();
+      areacodeparent -> setNextArea(areacodechild);
+    }
+    
     // Return the node, which will need destroyed by caller
     return node;
   }
@@ -230,8 +267,10 @@ private:
       return nullptr;
     }
     int namehash = nameHash(name);
+    std::cout << namehash << "\n";
     DicNode* current_node = nameTable[namehash];
-    while(current_node  != nullptr){
+
+    while(current_node != nullptr){
       if((current_node -> getName()).compare(name) == 0){
         return current_node;
       }
@@ -253,7 +292,7 @@ private:
     }
 
     while(current_node -> getNextByName() != nullptr){
-      if(compareDicNodes(current_node -> getNextByName, item)){
+      if(compareDicNodes(current_node -> getNextByName(), item)){
         return current_node;
       }
       current_node = current_node -> getNextByName();
@@ -273,7 +312,7 @@ private:
     }
 
     while(current_node -> getNextByPhone() != nullptr){
-      if(compareDicNodes(current_node -> getNextByPhone, item)){
+      if(compareDicNodes(current_node -> getNextByPhone(), item)){
         return current_node;
       }
       current_node = current_node -> getNextByPhone();
@@ -293,7 +332,7 @@ private:
     }
 
     while(current_node -> getNextByArea() != nullptr){
-      if(compareDicNodes(current_node -> getNextByArea, item)){
+      if(compareDicNodes(current_node -> getNextByArea(), item)){
         return current_node;
       }
       current_node = current_node -> getNextByArea();
@@ -358,20 +397,7 @@ private:
     return nullptr;
   }
 
-  bool compareDicNodes(DicNode* item1, DicNode* item2){
-    if( (item1 -> getName()).compare(         item2 -> getName()          ) == 0 &&
-        (item1 -> getPhoneNumber()).compare(  item2 -> getPhoneNumber()   ) == 0 &&
-        (item1 -> getAddress()).compare(      item2 -> getAddress()       ) == 0 &&
-        (item1 -> getCharges()).compare(      item2 -> getCharges()       ) == 0){
-      return true;
-    }
-    else{
-      return false;
-    }
-
-  }
-
-  void addToNameTable(DicNode* item){
+    void addToNameTable(DicNode* item){
     // Get the top hash table node
     int hash = nameHash(item -> getName());
     DicNode* hash_node = nameTable[hash];
@@ -628,37 +654,53 @@ int main(){
     std::cout << "12. Exit.\n";
     std::cout << "Select an option: ";
     std::cin >> option;
+      std::cin >> std::ws;
 
     switch(option){
     case 1:
       std::cout << "Provide name: ";
       std::cin >> name;
+      std::cin >> std::ws;
       std::cout << "Provide address: ";
       std::cin >> address;
+      std::cin >> std::ws;
       std::cout << "Provide phone number: ";
       std::cin >> phone;
+      std::cin >> std::ws;
       std::cout << "Provide charges: ";
       std::cin >> charges;
+      std::cin >> std::ws;
       tempnode = new DicNode(name, address, phone, charges);
       table.d_addByName(tempnode);
       break;
     case 2:
       std::cout << "Provide name: ";
       std::cin >> name;
+      std::cin >> std::ws;
       std::cout << "Provide address: ";
       std::cin >> address;
+      std::cin >> std::ws;
       std::cout << "Provide phone number: ";
       std::cin >> phone;
+      std::cin >> std::ws;
       std::cout << "Provide charges: ";
       std::cin >> charges;
+      std::cin >> std::ws;
       tempnode = new DicNode(name, address, phone, charges);
       table.d_addByPhone(tempnode);
       break;
     case 3:
       std::cout << "Customer to remove: ";
       std::cin >> tempstring;
+      std::cin >> std::ws;
+      tempstring = trim_copy(tempstring);
       tempnode = table.d_removeByName(tempstring);
-      // TODO print charges here
+      if(tempnode == nullptr){
+        std::cout << "Could not find customer with name " << tempstring << ".\n";
+      }
+      else{
+        std::cout << "Charges for " << tempnode -> getName() << " are " << tempnode -> getCharges() << ".\n";
+      }
       break;
     case 4:
       //        table.d_removeByPhone();
@@ -667,6 +709,7 @@ int main(){
     case 11:
       std::cout << "Area code to print: ";
       std::cin >> tempstring;
+      std::cin >> std::ws;
       table.d_printByAreaCode(tempstring);
       break;
     case 12:
