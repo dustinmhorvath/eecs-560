@@ -265,6 +265,29 @@ public:
     }
   }
 
+  void d_printByNameHash(int namehash){
+    DicNode* currentnode = nameTable[namehash];
+    while(currentnode != nullptr){
+      std::cout << currentnode -> getName() << "  " << currentnode -> getAddress() << "\n";  
+      currentnode = currentnode -> getNextByArea();
+    }
+  }
+
+  void d_printByDay(int day){
+    int hash1 = 2*(day - 1);
+    int hash2 = 2*(day - 1) + 1;
+    DicNode* currentnode = nameTable[hash1];
+    while(currentnode != nullptr){
+      std::cout << currentnode -> getName() << "   " << currentnode -> getAddress() << "   " << currentnode -> getCharges() << "\n";  
+      currentnode = currentnode -> getNextByArea();
+    }
+    currentnode = nameTable[hash2];
+    while(currentnode != nullptr){
+      std::cout << currentnode -> getName() << "   " << currentnode -> getAddress() << "   " << currentnode -> getCharges() << "\n";  
+      currentnode = currentnode -> getNextByArea();
+    }
+  }
+
   // Finds a node by phone, routes pointers around it from its parents to its
   // children, then returns the node in question.
   // REQUIRES CALLER DESTROY NODE THEY RECEIVE
@@ -505,12 +528,6 @@ private:
     return nullptr;
   }
 
-
-
-
-
-
-
   void addToNameTable(DicNode* item){
     // Get the top hash table node
     int hash = nameHash(item -> getName());
@@ -698,11 +715,14 @@ inline std::string trim_copy(
 }
 
 
-int main(){
+int main(int argc, char* argv[]){
 
-
+  
   std::string phonebookfile = "phonebook.txt";
-  std::string datafile = "proj2data.txt";
+  std::string testfile;
+  if(argc > 1){
+    testfile = argv[1];
+  }
 
   std::ifstream file(phonebookfile);
   std::string line;
@@ -743,15 +763,52 @@ int main(){
 
   HashTable table = HashTable(namelist, addresslist, phonelist, chargeslist, numentries);
   //table.test();
-
+  
+  // Some handy temp vars
+  int tempint;
+  std::string tempstring;
+  DicNode* tempnode;
   std::string name;
   std::string address;
   std::string phone;
   std::string charges;
-  bool cont = true;
   int option = 0;
-  std::string tempstring;
-  DicNode* tempnode;
+
+  if(argc > 1){
+    std::ifstream instructionfile(testfile);
+    while(std::getline(instructionfile, line)){
+      line = trim_copy(line);
+      option = std::stoi(line);
+      std::getline(instructionfile, line);
+      line = trim_copy(line);
+      switch(option){
+        case 1:
+          name = line.substr(0,21);
+          name = trim_copy(name);
+          address = line.substr(21,28);
+          address = trim_copy(address);
+          std::stringstream ss(line.substr(48));
+          ss >> phone;
+          phone = trim_copy(phone);
+          ss >> charges;
+          tempnode = new DicNode(name, address, phone, charges);
+          table.d_addByName(tempnode);
+
+          break;
+        case 2:
+
+          break;
+
+
+
+      }
+    }
+  }
+  
+
+
+  bool cont = true;
+
   while(cont){
     std::cout << "1. Insert new by name.\n";
     std::cout << "2. Insert new by phone number.\n";
@@ -770,7 +827,7 @@ int main(){
     std::cout << "15. Print areacodeTable.\n";
     std::cout << "Select an option: ";
     std::cin >> option;
-    // This cin bullshit is absolutely absurd. This has been a problem for
+    // This cin BS is absolutely absurd. This has been a problem for
     // YEARS and should have been fixed **YEARS** ago. Compiler devs should be
     // ashamed. And it STILL doesn't work right.
     std::cin.clear();
@@ -876,6 +933,21 @@ int main(){
       tempnode = table.getNodeAmbiguous(tempstring);
       std::cout << "Customer " << tempnode -> getName() << " has a balance of " << tempnode -> getCharges() << ".\n";
       break;
+    case 9:
+      std::cout << "Namehash to print: ";
+      std::cin >> tempint;
+      std::cin.clear();
+      std::cin.ignore();
+      table.d_printByNameHash(tempint);
+      break;
+    case 10:
+      std::cout << "Billing day to print: ";
+      std::cin >> tempint;
+      std::cin.clear();
+      std::cin.ignore();
+      table.d_printByDay(tempint);
+      break;
+
     case 11:
       std::cout << "Area code to print: ";
       std::cin >> tempstring;
