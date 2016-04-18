@@ -188,10 +188,10 @@ public:
   DicNode* d_removeByName(std::string name){
     // Get node by name
     DicNode* node = getFirstByName(name);
-    // Score us some hash yo
     if(node == nullptr){
       return nullptr;
     }
+    // Score us some hash yo
     int namehash = nameHash(node -> getName());
     int phonehash = phoneHash(node -> getPhoneNumber());
     int areahash = areacodeHash(node -> getPhoneNumber());
@@ -239,6 +239,53 @@ public:
     }
   }
 
+  // Finds a node by phone, routes pointers around it from its parents to its
+  // children, then returns the node in question.
+  // REQUIRES CALLER DESTROY NODE THEY RECEIVE
+  DicNode* d_removeByPhone(std::string phone){
+    // Get node by phone
+    DicNode* node = getFirstByPhone(phone);
+    if(node == nullptr){
+      return nullptr;
+    }
+    // Score us some hash yo
+    int namehash = nameHash(node -> getName());
+    int phonehash = phoneHash(node -> getPhoneNumber());
+    int areahash = areacodeHash(node -> getPhoneNumber());
+    
+    // For each, check if has no parent
+    if(compareDicNodes(nameTable[namehash], node)){
+      nameTable[namehash] = node -> getNextByName();
+    }
+    // If has a parent, route appropriate pointers over it from parent to
+    // child.
+    else{
+      DicNode* nameparent = getParentByName(node);
+      DicNode* namechild = node -> getNextByName(); 
+      nameparent -> setNextName(namechild);
+    }
+    if(compareDicNodes(phoneTable[phonehash], node)){
+      phoneTable[phonehash] = node -> getNextByPhone();
+    }
+    else{
+      DicNode* phoneparent = getParentByPhone(node);
+      DicNode* phonechild = node -> getNextByPhone();
+      phoneparent -> setNextPhone(phonechild);
+    }
+    if(compareDicNodes(areaCodeTable[areahash], node)){
+      areaCodeTable[areahash] = node -> getNextByArea();
+    }
+    else{
+      DicNode* areacodeparent = getParentByArea(node);
+      DicNode* areacodechild = node -> getNextByArea();
+      areacodeparent -> setNextArea(areacodechild);
+    }
+    
+    // Return the node, which will need destroyed by caller
+    return node;
+  }
+
+
 private:
   std::string* namelist;
   std::string* addresslist;
@@ -267,11 +314,27 @@ private:
       return nullptr;
     }
     int namehash = nameHash(name);
-    std::cout << namehash << "\n";
     DicNode* current_node = nameTable[namehash];
 
     while(current_node != nullptr){
       if((current_node -> getName()).compare(name) == 0){
+        return current_node;
+      }
+      current_node = current_node -> getNextByName();
+    }
+    return nullptr;
+  }
+
+  // Returns the first node with 'phone'
+  DicNode* getFirstByPhone(std::string phone){
+    if(!phoneTableBuilt){
+      return nullptr;
+    }
+    int phonehash = phoneHash(phone);
+    DicNode* current_node = phoneTable[phonehash];
+
+    while(current_node != nullptr){
+      if((current_node -> getPhoneNumber()).compare(phone) == 0){
         return current_node;
       }
       current_node = current_node -> getNextByName();
@@ -643,7 +706,7 @@ int main(){
     std::cout << "1. Insert new by name.\n";
     std::cout << "2. Insert new by phone number.\n";
     std::cout << "3. Remove a customer by name.\n";
-    std::cout << "4. Insert a customer by phone.\n";
+    std::cout << "4. Remove a customer by phone.\n";
     std::cout << "5. Add a payment by name or phone.\n";
     std::cout << "6. Add a charge by name or phone.\n";
     std::cout << "7. Print a bill by name.\n";
@@ -651,7 +714,10 @@ int main(){
     std::cout << "9. Print all customers for a namehash.\n";
     std::cout << "10. Print monthly billing schedule.\n";
     std::cout << "11. Print all customers in area code.\n";
-    std::cout << "12. Exit.\n";
+    std::cout << "12. Print nameTable.\n";
+    std::cout << "13. Print phoneTable.\n";
+    std::cout << "14. Print areacodeTable.\n";
+    std::cout << "15. Exit.\n";
     std::cout << "Select an option: ";
     std::cin >> option;
     // This cin bullshit is absolutely absurd. This has been a problem for
@@ -711,9 +777,21 @@ int main(){
       else{
         std::cout << "Charges for " << tempnode -> getName() << " are " << tempnode -> getCharges() << ".\n";
       }
+      delete tempnode;
       break;
     case 4:
-      //        table.d_removeByPhone();
+      std::cout << "Phone number to remove: ";
+      std::getline(std::cin, tempstring);
+      std::cin.clear();
+      tempstring = trim_copy(tempstring);
+      tempnode = table.d_removeByPhone(tempstring);
+      if(tempnode == nullptr){
+        std::cout << "Could not find customer with number " << tempstring << ".\n";
+      }
+      else{
+        std::cout << "Charges for " << tempnode -> getName() << " are " << tempnode -> getCharges() << ".\n";
+      }
+      delete tempnode;
       break;
 
     case 11:
@@ -724,6 +802,15 @@ int main(){
       table.d_printByAreaCode(tempstring);
       break;
     case 12:
+      table.printNameTableNodes();
+      break;
+    case 13:
+      table.printPhoneTableNodes();
+      break;
+    case 14:
+      table.printAreaCodeTableNodes();
+      break;
+    case 15:
       cont = false;
       break;
     default:
