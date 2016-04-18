@@ -175,7 +175,7 @@ public:
     DicNode* node = getFirstByName(name);
     // Get all the node's parents
     DicNode* nameparent = getParentByName(node);
-    DicNode* phoneparent = getParentByNumber(node);
+    DicNode* phoneparent = getParentByPhone(node);
     DicNode* areacodeparent = getParentByArea(node);
     // Get all the grandchildren through that node
     DicNode* namegrandchild = nameparent -> getNextByName() -> getNextByName(); 
@@ -239,6 +239,68 @@ private:
     }
     return nullptr;
   }
+
+  // Returns the parent of 'item' if it has a parent in the nametable
+  DicNode* getParentByName(DicNode* item){
+    int namehash = nameHash(item -> getName());
+    DicNode* current_node = nameTable[namehash];
+    if(current_node == nullptr){
+      return nullptr;
+    }
+    // These are broken to avoid segfaults
+    else if(current_node -> getNextByName() == nullptr){
+      return nullptr;
+    }
+
+    while(current_node -> getNextByName() != nullptr){
+      if(compareDicNodes(current_node -> getNextByName, item)){
+        return current_node;
+      }
+      current_node = current_node -> getNextByName();
+    }
+    return nullptr;
+  }
+  // Returns the parent of 'item' if it has a parent in the phonetable
+  DicNode* getParentByPhone(DicNode* item){
+    int phonehash = phoneHash(item -> getPhoneNumber());
+    DicNode* current_node = phoneTable[phonehash];
+    if(current_node == nullptr){
+      return nullptr;
+    }
+    // These are broken to avoid segfaults
+    else if(current_node -> getNextByPhone() == nullptr){
+      return nullptr;
+    }
+
+    while(current_node -> getNextByPhone() != nullptr){
+      if(compareDicNodes(current_node -> getNextByPhone, item)){
+        return current_node;
+      }
+      current_node = current_node -> getNextByPhone();
+    }
+    return nullptr;
+  }
+  // Returns the parent of 'item' if it has a parent in the areaCodeTable
+  DicNode* getParentByArea(DicNode* item){
+    int areahash = areacodeHash(item -> getPhoneNumber());
+    DicNode* current_node = areaCodeTable[areahash];
+    if(current_node == nullptr){
+      return nullptr;
+    }
+    // These are broken to avoid segfaults
+    else if(current_node -> getNextByArea() == nullptr){
+      return nullptr;
+    }
+
+    while(current_node -> getNextByArea() != nullptr){
+      if(compareDicNodes(current_node -> getNextByArea, item)){
+        return current_node;
+      }
+      current_node = current_node -> getNextByArea();
+    }
+    return nullptr;
+  }
+
 
   // Search nameTable for a_name and return a pointer to it if found, else
   // return a nullptr.
