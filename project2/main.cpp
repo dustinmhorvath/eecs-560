@@ -11,7 +11,7 @@
 #include <string>
 
 class DicNode{
-  public:
+public:
 
   DicNode(std::string a_name, std::string a_address, std::string a_phone, std::string a_charges){
     name = a_name;
@@ -61,13 +61,13 @@ class DicNode{
   }
 
 private:
-std::string name;
-std::string address;
-std::string phonenumber;
-std::string charges;
-DicNode* m_next_name;
-DicNode* m_next_area;
-DicNode* m_next_phone;
+  std::string name;
+  std::string address;
+  std::string phonenumber;
+  std::string charges;
+  DicNode* m_next_name;
+  DicNode* m_next_area;
+  DicNode* m_next_phone;
 
 
 };
@@ -155,40 +155,14 @@ public:
 
   }
 
-  bool d_addByName(){
-    std::string name;
-    std::string address;
-    std::string phone;
-    std::string charges;
-    std::cout << "Provide name: ";
-    std::cin >> name;
-    std::cout << "Provide address: ";
-    std::cin >> address;
-    std::cout << "Provide phone number: ";
-    std::cin >> phone;
-    std::cout << "Provide charges: ";
-    std::cin >> charges;
-    DicNode* create = new DicNode(name, address, phone, charges);
+  bool d_addByName(DicNode* create){
     addToNameTable(create);
     addToPhoneTable(create);
     addToAreaCodeTable(create);
     return true;
   }
 
-  bool d_addByPhone(){
-    std::string name;
-    std::string address;
-    std::string phone;
-    std::string charges;
-    std::cout << "Provide name: ";
-    std::cin >> name;
-    std::cout << "Provide address: ";
-    std::cin >> address;
-    std::cout << "Provide phone number: ";
-    std::cin >> phone;
-    std::cout << "Provide charges: ";
-    std::cin >> charges;
-    DicNode* create = new DicNode(name, address, phone, charges);
+  bool d_addByPhone(DicNode* create){
     addToPhoneTable(create);
     addToNameTable(create);
     addToAreaCodeTable(create);
@@ -209,7 +183,7 @@ public:
     phoneparent -> setNextPhone(phonegrandchild);
     nameparent -> setNextName(namegrandchild);
     areacodeparent -> setNextArea(areacodegrandchild);
-    
+
     return toreturn;
   }
 
@@ -278,9 +252,9 @@ private:
     DicNode* current_node = nameTable[namehash];
     while(current_node != nullptr){
       if((current_node -> getName()).compare(item -> getName()) == 0 &&
-        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
-        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
-        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
+          (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+          (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+          (current_node -> getCharges()).compare(item -> getCharges()) == 0){
         return current_node;
       }
       current_node = current_node -> getNextByName();
@@ -296,9 +270,9 @@ private:
     DicNode* current_node = areaCodeTable[areacodehash];
     while(current_node != nullptr){
       if((current_node -> getName()).compare(item -> getName()) == 0 &&
-        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
-        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
-        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
+          (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+          (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+          (current_node -> getCharges()).compare(item -> getCharges()) == 0){
         return current_node;
       }
       current_node = current_node -> getNextByArea();
@@ -314,9 +288,9 @@ private:
     DicNode* current_node = phoneTable[phonehash];
     while(current_node != nullptr){
       if((current_node -> getName()).compare(item -> getName()) == 0 &&
-        (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
-        (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
-        (current_node -> getCharges()).compare(item -> getCharges()) == 0){
+          (current_node -> getPhoneNumber()).compare(item -> getPhoneNumber()) == 0 &&
+          (current_node -> getAddress()).compare(item -> getAddress()) == 0 &&
+          (current_node -> getCharges()).compare(item -> getCharges()) == 0){
         return current_node;
       }
       current_node = current_node -> getNextByPhone();
@@ -328,7 +302,7 @@ private:
     // Get the top hash table node
     int hash = nameHash(item -> getName());
     DicNode* hash_node = nameTable[hash];
-   
+
     // Check if already exists elsewhere and remember location
     DicNode* found_node = nullptr;
     if(findByArea(item) != nullptr){
@@ -337,7 +311,7 @@ private:
     else if(findByPhoneNumber(item) != nullptr){
       found_node = findByPhoneNumber(item);
     }
-    
+
     // If nullptr at this hash value, make a new node
     if(hash_node == nullptr){
       nameTable[hash] = item;
@@ -364,7 +338,7 @@ private:
     // Get the top hash table node
     int hash = phoneHash(item -> getPhoneNumber());
     DicNode* hash_node = phoneTable[hash];
-   
+
     // Check if already exists elsewhere and remember location
     DicNode* found_node = nullptr;
     if(findByArea(item) != nullptr){
@@ -373,7 +347,7 @@ private:
     else if(findByName(item) != nullptr){
       found_node = findByName(item);
     }
-    
+
     // If nullptr at this hash value, make a new node
     if(hash_node == nullptr){
       phoneTable[hash] = item;
@@ -396,12 +370,12 @@ private:
     }
 
   }
- 
+
   void addToAreaCodeTable(DicNode* item){
     // Get the top hash table node
     int hash = areacodeHash(item -> getPhoneNumber());
     DicNode* hash_node = areaCodeTable[hash];
-   
+
     // Check if already exists elsewhere and remember location
     DicNode* found_node = nullptr;
     if(findByPhoneNumber(item) != nullptr){
@@ -410,7 +384,7 @@ private:
     else if(findByName(item) != nullptr){
       found_node = findByName(item);
     }
-    
+
     // If nullptr at this hash value, make a new node
     if(hash_node == nullptr){
       areaCodeTable[hash] = item;
@@ -435,7 +409,7 @@ private:
   }
 
   void buildNameTable(){
-    
+
     // For every name
     for(int i = 0; i < numentries; i++){
       addToNameTable(new DicNode(namelist[i], addresslist[i], phonelist[i], chargeslist[i]));
@@ -558,10 +532,15 @@ int main(){
   HashTable table = HashTable(namelist, addresslist, phonelist, chargeslist, numentries);
   //table.test();
 
+  std::string name;
+  std::string address;
+  std::string phone;
+  std::string charges;
   bool cont = true;
   int option = 0;
   int tempint = 0;
   std::string tempstring;
+  DicNode* tempnode;
   while(cont){
     std::cout << "1. Insert new by name.\n";
     std::cout << "2. Insert new by phone number.\n";
@@ -579,33 +558,52 @@ int main(){
     std::cin >> option;
 
     switch(option){
-      case 1:
-        table.d_addByName();
-        break;
-      case 2:
-        table.d_addByPhone();
-        break;
-      case 3:
-        std::cout << "Customer to remove: ";
-        std::cin >> tempstring;
-        table.d_removeByName(tempstring);
-        break;
-      case 4:
-//        table.d_removeByPhone();
-        break;
-
-      case 11:
-        std::cout << "Area code to print: ";
-        std::cin >> tempint;
-        table.d_printByAreaCode(tempint);
-        break;
-      case 12:
-        cont = false;
+    case 1:
+      std::cout << "Provide name: ";
+      std::cin >> name;
+      std::cout << "Provide address: ";
+      std::cin >> address;
+      std::cout << "Provide phone number: ";
+      std::cin >> phone;
+      std::cout << "Provide charges: ";
+      std::cin >> charges;
+      tempnode = new DicNode(name, address, phone, charges);
+      table.d_addByName(tempnode);
       break;
-      default:
-        std::cout << "Invalid input.\n";
-        option = 0;
-        break;
+    case 2:
+      std::cout << "Provide name: ";
+      std::cin >> name;
+      std::cout << "Provide address: ";
+      std::cin >> address;
+      std::cout << "Provide phone number: ";
+      std::cin >> phone;
+      std::cout << "Provide charges: ";
+      std::cin >> charges;
+      tempnode = new DicNode(name, address, phone, charges);
+      table.d_addByPhone(tempnode);
+      break;
+    case 3:
+      std::cout << "Customer to remove: ";
+      std::cin >> tempstring;
+      tempnode = table.d_removeByName(tempstring);
+      // TODO print charges here
+      break;
+    case 4:
+      //        table.d_removeByPhone();
+      break;
+
+    case 11:
+      std::cout << "Area code to print: ";
+      std::cin >> tempint;
+      table.d_printByAreaCode(tempint);
+      break;
+    case 12:
+      cont = false;
+      break;
+    default:
+      std::cout << "Invalid input.\n";
+      option = 0;
+      break;
     }
 
 
