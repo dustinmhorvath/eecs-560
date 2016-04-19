@@ -395,9 +395,6 @@ private:
 
   // Returns the first node with 'phone'
   DicNode* getFirstByPhone(std::string phone){
-    if(!phoneTableBuilt){
-      return nullptr;
-    }
     int phonehash = phoneHash(phone);
     DicNode* current_node = phoneTable[phonehash];
 
@@ -800,7 +797,6 @@ int main(int argc, char* argv[]){
         }
         tempnode = new DicNode(arguments[1], arguments[2], arguments[0], arguments[3]);
         table.d_addByPhone(tempnode);
-        std::cin.clear();
       }
       else if(option == 3){
         tempstring = trim_copy(line);
@@ -812,9 +808,73 @@ int main(int argc, char* argv[]){
           std::cout << "Charges for " << tempnode -> getName() << " are " << tempnode -> getCharges() << ".\n";
         }
         delete tempnode;
-
-
       }
+      else if(option == 4){
+        tempstring = trim_copy(line);
+        tempnode = table.d_removeByPhone(tempstring);
+        if(tempnode == nullptr){
+          std::cout << "Could not find customer with number " << tempstring << ".\n";
+        }
+        else{
+          std::cout << "Charges for " << tempnode -> getName() << " are " << tempnode -> getCharges() << ".\n";
+        }
+        delete tempnode;
+      }
+      else if(option = 5){
+        std::istringstream ss(line);
+        for(int i = 0; i < 2; i++){
+          std::getline(ss, tempstring, ',');
+          arguments[i] = trim_copy(tempstring);
+        }
+        tempnode = table.getNodeAmbiguous(arguments[1]);
+        if(tempnode == nullptr){
+        }
+        else{
+          std::cout << "Balance to pay of " << tempnode -> getCharges() << " for " << tempnode -> getName() << ". Paying charge of " << arguments[0] << ".\n";
+          tempnode -> payCharges(arguments[0]);
+          std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
+        }
+      }
+      else if(option == 6){
+        std::istringstream ss(line);
+        for(int i = 0; i < 2; i++){
+          std::getline(ss, tempstring, ',');
+          arguments[i] = trim_copy(tempstring);
+        }
+        tempnode = table.getNodeAmbiguous(arguments[1]);
+        if(tempnode == nullptr){
+        }
+        else{
+          std::cout << "Balance to pay of " << tempnode -> getCharges() << " for " << ". Applying charge of " << arguments[0] << "\n";
+          arguments[0] = "-" + arguments[0];
+          tempnode -> payCharges(arguments[0]);
+          std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
+        }
+      }
+      else if(option == 7 || option == 8){
+        tempstring = trim_copy(line);
+        tempnode = table.getNodeAmbiguous(tempstring);
+        std::cout << "Customer " << tempnode -> getName() << " has a balance of " << tempnode -> getCharges() << ".\n";
+      }
+      else if(option == 9){
+        tempstring = trim_copy(line);
+        std::cout << "Printint namehash " << tempstring << "...\n";
+        tempint = std::stoi(tempstring);
+        table.d_printByNameHash(tempint);
+      }
+      else if(option == 10){
+        tempstring = trim_copy(line);
+        table.d_printByDay(tempint);
+      }
+      else if(option == 11){
+        tempstring = trim_copy(line);
+        table.d_printByAreaCode(tempstring);
+      }
+      else if(option == 12){
+        std::cout << "Exiting...\n";
+        exit(0);
+      }
+
     }
   }
 
