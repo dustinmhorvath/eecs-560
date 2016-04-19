@@ -785,9 +785,10 @@ int main(int argc, char* argv[]){
         for(int i = 0; i < 4; i++){
           std::getline(ss, tempstring, ',');
           arguments[i] = trim_copy(tempstring);
-        }   
+        }
         tempnode = new DicNode(arguments[0], arguments[1], arguments[2], arguments[3]);
         table.d_addByName(tempnode);
+        std::cout << "Added " << arguments[0] << " to the hash table.\n";
       }
       else if(option == 2){
         std::istringstream ss(line);
@@ -797,6 +798,7 @@ int main(int argc, char* argv[]){
         }
         tempnode = new DicNode(arguments[1], arguments[2], arguments[0], arguments[3]);
         table.d_addByPhone(tempnode);
+        std::cout << "Added " << arguments[1] << " to the hash table.\n";
       }
       else if(option == 3){
         tempstring = trim_copy(line);
@@ -830,7 +832,7 @@ int main(int argc, char* argv[]){
         if(tempnode == nullptr){
         }
         else{
-          std::cout << "Balance to pay of " << tempnode -> getCharges() << " for " << tempnode -> getName() << ". Paying charge of " << arguments[0] << ".\n";
+          std::cout << "Balance to pay of " << tempnode -> getCharges() << " for " << tempnode -> getName() << ". Paying charge " << arguments[0] << ".\n";
           tempnode -> payCharges(arguments[0]);
           std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
         }
@@ -850,6 +852,7 @@ int main(int argc, char* argv[]){
           tempnode -> payCharges(arguments[0]);
           std::cout << "New balance of " << tempnode -> getCharges() << ".\n";
         }
+
       }
       else if(option == 7 || option == 8){
         tempstring = trim_copy(line);
@@ -858,7 +861,7 @@ int main(int argc, char* argv[]){
       }
       else if(option == 9){
         tempstring = trim_copy(line);
-        std::cout << "Printint namehash " << tempstring << "...\n";
+        std::cout << "Printing namehash " << tempstring << "...\n";
         tempint = std::stoi(tempstring);
         table.d_printByNameHash(tempint);
       }
@@ -873,6 +876,9 @@ int main(int argc, char* argv[]){
       else if(option == 12){
         std::cout << "Exiting...\n";
         exit(0);
+      }
+      else{
+        std::cout << "Invalid Option.\n";
       }
 
     }
