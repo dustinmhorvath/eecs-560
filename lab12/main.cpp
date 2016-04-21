@@ -40,6 +40,15 @@ void sort(int* array, std::vector<int> increments, int size){
   */
 }
 
+bool verifyArray(int* array, int size){
+  for(int i = 0; i < size-1; i++){
+    if(array[i] > array[i+1]){
+      return false;
+    }
+  }
+  return true;;
+
+}
 
 
 int main(int argc, char *argv[]){
@@ -86,11 +95,21 @@ int main(int argc, char *argv[]){
       for(int j = 0; j < numtosort; j++){
         array[j] = rand()%(6*numtosort) - (3*numtosort);
       }
+      
+      // Get clock
       clock_t t0 = clock();
-
-
+      // Sort
       sort(array, increments[sizerun - 1], numtosort);
+      // Store elapsed clock cycles
       times[sizerun][trial] = clock() - t0;
+      
+      // Verify each.
+      if(verifyArray(array, numtosort)){
+        std::cout << "Verified array " << trial << " of size " << numtosort << " sorted successfully.\n";
+      }
+      else{
+        std::cout << "Array was not sorted in order.\n";
+      }
 
 
     }
@@ -100,7 +119,7 @@ int main(int argc, char *argv[]){
   std::cout << "\n";
   std::cout << std::left << std::setw(colwidth) << " " << std::setw(colwidth) << " ";
   for(int i = 0; i < numtrials; i++){
-    std::cout << std::left << std::setw(colwidth - 2) << "  Trial " << i;
+    std::cout << std::left << std::setw(colwidth - 2) << "  Trial " << i + 1;
   }
   std::cout << "\n";
   for(int sizerun = 1; sizerun < numtypes + 1; sizerun++){
