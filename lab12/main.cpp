@@ -11,6 +11,10 @@
 #include <iomanip>
 #include <vector>
 
+// Can change this here to run different sizes (e.g. 100000, 200000... vs
+// 1000, 2000, 3000...
+#define MULTIPLIER 100000
+
 void sort(int* array, std::vector<int> increments, int size){
   /*
   //print before
@@ -87,7 +91,7 @@ int main(int argc, char *argv[]){
   int times[numtypes][numtrials];
 
   for(int sizerun = 1; sizerun < numtypes + 1; sizerun++){
-    int numtosort = sizerun*100000;
+    int numtosort = sizerun*MULTIPLIER;
     for(int trial = 0; trial < numtrials; trial++){
       srand(trial);
       // to get between -3n and 3n
@@ -123,7 +127,7 @@ int main(int argc, char *argv[]){
   }
   std::cout << "\n";
   for(int sizerun = 1; sizerun < numtypes + 1; sizerun++){
-    int numtosort = sizerun*100000;
+    int numtosort = sizerun*MULTIPLIER;
     std::cout << std::setw(colwidth) << "Size = " << std::left << std::setw(colwidth) << numtosort << ": ";
     for(int trial = 0; trial < numtrials; trial++){
       std::cout << std::left << std::setw(colwidth) << times[sizerun][trial];
