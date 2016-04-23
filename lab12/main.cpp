@@ -13,7 +13,9 @@
 
 // Can change this here to run different sizes (e.g. 100000, 200000... vs
 // 1000, 2000, 3000...
-#define MULTIPLIER 100000
+#define MULTIPLIER 10000
+
+#define NUMTRIALS 8
 
 void sort(int* array, std::vector<int> increments, int size){
   /*
@@ -57,7 +59,7 @@ bool verifyArray(int* array, int size){
 
 int main(int argc, char *argv[]){
 
-  std::ifstream file("MLAB12.txt");
+  std::ifstream file("RLAB12.txt");
   std::string line;
 
   std::vector<int> increments[4];
@@ -87,12 +89,11 @@ int main(int argc, char *argv[]){
      */
 
   int numtypes = 4;
-  int numtrials = 5;
-  int times[numtypes][numtrials];
+  int times[numtypes][NUMTRIALS];
 
-  for(int sizerun = 1; sizerun < numtypes + 1; sizerun++){
-    int numtosort = sizerun*MULTIPLIER;
-    for(int trial = 0; trial < numtrials; trial++){
+  for(int sizerun = 0; sizerun < numtypes; sizerun++){
+    int numtosort = (sizerun+1)*MULTIPLIER;
+    for(int trial = 0; trial < NUMTRIALS; trial++){
       srand(trial);
       // to get between -3n and 3n
       int* array = new int[numtosort];
@@ -103,13 +104,13 @@ int main(int argc, char *argv[]){
       // Get clock
       clock_t t0 = clock();
       // Sort
-      sort(array, increments[sizerun - 1], numtosort);
+      sort(array, increments[sizerun], numtosort);
       // Store elapsed clock cycles
       times[sizerun][trial] = clock() - t0;
       
       // Verify each.
       if(verifyArray(array, numtosort)){
-        std::cout << "Verified array " << trial << " of size " << numtosort << " sorted successfully.\n";
+        std::cout << "Verified array " << trial+1 << " of size " << numtosort << " sorted successfully.\n";
       }
       else{
         std::cout << "Array was not sorted in order.\n";
@@ -121,18 +122,30 @@ int main(int argc, char *argv[]){
 
   int colwidth = 9;
   std::cout << "\n";
-  std::cout << std::left << std::setw(colwidth) << " " << std::setw(colwidth) << " ";
-  for(int i = 0; i < numtrials; i++){
-    std::cout << std::left << std::setw(colwidth - 2) << "  Trial " << i + 1;
+  std::cout << std::left << std::setw(colwidth) << "Size" << "  ";
+  for(int i = 0; i < NUMTRIALS; i++){
+    int t_int = i+1;
+    std::string t_string = "T" + std::to_string(i+1) + " clks";
+    std::cout << std::left << std::setw(colwidth) << t_string;
   }
+  std::cout << std::left << std::setw(colwidth) << "Ttl clks";
+  std::cout << std::left << std::setw(colwidth) << "Avg clks";
+  std::cout << std::left << std::setw(colwidth) << "AvOps/clk";
+
   std::cout << "\n";
-  for(int sizerun = 1; sizerun < numtypes + 1; sizerun++){
-    int numtosort = sizerun*MULTIPLIER;
-    std::cout << std::setw(colwidth) << "Size = " << std::left << std::setw(colwidth) << numtosort << ": ";
-    for(int trial = 0; trial < numtrials; trial++){
+  for(int sizerun = 0; sizerun < numtypes; sizerun++){
+    int numtosort = (sizerun+1)*MULTIPLIER;
+    std::cout << std::setw(colwidth) << std::left << std::setw(colwidth) << numtosort << ": ";
+    int total_time = 0;
+    for(int trial = 0; trial < NUMTRIALS; trial++){
       std::cout << std::left << std::setw(colwidth) << times[sizerun][trial];
+      total_time += times[sizerun][trial];
+      
 
     }
+    std::cout << std::left << std::setw(colwidth) << total_time;
+    std::cout << std::left << std::setw(colwidth) << total_time / NUMTRIALS;
+    std::cout << std::left << std::setw(colwidth) << (double)(numtosort * 4) / total_time;
     std::cout << "\n";
   }
 
