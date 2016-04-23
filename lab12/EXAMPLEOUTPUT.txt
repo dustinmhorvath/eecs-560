@@ -1,0 +1,49 @@
+Verified trial  1 of size 100000 sorted successfully.
+Verified trial  2 of size 100000 sorted successfully.
+Verified trial  3 of size 100000 sorted successfully.
+Verified trial  4 of size 100000 sorted successfully.
+Verified trial  5 of size 100000 sorted successfully.
+Verified trial  6 of size 100000 sorted successfully.
+Verified trial  7 of size 100000 sorted successfully.
+Verified trial  8 of size 100000 sorted successfully.
+Verified trial  9 of size 100000 sorted successfully.
+Verified trial 10 of size 100000 sorted successfully.
+Verified trial  1 of size 200000 sorted successfully.
+Verified trial  2 of size 200000 sorted successfully.
+Verified trial  3 of size 200000 sorted successfully.
+Verified trial  4 of size 200000 sorted successfully.
+Verified trial  5 of size 200000 sorted successfully.
+Verified trial  6 of size 200000 sorted successfully.
+Verified trial  7 of size 200000 sorted successfully.
+Verified trial  8 of size 200000 sorted successfully.
+Verified trial  9 of size 200000 sorted successfully.
+Verified trial 10 of size 200000 sorted successfully.
+Verified trial  1 of size 300000 sorted successfully.
+Verified trial  2 of size 300000 sorted successfully.
+Verified trial  3 of size 300000 sorted successfully.
+Verified trial  4 of size 300000 sorted successfully.
+Verified trial  5 of size 300000 sorted successfully.
+Verified trial  6 of size 300000 sorted successfully.
+Verified trial  7 of size 300000 sorted successfully.
+Verified trial  8 of size 300000 sorted successfully.
+Verified trial  9 of size 300000 sorted successfully.
+Verified trial 10 of size 300000 sorted successfully.
+Verified trial  1 of size 400000 sorted successfully.
+Verified trial  2 of size 400000 sorted successfully.
+Verified trial  3 of size 400000 sorted successfully.
+Verified trial  4 of size 400000 sorted successfully.
+Verified trial  5 of size 400000 sorted successfully.
+Verified trial  6 of size 400000 sorted successfully.
+Verified trial  7 of size 400000 sorted successfully.
+Verified trial  8 of size 400000 sorted successfully.
+Verified trial  9 of size 400000 sorted successfully.
+Verified trial 10 of size 400000 sorted successfully.
+
+Size       T1 clks  T2 clks  T3 clks  T4 clks  T5 clks  T6 clks  T7 clks  T8 clks  T9 clks  T10 clks Ttl clks Avg clks Ave/clk  
+100000   : 48302    48051    48154    48367    48188    48362    47977    48354    48794    48165    482714   48271    0.828648 
+200000   : 101761   102139   101704   101238   101327   101404   101351   101320   101151   101214   1014609  101460   0.788481 
+300000   : 162828   161975   161923   162321   162585   162570   162512   162558   162177   162328   1623777  162377   0.739018 
+400000   : 216711   217534   218264   216885   216761   217643   216980   218435   219611   217268   2176092  217609   0.735263 
+
+
+Exiting...

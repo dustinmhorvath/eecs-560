@@ -1,51 +1,51 @@
 /*
  * Dustin Horvath
- *
+ * Shellsort with statically-read list of gap values
+ * Has abstract design of trial-runs, but static size (bleh) for each run.
  *
  */
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
-// used for pretty output
+
+// Used for pretty output
 #include <iomanip>
 #include <vector>
+// End pretty libraries
 
+
+// ~~~~~~~~CONTROLS~~~~~~~~~
 // Can change this here to run different sizes (e.g. 100000, 200000... vs
 // 1000, 2000, 3000...
-#define MULTIPLIER 10000
+#define MULTIPLIER 100000
+// This changes number of trials
+#define NUMTRIALS 10
 
-#define NUMTRIALS 8
 
+
+// Use a vector here because it lets me get the list of increments in an
+// object easily.
 void sort(int* array, std::vector<int> increments, int size){
-  /*
-  //print before
-  for(int print = 0; print < size; print++){
-  std::cout << array[print] << " ";
-  }
-  std::cout << "\n";
-  */
 
+  // Iterate over the read-in increment list for each shellsort size
   for (std::vector<int>::size_type increment = 0; increment != increments.size(); increment++){
+    // Grab this here so I can make the code a bit tidier
     int skip = increments[increment];
-    for (int i = skip; i <size; i++){
+    // Shellsort list normal
+    for (int i = skip; i < size; i++){
       for (int j = i - skip; j >= 0 && array[j] > array[j+skip]; j -= skip){
         int temp = array[j];
-        array[j] = array[j+skip];
-        array[j+skip] = temp;
+        array[j] = array[skip + j];
+        array[skip + j] = temp;
       }
     }
   }
 
-  /*
-  //print after
-  for(int print = 0; print < size; print++){
-  std::cout << array[print] << " ";
-  }
-  std::cout << "\n\n";
-  */
+ 
 }
 
+// Zips over an array and makes sure it's sorted
 bool verifyArray(int* array, int size){
   for(int i = 0; i < size-1; i++){
     if(array[i] > array[i+1]){
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]){
       
       // Verify each.
       if(verifyArray(array, numtosort)){
-        std::cout << "Verified array " << trial+1 << " of size " << numtosort << " sorted successfully.\n";
+        std::cout << "Verified trial " << std::setw(2) << trial+1 << " of size " << numtosort << " sorted successfully.\n";
       }
       else{
         std::cout << "Array was not sorted in order.\n";
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
   }
   std::cout << std::left << std::setw(colwidth) << "Ttl clks";
   std::cout << std::left << std::setw(colwidth) << "Avg clks";
-  std::cout << std::left << std::setw(colwidth) << "AvOps/clk";
+  std::cout << std::left << std::setw(colwidth) << "Num/clk";
 
   std::cout << "\n";
   for(int sizerun = 0; sizerun < numtypes; sizerun++){
@@ -145,14 +145,14 @@ int main(int argc, char *argv[]){
     }
     std::cout << std::left << std::setw(colwidth) << total_time;
     std::cout << std::left << std::setw(colwidth) << total_time / NUMTRIALS;
-    std::cout << std::left << std::setw(colwidth) << (double)(numtosort * 4) / total_time;
+    std::cout << std::left << std::setw(colwidth) << (double)numtosort / (total_time / NUMTRIALS);
     std::cout << "\n";
   }
 
 
 
 
-  std::cout << "Exiting...\n";
+  std::cout << "\n\nExiting...\n";
   return 0;
 }
 
