@@ -91,9 +91,13 @@ public:
       return;
     }
     if(second -> getValue() < first -> getValue()){
+      // second takes the place of first and pushes first down
       second -> setPrev(first -> getPrev());
       first -> setPrev(second);
+      // first adopts seconds left child as sibling. Pushes second's left
+      // child out to right
       first -> setSibling(second -> getLeft());
+      // Point the new sibling back at first if it exists
       if(first -> getSibling() != nullptr){
         first -> getSibling() -> setPrev(first);
       }
@@ -101,6 +105,8 @@ public:
       first = second;
     }
     else{
+      // else do the opposite, where second gets pushed down and becomes
+      // first's left child
       second -> setPrev(first);
       first -> setSibling(second -> getSibling());
       if(first -> getSibling() != nullptr){
@@ -120,6 +126,7 @@ public:
       return sibling;
     }
     static std::vector<Node*> treeArray(5);
+    std::queue<Node*> array;
     // Count siblings
     int count = 0;
     for (; sibling != nullptr; count++){
