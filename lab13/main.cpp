@@ -7,14 +7,18 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+// Used for testing
 #include <random>
+// End testing
 
 // Used for pretty output
-#include <iomanip>
-#include <vector>
+//#include <iomanip>
+//#include <vector>
 #include <queue>
 // End pretty libraries
 
+#define SEED 10
 #define MAXNODES 100
 
 class Node{
@@ -66,8 +70,8 @@ public:
 
 class PairingHeap{
 
-int size;
-Node* elem;
+  int size;
+  Node* elem;
 
 public:
 
@@ -82,94 +86,70 @@ public:
 
   Node* insert(int value){
     Node* temp = new Node(value);
-
-    if(elem == nullptr){
-      elem = temp;
-      size++;
-    }
-    else{
-      if(elem -> getValue() > value){
-        temp -> setLeft(elem);
-        elem -> setPrev(temp);
-        elem = temp;
-        size++;
-      }
-      else{
-        if(elem -> getLeft()){
+    /*    if(elem == nullptr){
+          elem = temp;
+          size++;
+          }
+          else{
+          if(elem -> getValue() > value){
+          temp -> setLeft(elem);
+          elem -> setPrev(temp);
+          elem = temp;
+          size++;
+          }
+          else{
+          if(elem -> getLeft()){
           elem -> getLeft() -> setPrev(temp);
           temp -> setSibling(elem -> getLeft());
-        }
-        elem -> setLeft(temp);
-        temp -> setPrev(elem);
-        size++;
-      }
+          }
+          elem -> setLeft(temp);
+          temp -> setPrev(elem);
+          size++;
+          }
+          }
+          */
+
+
+    if( !elem ){
+      elem = temp;
     }
+    else
+      compareAndLink( elem, temp );
+    return temp;   
+
   }
 
-  void link(Node* &first, Node* &second){
-    if(second == nullptr){
+  void compareAndLink(Node* &first, Node* &second){
+
+    if(!second){
       return;
     }
-    if(second -> getValue() < first -> getValue()){
-      // second takes the place of first and pushes first down
+
+    if( second -> getValue() < first -> getValue() ){
       second -> setPrev(first -> getPrev());
       first -> setPrev(second);
-      // first adopts seconds left child as sibling. Pushes second's left
-      // child out to right
       first -> setSibling(second -> getLeft());
-      // Point the new sibling back at first if it exists
-      if(first -> getSibling() != nullptr){
+      if( first -> getSibling() != nullptr ){
         first -> getSibling() -> setPrev(first);
       }
       second -> setLeft(first);
       first = second;
     }
     else{
-      // else do the opposite, where second gets pushed down and becomes
-      // first's left child
       second -> setPrev(first);
       first -> setSibling(second -> getSibling());
-      if(first -> getSibling() != nullptr){
+      if( first -> getSibling() != nullptr ){
         first -> getSibling() -> setPrev(first);
       }
       second -> setSibling(first -> getLeft());
-      if(second -> getSibling() != nullptr){
+      if( second -> getSibling() != nullptr ){
         second -> getSibling() -> setPrev(second);
       }
       first -> setLeft(second);
     }
-
   }
 
-  Node* merge(Node* sibling){
-    
-    if (sibling -> getSibling() == nullptr){
-      return sibling;
-    }
-    
-    Node* nodes[MAXNODES];
-    
-    // Count siblings
-    int count = 0;
-    for (; sibling != nullptr; count++){
-      nodes[count] = sibling;
-      sibling -> getPrev() -> setSibling(nullptr);
-      sibling = sibling -> getSibling();
-    }
-    
-    nodes[count] = nullptr;
-    int i = 0;
-    for (i = 0; i + 1 < count; i += 2){
-      link(nodes[i], nodes[i + 1]);
-    }
-    int j = i - 2;
-    if (j == count - 3)
-      link (nodes[j], nodes[j + 2]);
-    for (; j >= 2; j -= 2)
-      link(nodes[j - 2], nodes[j] );
-    return nodes[0];
 
-  }
 
   void levelorder(){
     std::queue<Node*> q;
@@ -181,28 +161,34 @@ public:
     std::cout << "Level " << level << ": ";
     while(current != nullptr){
       // if it has a child, push it on and increment the children in next row
+      std::cout << current -> getValue();
       if(current -> getLeft()){
         q.push(current -> getLeft());
+        std::cout << "____";
+        // increment the number of children in next row
         nextchildren++;
       }
-      std::cout << current -> getValue() << " ";
+      std::cout << " ";
       // if it has a sibling, iterate to it
       if(current -> getSibling()){
         current = current -> getSibling();
       }
       // if it doesn't have siblings and there are more children in the row, 
-      // get a another child from the row
+      // get another child from the row
       else if(curchildren > 0){
         std::cout << "    ";
+        // this consumes a current row child
         curchildren--;
         current = q.front();
         q.pop();
       }
       // if no more children in row (curchildren == 0), then move down a row
       // and make curchildren = nextchildren
-      else{
+      else if(curchildren == 0){
         // also, this uses up one of the children
-        curchildren = nextchildren;
+        curchildren = nextchildren - 1;
+        // set next row of children to zero, since we've "moved down" a row
+        nextchildren = 0;
         current = q.front();
         q.pop();
         // increment our current level
@@ -214,26 +200,7 @@ public:
       }
 
     }
-/*
-    while(current != nullptr){
-      if(current -> getPrev() != nullptr){
-        std::cout << current -> getPrev() -> getValue() << ": ";
-      }
-      
-      do{
-        std::cout << current -> getValue() << " ";
-        if(current->getLeft()){
-          array[index] = current->getLeft();
-          index++;
-        }
-        current = current->getSibling();
-      }while (current);
-      std::cout << "\n";
-      current = array[head];
-      head++;
-    }
-*/
-      
+
   }
 
 
@@ -249,6 +216,7 @@ int main(int argc, char *argv[]){
 
   std::random_device rd;
   std::mt19937 gen(rd());
+  //std::mt19937 gen(SEED);
   std::uniform_int_distribution<> dis(50, 200);
   int temp;
 
@@ -256,7 +224,7 @@ int main(int argc, char *argv[]){
     temp = dis(gen);
     heap.insert(temp);
   }
-  
+
   heap.levelorder();
 
 
