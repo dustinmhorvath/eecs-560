@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <istream>
 
 // Used for testing
 #include <random>
@@ -214,21 +215,86 @@ int main(int argc, char *argv[]){
 
   PairingHeap heap = PairingHeap();
 
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  //std::mt19937 gen(SEED);
-  std::uniform_int_distribution<> dis(50, 200);
-  int temp;
+  if(argc == 1){
+    std::cout << "\nYou can provide this program a list of newline-delimited \n";
+    std::cout << "values from which to build the pairingheap. Ex: './test insert.txt'\n";
+    std::cout << "Alternatively, use './test random INT' to insert a random INT values\n";
+    std::cout << "between 1 and 200.\n";
+    bool cont = true;
+    int option = 3;
+    int value = 0;
+    while(cont){
+      std::cout << "\n1. Insert a new value\n";
+      std::cout << "2. Print the current pairingheap\n";
+      std::cout << "3. Exit\n";
+      std::cout << "Select an option: ";
+      std::cin >> option;
+      std::cin.clear();
 
-  for(int i = 0; i < 50; i++){
-    temp = dis(gen);
-    heap.insert(temp);
+      switch(option){
+        case 1:
+          std::cout << "Please provide a value to insert: ";
+          std::cin >> value;
+          std::cin.clear();
+          heap.insert(value);
+          break;
+        case 2:
+          heap.levelorder();
+          break;
+
+        case 3:
+          cont = false;
+          break;
+
+        default:
+          std::cout << "Invalud input.\n";
+          break;
+
+      }
+    }
+
+  }
+  else if(std::string(argv[1]) == "random"){  
+    std::istringstream ss(argv[2]);
+    int number;
+    if (!(ss >> number)){
+      std::cout << "Invalid number " << argv[2] << '\n';
+    }
+    //int number = argv[2];
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    //std::mt19937 gen(SEED);
+    std::uniform_int_distribution<> dis(1, 200);
+    int temp;
+
+    for(int i = 0; i < number; i++){
+      temp = dis(gen);
+      heap.insert(temp);
+    }
+
+    heap.levelorder();
+  }
+  else{
+
+    std::ifstream infile(argv[1]);
+    std::string line;
+
+    while (std::getline(infile, line)){
+      std::istringstream iss(line);
+      int n;
+
+      while (iss >> n){
+        std::cout << "Inserting " << n << " into the heap.\n";
+        heap.insert(n);
+      }
+
+    }
+
+    heap.levelorder();
+
   }
 
-  heap.levelorder();
-
-
-  std::cout << "\n\nExiting...\n";
+  std::cout << "\nExiting...\n\n";
   return 0;
 }
 
