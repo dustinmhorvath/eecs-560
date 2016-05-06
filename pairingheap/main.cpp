@@ -87,38 +87,17 @@ public:
 
   Node* insert(int value){
     Node* temp = new Node(value);
-    /*    if(elem == nullptr){
-          elem = temp;
-          size++;
-          }
-          else{
-          if(elem -> getValue() > value){
-          temp -> setLeft(elem);
-          elem -> setPrev(temp);
-          elem = temp;
-          size++;
-          }
-          else{
-          if(elem -> getLeft()){
-          elem -> getLeft() -> setPrev(temp);
-          temp -> setSibling(elem -> getLeft());
-          }
-          elem -> setLeft(temp);
-          temp -> setPrev(elem);
-          size++;
-          }
-          }
-          */
 
-
-    if( !elem ){
-      elem = temp;
+    if( elem == nullptr ){
+      return elem = temp;
     }
-    else
+    else{
       compareAndLink( elem, temp );
-    return temp;   
+    }
+    size++;
 
   }
+
 
   void compareAndLink(Node* &first, Node* &second){
 
@@ -150,10 +129,72 @@ public:
     }
   }
 
+  int deleteMin(){
+    if (elem == nullptr){
+      // Return a magic number for now
+      return -111;
+    }
+
+    // Gets the root of the tree
+    Node* prevroot = findmin();
+    if (elem -> getLeft() == nullptr){
+      elem = nullptr;
+    }
+    else{
+      // New root is the result of combining its children
+      elem = combine( prevroot -> getLeft());
+    }
+
+    int value = prevroot -> getValue();
+    delete prevroot;
+    size--;
+    return value;
+  }
+
+  Node* combine(Node *first){
+    if (first -> getSibling() == nullptr){
+      return first;
+    }
+    // Make an array to hold all the siblings
+    Node* list[100];
+    int numSiblings;
+
+    // Count siblings while putting them each in the array
+    for (numSiblings = 0; first != nullptr; numSiblings++){
+      list[numSiblings] = first;
+      // For now they're not siblings anymore
+      first -> getPrev() -> setSibling(nullptr);
+      // Move across the linked list of siblings
+      first = first -> getSibling();
+    }
+
+
+    list[numSiblings] = nullptr;
+    int i = 0;
+    // Do first pass
+    for (i = 0; i + 1 < numSiblings; i += 2){
+      compareAndLink(list[i], list[i + 1]);
+    }
+    int j = i - 2;
+    if (j == numSiblings - 3){
+      compareAndLink ( list[j], list[j+2] );
+    }
+    // Do second pass
+    for (; j >= 2; j -= 2){
+      compareAndLink( list[j-2], list[j] );
+    }
+    // return the item at the new head
+    return list[0];
+  }
+
 
 
   void levelorder(){
     std::queue<Node*> q;
+    if(elem == nullptr){
+      std::cout << "No heap to print.\n";
+      return;
+    }
 
     int level = 0;
     int nextchildren = 0;
@@ -161,11 +202,11 @@ public:
     Node* current = elem;
     std::cout << "Level " << level << ": ";
     while(current != nullptr){
-      // if it has a child, push it on and increment the children in next row
       std::cout << current -> getValue();
-      if(current -> getLeft()){
+      // if it has a child, push it on and increment the children in next row
+      if(current -> getLeft() != nullptr){
         q.push(current -> getLeft());
-        std::cout << "____";
+        std::cout << "_V_ ";
         // increment the number of children in next row
         nextchildren++;
       }
@@ -205,9 +246,6 @@ public:
   }
 
 
-
-
-
 };
 
 
@@ -215,8 +253,50 @@ int main(int argc, char *argv[]){
 
   PairingHeap heap = PairingHeap();
 
-  if(argc == 1){
-    std::cout << "\nYou can provide this program a list of newline-delimited \n";
+  if(argc > 1){
+    if(std::string(argv[1]) == "random"){  
+      std::istringstream ss(argv[2]);
+      int number;
+      if (!(ss >> number)){
+        std::cout << "Invalid number " << argv[2] << '\n';
+      }
+      //int number = argv[2];
+      std::random_device rd;
+      std::mt19937 gen(rd());
+      //std::mt19937 gen(SEED);
+      std::uniform_int_distribution<> dis(1, 200);
+      int temp;
+
+      for(int i = 0; i < number; i++){
+        temp = dis(gen);
+        heap.insert(temp);
+      }
+
+      heap.levelorder();
+    }
+    else{
+
+      std::ifstream infile(argv[1]);
+      std::string line;
+
+      while (std::getline(infile, line)){
+        std::istringstream iss(line);
+        int n;
+
+        while (iss >> n){
+          std::cout << "Inserting " << n << " into the heap.\n";
+          heap.insert(n);
+        }
+
+      }
+
+      heap.levelorder();
+
+    }
+  }
+
+  else{
+    std::cout << "\nYou can provide this program a list of whitespace-delimited \n";
     std::cout << "values from which to build the pairingheap. Ex: './test insert.txt'\n";
     std::cout << "Alternatively, use './test random INT' to insert a random INT values\n";
     std::cout << "between 1 and 200.\n";
@@ -225,73 +305,41 @@ int main(int argc, char *argv[]){
     int value = 0;
     while(cont){
       std::cout << "\n1. Insert a new value\n";
-      std::cout << "2. Print the current pairingheap\n";
-      std::cout << "3. Exit\n";
+      std::cout << "2. Deletemin\n";
+      std::cout << "3. Print the current pairingheap\n";
+      std::cout << "4. Exit\n";
       std::cout << "Select an option: ";
       std::cin >> option;
       std::cin.clear();
 
       switch(option){
-        case 1:
-          std::cout << "Please provide a value to insert: ";
-          std::cin >> value;
-          std::cin.clear();
-          heap.insert(value);
-          break;
-        case 2:
-          heap.levelorder();
-          break;
+      case 1:
+        std::cout << "Please provide a value to insert: ";
+        std::cin >> value;
+        std::cin.clear();
+        heap.insert(value);
+        break;
+      case 2:
+        value = heap.deleteMin();
+        if(value != -111){
+          std::cout << "Deleted minimum value " << value << ".\n";
+        }
+        break;
+      case 3:
+        heap.levelorder();
+        break;
 
-        case 3:
-          cont = false;
-          break;
+      case 4:
+        cont = false;
+        break;
 
-        default:
-          std::cout << "Invalud input.\n";
-          break;
+      default:
+        std::cout << "Invalid input.\n";
+        break;
 
-      }
-    }
-
-  }
-  else if(std::string(argv[1]) == "random"){  
-    std::istringstream ss(argv[2]);
-    int number;
-    if (!(ss >> number)){
-      std::cout << "Invalid number " << argv[2] << '\n';
-    }
-    //int number = argv[2];
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    //std::mt19937 gen(SEED);
-    std::uniform_int_distribution<> dis(1, 200);
-    int temp;
-
-    for(int i = 0; i < number; i++){
-      temp = dis(gen);
-      heap.insert(temp);
-    }
-
-    heap.levelorder();
-  }
-  else{
-
-    std::ifstream infile(argv[1]);
-    std::string line;
-
-    while (std::getline(infile, line)){
-      std::istringstream iss(line);
-      int n;
-
-      while (iss >> n){
-        std::cout << "Inserting " << n << " into the heap.\n";
-        heap.insert(n);
       }
 
     }
-
-    heap.levelorder();
-
   }
 
   std::cout << "\nExiting...\n\n";
